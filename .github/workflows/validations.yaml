@@ -191,9 +191,6 @@ jobs:
       - name: Bootstrap CI environment dependencies
         run: make ci-bootstrap
 
-      - name: Validate syft output against the CycloneDX schema
-        run: make validate-cyclonedx-schema
-
       - name: Build key for tar cache
         run: make integration-fingerprint
 
