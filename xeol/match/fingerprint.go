@@ -3,9 +3,8 @@ package match
 import (
 	"fmt"
 
-	"github.com/mitchellh/hashstructure/v2"
-
 	"github.com/anchore/grype/grype/pkg"
+	"github.com/mitchellh/hashstructure/v2"
 )
 
 type Fingerprint struct {

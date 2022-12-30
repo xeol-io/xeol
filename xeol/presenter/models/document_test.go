@@ -3,14 +3,14 @@ package models
 import (
 	"testing"
 
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/stretchr/testify/assert"
-
 	"github.com/anchore/grype/grype/pkg"
 	"github.com/anchore/syft/syft/linux"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	syftSource "github.com/anchore/syft/syft/source"
+	"github.com/stretchr/testify/assert"
+
+	"github.com/noqcks/xeol/xeol/eol"
+	"github.com/noqcks/xeol/xeol/match"
 )
 
 func TestPackagesAreSorted(t *testing.T) {

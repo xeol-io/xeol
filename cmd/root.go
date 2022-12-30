@@ -5,6 +5,14 @@ import (
 	"os"
 	"sync"
 
+	"github.com/anchore/grype/grype/pkg"
+	"github.com/anchore/stereoscope"
+	"github.com/anchore/syft/syft/source"
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
+	"github.com/wagoodman/go-partybus"
+
 	"github.com/noqcks/xeol/internal"
 	"github.com/noqcks/xeol/internal/bus"
 	"github.com/noqcks/xeol/internal/config"
@@ -20,14 +28,6 @@ import (
 	"github.com/noqcks/xeol/xeol/presenter"
 	"github.com/noqcks/xeol/xeol/presenter/models"
 	"github.com/noqcks/xeol/xeol/store"
-	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
-	"github.com/wagoodman/go-partybus"
-
-	"github.com/anchore/grype/grype/pkg"
-	"github.com/anchore/stereoscope"
-	"github.com/anchore/syft/syft/source"
 )
 
 var persistentOpts = config.CliOnlyOptions{}

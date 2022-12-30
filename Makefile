@@ -5,7 +5,7 @@ COVER_REPORT = $(RESULTSDIR)/cover.report
 COVER_TOTAL = $(RESULTSDIR)/cover.total
 LICENSES_REPORT = $(RESULTSDIR)/licenses.json
 LINTCMD = $(TEMPDIR)/golangci-lint run --tests=false --timeout 5m --config .golangci.yaml
-GOIMPORTS_CMD = $(TEMPDIR)/gosimports -local github.com/anchore
+GOIMPORTS_CMD = $(TEMPDIR)/gosimports -local github.com/noqcks
 RELEASE_CMD=$(TEMPDIR)/goreleaser release --rm-dist
 SNAPSHOT_CMD=$(RELEASE_CMD) --skip-publish --snapshot
 VERSION=$(shell git describe --dirty --always --tags)

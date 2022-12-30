@@ -7,9 +7,10 @@ import (
 	"path"
 	"time"
 
+	"github.com/spf13/afero"
+
 	"github.com/noqcks/xeol/internal/file"
 	"github.com/noqcks/xeol/internal/log"
-	"github.com/spf13/afero"
 )
 
 const MetadataFileName = "metadata.json"

@@ -3,11 +3,12 @@ package parsers
 import (
 	"fmt"
 
+	"github.com/wagoodman/go-partybus"
+	"github.com/wagoodman/go-progress"
+
 	"github.com/noqcks/xeol/xeol/event"
 	"github.com/noqcks/xeol/xeol/matcher"
 	"github.com/noqcks/xeol/xeol/presenter"
-	"github.com/wagoodman/go-partybus"
-	"github.com/wagoodman/go-progress"
 )
 
 type ErrBadPayload struct {

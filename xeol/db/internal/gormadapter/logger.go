@@ -4,8 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/noqcks/xeol/internal/log"
 	"gorm.io/gorm/logger"
+
+	"github.com/noqcks/xeol/internal/log"
 )
 
 type logAdapter struct {

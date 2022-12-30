@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/spf13/cobra"
+
 	"github.com/noqcks/xeol/internal"
 	"github.com/noqcks/xeol/internal/version"
-	"github.com/spf13/cobra"
 )
 
 var versionOutputFormat string

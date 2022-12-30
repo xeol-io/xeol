@@ -1,18 +1,18 @@
 package matcher
 
 import (
+	"github.com/anchore/grype/grype/distro"
+	"github.com/anchore/grype/grype/pkg"
+	"github.com/anchore/syft/syft/linux"
+	"github.com/wagoodman/go-partybus"
+	"github.com/wagoodman/go-progress"
+
 	"github.com/noqcks/xeol/internal/bus"
 	"github.com/noqcks/xeol/internal/log"
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/event"
 	"github.com/noqcks/xeol/xeol/match"
 	pkgMatcher "github.com/noqcks/xeol/xeol/matcher/packages"
-	"github.com/wagoodman/go-partybus"
-	"github.com/wagoodman/go-progress"
-
-	"github.com/anchore/grype/grype/distro"
-	"github.com/anchore/grype/grype/pkg"
-	"github.com/anchore/syft/syft/linux"
 )
 
 type Monitor struct {

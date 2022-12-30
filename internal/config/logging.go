@@ -1,9 +1,8 @@
 package config
 
 import (
-	"github.com/spf13/viper"
-
 	"github.com/anchore/go-logger"
+	"github.com/spf13/viper"
 )
 
 // logging contains all logging-related configuration options available to the user via the application config.

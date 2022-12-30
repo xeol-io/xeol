@@ -3,12 +3,12 @@ package store
 import (
 	"fmt"
 
+	_ "github.com/anchore/sqlite" // provide the sqlite dialect to gorm via import
+	"gorm.io/gorm"
+
 	"github.com/noqcks/xeol/xeol/db/internal/gormadapter"
 	v1 "github.com/noqcks/xeol/xeol/db/v1"
 	"github.com/noqcks/xeol/xeol/db/v1/store/model"
-	"gorm.io/gorm"
-
-	_ "github.com/anchore/sqlite" // provide the sqlite dialect to gorm via import
 )
 
 // store holds an instance of the database connection

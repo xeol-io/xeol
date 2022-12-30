@@ -4,16 +4,16 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/google/uuid"
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/match"
-
 	"github.com/anchore/grype/grype/pkg"
 	"github.com/anchore/stereoscope/pkg/image"
 	"github.com/anchore/syft/syft/linux"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/sbom"
 	syftSource "github.com/anchore/syft/syft/source"
+	"github.com/google/uuid"
+
+	"github.com/noqcks/xeol/xeol/eol"
+	"github.com/noqcks/xeol/xeol/match"
 )
 
 func GenerateAnalysis(t *testing.T, scheme syftSource.Scheme) (match.Matches, []pkg.Package, pkg.Context, interface{}, interface{}) {

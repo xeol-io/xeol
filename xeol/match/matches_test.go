@@ -3,13 +3,13 @@ package match
 import (
 	"testing"
 
+	"github.com/anchore/grype/grype/pkg"
+	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/google/uuid"
-	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/anchore/grype/grype/pkg"
-	syftPkg "github.com/anchore/syft/syft/pkg"
+	"github.com/noqcks/xeol/xeol/eol"
 )
 
 func TestMatchesSortByCycleProductName(t *testing.T) {

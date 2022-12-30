@@ -10,11 +10,12 @@ import (
 	"sync"
 
 	"github.com/gookit/color"
+	"github.com/wagoodman/go-partybus"
+	"github.com/wagoodman/jotframe/pkg/frame"
+
 	"github.com/noqcks/xeol/internal"
 	"github.com/noqcks/xeol/internal/version"
 	xeolEventParsers "github.com/noqcks/xeol/xeol/event/parsers"
-	"github.com/wagoodman/go-partybus"
-	"github.com/wagoodman/jotframe/pkg/frame"
 )
 
 func handleAppUpdateAvailable(_ context.Context, fr *frame.Frame, event partybus.Event, _ *sync.WaitGroup) error {

@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/noqcks/xeol/xeol/db"
 	"github.com/spf13/cobra"
+
+	"github.com/noqcks/xeol/xeol/db"
 )
 
 var dbListOutputFormat string

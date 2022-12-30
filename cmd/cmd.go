@@ -6,19 +6,19 @@ import (
 	"os"
 	"sort"
 
+	"github.com/anchore/go-logger/adapter/logrus"
+	"github.com/anchore/stereoscope"
+	"github.com/anchore/syft/syft"
 	"github.com/gookit/color"
-	"github.com/noqcks/xeol/internal/config"
-	"github.com/noqcks/xeol/internal/log"
-	"github.com/noqcks/xeol/internal/version"
-	"github.com/noqcks/xeol/xeol"
 	logrusUpstream "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/wagoodman/go-partybus"
 
-	"github.com/anchore/go-logger/adapter/logrus"
-	"github.com/anchore/stereoscope"
-	"github.com/anchore/syft/syft"
+	"github.com/noqcks/xeol/internal/config"
+	"github.com/noqcks/xeol/internal/log"
+	"github.com/noqcks/xeol/internal/version"
+	"github.com/noqcks/xeol/xeol"
 )
 
 var (

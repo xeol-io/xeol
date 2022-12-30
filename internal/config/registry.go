@@ -3,9 +3,8 @@ package config
 import (
 	"os"
 
-	"github.com/spf13/viper"
-
 	"github.com/anchore/stereoscope/pkg/image"
+	"github.com/spf13/viper"
 )
 
 type RegistryCredentials struct {

@@ -3,19 +3,19 @@ package packages
 import (
 	"testing"
 
+	"github.com/anchore/grype/grype/distro"
+	"github.com/anchore/grype/grype/pkg"
+	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/noqcks/xeol/xeol/db"
 	xeolDB "github.com/noqcks/xeol/xeol/db/v1"
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/match"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-
-	"github.com/anchore/grype/grype/distro"
-	"github.com/anchore/grype/grype/pkg"
-	syftPkg "github.com/anchore/syft/syft/pkg"
 )
 
 type mockStore struct {

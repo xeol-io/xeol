@@ -7,16 +7,16 @@ import (
 	"sync"
 	"time"
 
+	syftUI "github.com/anchore/syft/ui"
 	"github.com/dustin/go-humanize"
 	"github.com/gookit/color"
-	"github.com/noqcks/xeol/internal/ui/components"
-	xeolEventParsers "github.com/noqcks/xeol/xeol/event/parsers"
 	"github.com/wagoodman/go-partybus"
 	"github.com/wagoodman/go-progress"
 	"github.com/wagoodman/go-progress/format"
 	"github.com/wagoodman/jotframe/pkg/frame"
 
-	syftUI "github.com/anchore/syft/ui"
+	"github.com/noqcks/xeol/internal/ui/components"
+	xeolEventParsers "github.com/noqcks/xeol/xeol/event/parsers"
 )
 
 const maxBarWidth = 50

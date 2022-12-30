@@ -3,9 +3,9 @@ package models
 import (
 	"sort"
 
-	"github.com/noqcks/xeol/xeol/match"
-
 	"github.com/anchore/grype/grype/pkg"
+
+	"github.com/noqcks/xeol/xeol/match"
 )
 
 // Match is a single item for the JSON array reported

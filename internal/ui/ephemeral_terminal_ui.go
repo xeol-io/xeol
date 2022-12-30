@@ -11,13 +11,13 @@ import (
 	"os"
 	"sync"
 
-	"github.com/noqcks/xeol/internal/log"
-	xeolEvent "github.com/noqcks/xeol/xeol/event"
-	"github.com/noqcks/xeol/xeol/ui"
+	"github.com/anchore/go-logger"
 	"github.com/wagoodman/go-partybus"
 	"github.com/wagoodman/jotframe/pkg/frame"
 
-	"github.com/anchore/go-logger"
+	"github.com/noqcks/xeol/internal/log"
+	xeolEvent "github.com/noqcks/xeol/xeol/event"
+	"github.com/noqcks/xeol/xeol/ui"
 )
 
 // ephemeralTerminalUI provides an "ephemeral" terminal user interface to display the application state dynamically.

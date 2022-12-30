@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/Masterminds/semver"
+
 	"github.com/noqcks/xeol/xeol/eol"
 )
 

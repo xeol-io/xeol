@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/mitchellh/mapstructure"
+
 	"github.com/noqcks/xeol/internal/log"
 	"github.com/noqcks/xeol/xeol/db/v1/pkg/qualifier/rpmmodularity"
 )

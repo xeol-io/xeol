@@ -3,9 +3,10 @@ package ui
 import (
 	"io"
 
+	"github.com/wagoodman/go-partybus"
+
 	"github.com/noqcks/xeol/internal/log"
 	xeolEvent "github.com/noqcks/xeol/xeol/event"
-	"github.com/wagoodman/go-partybus"
 )
 
 type loggerUI struct {

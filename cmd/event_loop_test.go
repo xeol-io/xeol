@@ -7,11 +7,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/noqcks/xeol/internal/ui"
-	"github.com/noqcks/xeol/xeol/event"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/wagoodman/go-partybus"
+
+	"github.com/noqcks/xeol/internal/ui"
+	"github.com/noqcks/xeol/xeol/event"
 )
 
 var _ ui.UI = (*uiMock)(nil)

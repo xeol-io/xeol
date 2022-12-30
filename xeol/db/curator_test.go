@@ -16,12 +16,13 @@ import (
 	"time"
 
 	"github.com/gookit/color"
-	"github.com/noqcks/xeol/internal"
-	"github.com/noqcks/xeol/internal/file"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/wagoodman/go-progress"
+
+	"github.com/noqcks/xeol/internal"
+	"github.com/noqcks/xeol/internal/file"
 )
 
 type testGetter struct {

@@ -1,9 +1,9 @@
 package matcher
 
 import (
-	"github.com/noqcks/xeol/xeol/match"
-
 	syftPkg "github.com/anchore/syft/syft/pkg"
+
+	"github.com/noqcks/xeol/xeol/match"
 )
 
 type Matcher interface {

@@ -1,10 +1,10 @@
 package models
 
 import (
-	"github.com/noqcks/xeol/internal/log"
-
 	"github.com/anchore/grype/grype/distro"
 	"github.com/anchore/syft/syft/linux"
+
+	"github.com/noqcks/xeol/internal/log"
 )
 
 // distribution provides information about a detected Linux distribution.

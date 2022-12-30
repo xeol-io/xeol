@@ -1,17 +1,17 @@
 package xeol
 
 import (
+	"github.com/anchore/go-logger"
+	"github.com/anchore/grype/grype/pkg"
+	"github.com/anchore/syft/syft/linux"
+	"github.com/wagoodman/go-partybus"
+
 	"github.com/noqcks/xeol/internal/bus"
 	"github.com/noqcks/xeol/internal/log"
 	"github.com/noqcks/xeol/xeol/db"
 	"github.com/noqcks/xeol/xeol/match"
 	"github.com/noqcks/xeol/xeol/matcher"
 	"github.com/noqcks/xeol/xeol/store"
-	"github.com/wagoodman/go-partybus"
-
-	"github.com/anchore/go-logger"
-	"github.com/anchore/grype/grype/pkg"
-	"github.com/anchore/syft/syft/linux"
 )
 
 func SetLogger(logger logger.Logger) {

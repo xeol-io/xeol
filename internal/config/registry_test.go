@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/anchore/stereoscope/pkg/image"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHasNonEmptyCredentials(t *testing.T) {

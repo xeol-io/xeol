@@ -5,9 +5,10 @@ import (
 	"time"
 
 	"github.com/adrg/xdg"
+	"github.com/spf13/viper"
+
 	"github.com/noqcks/xeol/internal"
 	"github.com/noqcks/xeol/xeol/db"
-	"github.com/spf13/viper"
 )
 
 type database struct {

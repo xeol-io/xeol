@@ -3,9 +3,9 @@ package match
 import (
 	"fmt"
 
-	"github.com/noqcks/xeol/xeol/eol"
-
 	"github.com/anchore/grype/grype/pkg"
+
+	"github.com/noqcks/xeol/xeol/eol"
 )
 
 var ErrCannotMerge = fmt.Errorf("unable to merge eol matches")

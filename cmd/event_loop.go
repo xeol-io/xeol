@@ -6,9 +6,10 @@ import (
 	"os"
 
 	"github.com/hashicorp/go-multierror"
+	"github.com/wagoodman/go-partybus"
+
 	"github.com/noqcks/xeol/internal/log"
 	"github.com/noqcks/xeol/internal/ui"
-	"github.com/wagoodman/go-partybus"
 )
 
 // eventLoop listens to worker errors (from execution path), worker events (from a partybus subscription), and

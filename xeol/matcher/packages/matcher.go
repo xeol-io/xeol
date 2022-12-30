@@ -1,13 +1,13 @@
 package packages
 
 import (
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/noqcks/xeol/xeol/search"
-
 	"github.com/anchore/grype/grype/distro"
 	"github.com/anchore/grype/grype/pkg"
 	syftPkg "github.com/anchore/syft/syft/pkg"
+
+	"github.com/noqcks/xeol/xeol/eol"
+	"github.com/noqcks/xeol/xeol/match"
+	"github.com/noqcks/xeol/xeol/search"
 )
 
 type Matcher struct {

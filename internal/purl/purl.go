@@ -3,9 +3,8 @@ package purl
 import (
 	"fmt"
 
-	packageurl "github.com/package-url/packageurl-go"
-
 	"github.com/anchore/grype/grype/pkg"
+	packageurl "github.com/package-url/packageurl-go"
 )
 
 func ShortPurl(pkg pkg.Package) (string, error) {

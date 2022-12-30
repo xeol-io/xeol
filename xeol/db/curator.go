@@ -13,6 +13,10 @@ import (
 	"github.com/hako/durafmt"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/mholt/archiver/v3"
+	"github.com/spf13/afero"
+	"github.com/wagoodman/go-partybus"
+	"github.com/wagoodman/go-progress"
+
 	"github.com/noqcks/xeol/internal/bus"
 	"github.com/noqcks/xeol/internal/file"
 	"github.com/noqcks/xeol/internal/log"
@@ -20,9 +24,6 @@ import (
 	"github.com/noqcks/xeol/xeol/db/v1/store"
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/event"
-	"github.com/spf13/afero"
-	"github.com/wagoodman/go-partybus"
-	"github.com/wagoodman/go-progress"
 )
 
 const (

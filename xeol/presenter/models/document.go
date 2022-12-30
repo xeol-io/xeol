@@ -3,11 +3,11 @@ package models
 import (
 	"fmt"
 
+	"github.com/anchore/grype/grype/pkg"
+
 	"github.com/noqcks/xeol/internal"
 	"github.com/noqcks/xeol/internal/version"
 	"github.com/noqcks/xeol/xeol/match"
-
-	"github.com/anchore/grype/grype/pkg"
 )
 
 // Document represents the JSON document to be presented

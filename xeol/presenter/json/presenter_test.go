@@ -5,14 +5,14 @@ import (
 	"flag"
 	"testing"
 
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/noqcks/xeol/xeol/presenter/models"
-	"github.com/stretchr/testify/assert"
-
 	"github.com/anchore/go-testutils"
 	"github.com/anchore/grype/grype/pkg"
 	"github.com/anchore/syft/syft/linux"
 	"github.com/anchore/syft/syft/source"
+	"github.com/stretchr/testify/assert"
+
+	"github.com/noqcks/xeol/xeol/match"
+	"github.com/noqcks/xeol/xeol/presenter/models"
 )
 
 var update = flag.Bool("update", false, "update the *.golden files for json presenters")

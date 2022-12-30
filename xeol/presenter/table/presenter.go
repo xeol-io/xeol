@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/noqcks/xeol/xeol/presenter/models"
+	"github.com/anchore/grype/grype/pkg"
 	"github.com/olekukonko/tablewriter"
 
-	"github.com/anchore/grype/grype/pkg"
+	"github.com/noqcks/xeol/xeol/match"
+	"github.com/noqcks/xeol/xeol/presenter/models"
 )
 
 var now = time.Now

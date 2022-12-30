@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"io"
 
-	xeolEventParsers "github.com/noqcks/xeol/xeol/event/parsers"
 	"github.com/wagoodman/go-partybus"
+
+	xeolEventParsers "github.com/noqcks/xeol/xeol/event/parsers"
 )
 
 func handleEolScanningFinished(event partybus.Event, reportOutput io.Writer) error {

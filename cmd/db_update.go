@@ -3,15 +3,15 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/anchore/stereoscope"
+	"github.com/spf13/cobra"
+	"github.com/wagoodman/go-partybus"
+
 	"github.com/noqcks/xeol/internal/bus"
 	"github.com/noqcks/xeol/internal/log"
 	"github.com/noqcks/xeol/internal/ui"
 	"github.com/noqcks/xeol/xeol/db"
 	"github.com/noqcks/xeol/xeol/event"
-	"github.com/spf13/cobra"
-	"github.com/wagoodman/go-partybus"
-
-	"github.com/anchore/stereoscope"
 )
 
 var dbUpdateCmd = &cobra.Command{

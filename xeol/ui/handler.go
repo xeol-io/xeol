@@ -4,11 +4,11 @@ import (
 	"context"
 	"sync"
 
-	xeolEvent "github.com/noqcks/xeol/xeol/event"
+	syftUI "github.com/anchore/syft/ui"
 	"github.com/wagoodman/go-partybus"
 	"github.com/wagoodman/jotframe/pkg/frame"
 
-	syftUI "github.com/anchore/syft/ui"
+	xeolEvent "github.com/noqcks/xeol/xeol/event"
 )
 
 type Handler struct {

@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"strings"
 
+	hashiVersion "github.com/anchore/go-version"
+
 	"github.com/noqcks/xeol/internal"
 	"github.com/noqcks/xeol/internal/log"
-
-	hashiVersion "github.com/anchore/go-version"
 )
 
 var latestAppVersionURL = struct {

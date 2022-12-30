@@ -3,9 +3,9 @@ package match
 import (
 	"sort"
 
-	"github.com/noqcks/xeol/internal/log"
-
 	"github.com/anchore/grype/grype/pkg"
+
+	"github.com/noqcks/xeol/internal/log"
 )
 
 type Matches struct {
