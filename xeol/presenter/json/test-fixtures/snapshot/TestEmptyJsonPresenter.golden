@@ -1,0 +1,18 @@
+{
+ "matches": [],
+ "source": {
+  "type": "unknown",
+  "target": "unknown"
+ },
+ "distro": {
+  "name": "centos",
+  "version": "8.0",
+  "idLike": [
+   "rhel"
+  ]
+ },
+ "descriptor": {
+  "name": "xeol",
+  "version": "[not provided]"
+ }
+}

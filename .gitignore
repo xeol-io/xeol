@@ -1,0 +1,38 @@
+CHANGELOG.md
+/snapshot/
+/dist/
+*.profile
+.server
+*.fingerprint
+/metadata.json
+/listing.json
+.vscode/
+*.db
+*.db-journal
+!**/test-fixtures/**/*.db
+*.tar
+*tar.gz
+.idea/
+*.log
+.images
+.tmp/
+*.tmp
+coverage.txt
+
+# OS files
+.DS_Store
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/grype/grype
+
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out

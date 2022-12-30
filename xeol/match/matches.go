@@ -1,0 +1,84 @@
+package match
+
+import (
+	"sort"
+
+	"github.com/noqcks/xeol/internal/log"
+
+	"github.com/anchore/grype/grype/pkg"
+)
+
+type Matches struct {
+	byFingerprint map[Fingerprint]Match
+	byPackage     map[pkg.ID][]Fingerprint
+}
+
+func NewMatches(matches ...Match) Matches {
+	m := newMatches()
+	m.Add(matches...)
+	return m
+}
+
+func newMatches() Matches {
+	return Matches{
+		byFingerprint: make(map[Fingerprint]Match),
+		byPackage:     make(map[pkg.ID][]Fingerprint),
+	}
+}
+
+func (r *Matches) Merge(other Matches) {
+	for _, fingerprints := range other.byPackage {
+		for _, fingerprint := range fingerprints {
+			r.Add(other.byFingerprint[fingerprint])
+		}
+	}
+}
+
+func (r *Matches) Add(matches ...Match) {
+	if len(matches) == 0 {
+		return
+	}
+	for _, newMatch := range matches {
+		fingerprint := newMatch.Fingerprint()
+
+		// add or merge the new match with an existing match
+		if existingMatch, exists := r.byFingerprint[fingerprint]; exists {
+			if err := existingMatch.Merge(newMatch); err != nil {
+				log.Warnf("unable to merge matches: original=%q new=%q : %w", existingMatch.String(), newMatch.String(), err)
+				// TODO: dropped match in this case, we should figure a way to handle this
+			}
+		} else {
+			r.byFingerprint[fingerprint] = newMatch
+		}
+
+		// keep track of which matches correspond to which packages
+		r.byPackage[newMatch.Package.ID] = append(r.byPackage[newMatch.Package.ID], fingerprint)
+	}
+}
+
+func (r *Matches) Enumerate() <-chan Match {
+	channel := make(chan Match)
+	go func() {
+		defer close(channel)
+		for _, match := range r.byFingerprint {
+			channel <- match
+		}
+	}()
+	return channel
+}
+
+// Count returns the total number of matches in a result
+func (r *Matches) Count() int {
+	return len(r.byFingerprint)
+}
+
+func (r *Matches) Sorted() []Match {
+	matches := make([]Match, 0)
+	for m := range r.Enumerate() {
+		matches = append(matches, m)
+	}
+
+	sort.Sort(ByElements(matches))
+
+	return matches
+}

@@ -1,0 +1,110 @@
+{
+ "matches": [
+  {
+   "Cycle": {
+    "ProductName": "MongoDB Server",
+    "ReleaseCycle": "3.2",
+    "Eol": "2018-07-31T00:00:00Z",
+    "LatestRelease": "",
+    "LatestReleaseDate": "2018-07-31T00:00:00Z",
+    "ReleaseDate": "2018-07-31T00:00:00Z"
+   },
+   "Package": {
+    "ID": "",
+    "Name": "",
+    "Version": "",
+    "Locations": {},
+    "Language": "",
+    "Licenses": null,
+    "Type": "",
+    "CPEs": null,
+    "PURL": "",
+    "Upstreams": null,
+    "MetadataType": "",
+    "Metadata": null
+   },
+   "artifact": {
+    "name": "package-1",
+    "version": "1.1.1",
+    "type": "rpm",
+    "locations": [
+     {
+      "path": "/foo/bar/somefile-1.txt"
+     }
+    ],
+    "language": "",
+    "licenses": [],
+    "cpes": [],
+    "purl": "",
+    "upstreams": [
+     {
+      "name": "nothing",
+      "version": "3.2"
+     }
+    ],
+    "metadataType": "RpmMetadata",
+    "metadata": {
+     "epoch": 2,
+     "modularityLabel": ""
+    }
+   }
+  },
+  {
+   "Cycle": {
+    "ProductName": "MongoDB Server",
+    "ReleaseCycle": "2.8",
+    "Eol": "2016-07-31T00:00:00Z",
+    "LatestRelease": "",
+    "LatestReleaseDate": "2016-07-31T00:00:00Z",
+    "ReleaseDate": "2016-07-31T00:00:00Z"
+   },
+   "Package": {
+    "ID": "",
+    "Name": "",
+    "Version": "",
+    "Locations": {},
+    "Language": "",
+    "Licenses": null,
+    "Type": "",
+    "CPEs": null,
+    "PURL": "",
+    "Upstreams": null,
+    "MetadataType": "",
+    "Metadata": null
+   },
+   "artifact": {
+    "name": "package-2",
+    "version": "2.2.2",
+    "type": "deb",
+    "locations": [
+     {
+      "path": "/foo/bar/somefile-2.txt"
+     }
+    ],
+    "language": "",
+    "licenses": [
+     "MIT",
+     "Apache-2.0"
+    ],
+    "cpes": [],
+    "purl": "",
+    "upstreams": []
+   }
+  }
+ ],
+ "source": {
+  "type": "directory",
+  "target": "/some/path"
+ },
+ "distro": {
+  "name": "centos",
+  "version": "8.0",
+  "idLike": [
+   "centos"
+  ]
+ },
+ "descriptor": {
+  "name": "xeol",
+  "version": "[not provided]"
+ }
+}
