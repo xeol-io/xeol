@@ -104,104 +104,104 @@ jobs:
           name: unit-test-results
           path: test/results/**/*
 
-  Quality-Test:
-    # Note: changing this job name requires making the same update in the .github/workflows/release.yaml pipeline
-    name: "Quality tests"
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
-        with:
-          go-version: ${{ env.GO_VERSION }}
-          stable: ${{ env.GO_STABLE_VERSION }}
+  # Quality-Test:
+  #   # Note: changing this job name requires making the same update in the .github/workflows/release.yaml pipeline
+  #   name: "Quality tests"
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
+  #       with:
+  #         go-version: ${{ env.GO_VERSION }}
+  #         stable: ${{ env.GO_STABLE_VERSION }}
 
-      - uses: actions/setup-python@13ae5bb136fac2878aff31522b9efb785519f984 # v4.3.0
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+  #     - uses: actions/setup-python@13ae5bb136fac2878aff31522b9efb785519f984 # v4.3.0
+  #       with:
+  #         python-version: ${{ env.PYTHON_VERSION }}
 
-      - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
-        with:
-          submodules: true
+  #     - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
+  #       with:
+  #         submodules: true
 
-      - name: Restore tool cache
-        id: tool-cache
-        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
-        with:
-          path: ${{ github.workspace }}/.tmp
-          key: ${{ runner.os }}-tool-${{ hashFiles('Makefile') }}
+  #     - name: Restore tool cache
+  #       id: tool-cache
+  #       uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
+  #       with:
+  #         path: ${{ github.workspace }}/.tmp
+  #         key: ${{ runner.os }}-tool-${{ hashFiles('Makefile') }}
 
-      - name: Restore go cache
-        id: go-cache
-        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-${{ env.GO_VERSION }}-
+  #     - name: Restore go cache
+  #       id: go-cache
+  #       uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
+  #       with:
+  #         path: ~/go/pkg/mod
+  #         key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-go-${{ env.GO_VERSION }}-
 
-      - name: Restore python cache
-        id: python-cache
-        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
-        with:
-          path: |
-            test/quality/venv
-            test/quality/vulnerability-match-labels/venv
-          key: ${{ runner.os }}-go-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/test/quality/**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-go-${{ env.PYTHON_VERSION }}-
+  #     - name: Restore python cache
+  #       id: python-cache
+  #       uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
+  #       with:
+  #         path: |
+  #           test/quality/venv
+  #           test/quality/vulnerability-match-labels/venv
+  #         key: ${{ runner.os }}-go-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/test/quality/**/requirements.txt') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-go-${{ env.PYTHON_VERSION }}-
 
-      - name: (cache-miss) Bootstrap all project dependencies
-        if: steps.tool-cache.outputs.cache-hit != 'true' || steps.go-cache.outputs.cache-hit != 'true'
-        run: make bootstrap
+  #     - name: (cache-miss) Bootstrap all project dependencies
+  #       if: steps.tool-cache.outputs.cache-hit != 'true' || steps.go-cache.outputs.cache-hit != 'true'
+  #       run: make bootstrap
 
-      - name: Run quality tests
-        run: make quality
+  #     - name: Run quality tests
+  #       run: make quality
 
-  Integration-Test:
-    # Note: changing this job name requires making the same update in the .github/workflows/release.yaml pipeline
-    name: "Integration tests"
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
-        with:
-          go-version: ${{ env.GO_VERSION }}
-          stable: ${{ env.GO_STABLE_VERSION }}
+  # Integration-Test:
+  #   # Note: changing this job name requires making the same update in the .github/workflows/release.yaml pipeline
+  #   name: "Integration tests"
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
+  #       with:
+  #         go-version: ${{ env.GO_VERSION }}
+  #         stable: ${{ env.GO_STABLE_VERSION }}
 
-      - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
+  #     - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
 
-      - name: Restore tool cache
-        id: tool-cache
-        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
-        with:
-          path: ${{ github.workspace }}/.tmp
-          key: ${{ runner.os }}-tool-${{ hashFiles('Makefile') }}
+  #     - name: Restore tool cache
+  #       id: tool-cache
+  #       uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
+  #       with:
+  #         path: ${{ github.workspace }}/.tmp
+  #         key: ${{ runner.os }}-tool-${{ hashFiles('Makefile') }}
 
-      - name: Restore go cache
-        id: go-cache
-        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-${{ env.GO_VERSION }}-
+  #     - name: Restore go cache
+  #       id: go-cache
+  #       uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
+  #       with:
+  #         path: ~/go/pkg/mod
+  #         key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-go-${{ env.GO_VERSION }}-
 
-      - name: (cache-miss) Bootstrap all project dependencies
-        if: steps.tool-cache.outputs.cache-hit != 'true' || steps.go-cache.outputs.cache-hit != 'true'
-        run: make bootstrap
+  #     - name: (cache-miss) Bootstrap all project dependencies
+  #       if: steps.tool-cache.outputs.cache-hit != 'true' || steps.go-cache.outputs.cache-hit != 'true'
+  #       run: make bootstrap
 
-      - name: Bootstrap CI environment dependencies
-        run: make ci-bootstrap
+  #     - name: Bootstrap CI environment dependencies
+  #       run: make ci-bootstrap
 
-      - name: Build key for tar cache
-        run: make integration-fingerprint
+  #     - name: Build key for tar cache
+  #       run: make integration-fingerprint
 
-      - name: Restore integration test cache
-        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
-        with:
-          path: ${{ github.workspace }}/test/integration/test-fixtures/cache
-          key: ${{ runner.os }}-integration-test-cache-${{ hashFiles('test/integration/test-fixtures/cache.fingerprint') }}
+  #     - name: Restore integration test cache
+  #       uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
+  #       with:
+  #         path: ${{ github.workspace }}/test/integration/test-fixtures/cache
+  #         key: ${{ runner.os }}-integration-test-cache-${{ hashFiles('test/integration/test-fixtures/cache.fingerprint') }}
 
-      - name: Run integration tests
-        run: make integration
+  #     - name: Run integration tests
+  #       run: make integration
 
   Build-Snapshot-Artifacts:
     name: "Build snapshot artifacts"
