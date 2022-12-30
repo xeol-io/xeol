@@ -7,7 +7,7 @@
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/noqcks/xeol/badge)](https://api.securityscorecards.dev/projects/github.com/noqcks/xeol)
 
 
-A end-of-life (EOL) package scannner for container images and filesystems.
+An end-of-life (EOL) package scannner for container images and filesystems.
 
 ![xeol-demo](https://user-images.githubusercontent.com/4740147/210033514-3bf2006e-2096-4183-8f2a-039044f1a6f3.gif)
 
