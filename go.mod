@@ -1,6 +1,6 @@
 module github.com/noqcks/xeol
 
-go 1.19
+go 1.18
 
 require (
 	github.com/Masterminds/semver v1.5.0
