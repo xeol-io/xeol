@@ -21,7 +21,7 @@ TITLE := $(BOLD)$(PURPLE)
 SUCCESS := $(BOLD)$(GREEN)
 
 # the quality gate lower threshold for unit test total % coverage (by function statements)
-COVERAGE_THRESHOLD := 47
+COVERAGE_THRESHOLD := 32
 
 ## Build variables
 DISTDIR=./dist
