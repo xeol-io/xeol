@@ -49,9 +49,9 @@ func (m ByName) Less(i, j int) bool {
 				}
 				return m[i].Artifact.Version < m[j].Artifact.Version
 			}
-			return m[i].Cycle.ReleaseCycle < m[j].Cycle.ReleaseCycle
+			return m[i].Cycle.ProductName < m[j].Cycle.ProductName
 		}
-		return m[i].Cycle.ProductName < m[j].Cycle.ProductName
+		return m[i].Cycle.ReleaseCycle < m[j].Cycle.ReleaseCycle
 	}
 	return m[i].Artifact.Name < m[j].Artifact.Name
 }
