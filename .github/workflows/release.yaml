@@ -89,7 +89,6 @@ jobs:
         run: |
           echo "Static Analysis Status: ${{ steps.static-analysis.conclusion }}"
           echo "Unit Test Status: ${{ steps.unit.outputs.conclusion }}"
-          echo "Integration Test Status: ${{ steps.integration.outputs.conclusion }}"
           echo "Acceptance Test (Linux) Status: ${{ steps.acceptance-linux.outputs.conclusion }}"
           echo "Acceptance Test (Mac) Status: ${{ steps.acceptance-mac.outputs.conclusion }}"
           echo "CLI Test (Linux) Status: ${{ steps.cli-linux.outputs.conclusion }}"
