@@ -7,7 +7,6 @@ on:
 
 env:
   GO_VERSION: "1.18.x"
-  GO_STABLE_VERSION: true
 
 permissions:
   contents: read
@@ -17,12 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository == 'noqcks/xeol' # only run for main repo
     steps:
-      - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v2.5.0
 
       - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
         with:
           go-version: ${{ env.GO_VERSION }}
-          stable: ${{ env.GO_STABLE_VERSION }}
 
       - run: |
           GOLANGCILINT_LATEST_VERSION=$(go list -m -json github.com/golangci/golangci-lint@latest 2>/dev/null | jq -r '.Version')

@@ -8,7 +8,6 @@ on:
 
 env:
   GO_VERSION: "1.18.x"
-  GO_STABLE_VERSION: true
   PYTHON_VERSION: "3.10"
 
 permissions:
@@ -23,9 +22,8 @@ jobs:
       - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
         with:
           go-version: ${{ env.GO_VERSION }}
-          stable: ${{ env.GO_STABLE_VERSION }}
 
-      - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v2.5.0
 
       - name: Restore tool cache
         id: tool-cache
@@ -69,9 +67,8 @@ jobs:
       - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f #v3.3.1
         with:
           go-version: ${{ env.GO_VERSION }}
-          stable: ${{ env.GO_STABLE_VERSION }}
 
-      - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 #v2.5.0
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v2.5.0
 
       - name: Restore tool cache
         id: tool-cache
@@ -112,13 +109,12 @@ jobs:
   #     - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
   #       with:
   #         go-version: ${{ env.GO_VERSION }}
-  #         stable: ${{ env.GO_STABLE_VERSION }}
 
   #     - uses: actions/setup-python@13ae5bb136fac2878aff31522b9efb785519f984 # v4.3.0
   #       with:
   #         python-version: ${{ env.PYTHON_VERSION }}
 
-  #     - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
+  #     - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v2.5.0
   #       with:
   #         submodules: true
 
@@ -164,9 +160,8 @@ jobs:
   #     - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
   #       with:
   #         go-version: ${{ env.GO_VERSION }}
-  #         stable: ${{ env.GO_STABLE_VERSION }}
 
-  #     - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
+  #     - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v2.5.0
 
   #     - name: Restore tool cache
   #       id: tool-cache
@@ -210,9 +205,8 @@ jobs:
       - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
         with:
           go-version: ${{ env.GO_VERSION }}
-          stable: ${{ env.GO_STABLE_VERSION }}
 
-      - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v2.5.0
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 # v2.1.0
@@ -251,7 +245,7 @@ jobs:
     needs: [Build-Snapshot-Artifacts]
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v2.5.0
 
       - uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # v3.0.1
         with:
@@ -285,7 +279,7 @@ jobs:
     needs: [Build-Snapshot-Artifacts]
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v2.5.0
 
       - uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # v3.0.1
         with:
@@ -305,9 +299,8 @@ jobs:
       - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
         with:
           go-version: ${{ env.GO_VERSION }}
-          stable: ${{ env.GO_STABLE_VERSION }}
 
-      - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v2.5.0
 
       - name: Restore go cache
         id: go-cache
