@@ -1,5 +1,12 @@
 # xeol
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/noqcks/xeol)](https://goreportcard.com/report/github.com/noqcks/xeol)
+[![GitHub release](https://img.shields.io/github/release/noqcks/xeol.svg)](https://github.com/noqcks/xeol/releases/latest)
+[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/noqcks/xeol.svg)](https://github.com/noqcks/xeol)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/noqcks/xeol/blob/main/LICENSE)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/noqcks/xeol/badge)](https://api.securityscorecards.dev/projects/github.com/noqcks/xeol)
+
+
 A end-of-life (EOL) package scannner for container images and filesystems.
 
 ![xeol-demo](https://user-images.githubusercontent.com/4740147/210033514-3bf2006e-2096-4183-8f2a-039044f1a6f3.gif)
@@ -88,7 +95,7 @@ xeol sbom:./sbom.json
 cat ./sbom.json | xeol
 ```
 
-xeol supports input of [Syft](https://github.com/anchore/syft), [SPDX](https://spdx.dev/), and [CycloneDX](https://cyclonedx.org/)
+xeol supports input of [Syft](https://github.com/noqcks/xeol), [SPDX](https://spdx.dev/), and [CycloneDX](https://cyclonedx.org/)
 SBOM formats. If Syft has generated any of these file types, they should have the appropriate information to work properly with xeol.
 
 ## xeol's database
