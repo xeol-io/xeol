@@ -105,7 +105,7 @@ bootstrap: $(RESULTSDIR) bootstrap-go bootstrap-tools ## Download and install al
 	$(call title,Bootstrapping dependencies)
 
 .PHONY: static-analysis
-static-analysis: lint check-go-mod-tidy check-licenses validate-grype-db-schema
+static-analysis: lint check-go-mod-tidy check-licenses
 
 .PHONY: lint
 lint: ## Run gofmt + golangci lint checks
