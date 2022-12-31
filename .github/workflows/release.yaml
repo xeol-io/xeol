@@ -33,7 +33,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
         id: static-analysis
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.XEOL_GITHUB_TOKEN }}
           # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
           checkName: "Static analysis"
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -42,7 +42,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
         id: unit
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.XEOL_GITHUB_TOKEN }}
           # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
           checkName: "Unit tests"
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -51,7 +51,7 @@ jobs:
       #   uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
       #   id: integration
       #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     token: ${{ secrets.XEOL_GITHUB_TOKEN }}
       #     # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
       #     checkName: "Integration tests"
       #     ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -60,7 +60,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
         id: acceptance-linux
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.XEOL_GITHUB_TOKEN }}
           # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
           checkName: "Acceptance tests (Linux)"
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -69,7 +69,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
         id: acceptance-mac
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.XEOL_GITHUB_TOKEN }}
           # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
           checkName: "Acceptance tests (Mac)"
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -78,7 +78,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
         id: cli-linux
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.XEOL_GITHUB_TOKEN }}
           # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
           checkName: "CLI tests (Linux)"
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -129,7 +129,7 @@ jobs:
       - name: Build & publish release artifacts
         run: make release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.XEOL_GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.DATA_XEOL_IO_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DATA_XEOL_IO_AWS_SECRET_ACCESS_KEY }}
 
@@ -163,7 +163,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.XEOL_GITHUB_TOKEN }}
 
       - name: Restore go cache
         id: go-cache
