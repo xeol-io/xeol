@@ -28,7 +28,7 @@ coverage.txt
 *.dll
 *.so
 *.dylib
-/grype/grype
+/xeol/xeol
 
 
 # Test binary, build with `go test -c`

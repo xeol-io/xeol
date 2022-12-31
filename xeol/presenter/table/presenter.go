@@ -35,7 +35,7 @@ func (pres *Presenter) Present(output io.Writer) error {
 	rows := make([][]string, 0)
 
 	columns := []string{"NAME", "VERSION", "EOL", "DAYS EOL", "METHOD"}
-	// Generate rows for matching vulnerabilities
+	// Generate rows for matches
 	for m := range pres.results.Enumerate() {
 		if m.Package.Name == "" {
 			continue

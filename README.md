@@ -40,7 +40,7 @@ brew install xeol
 xeol <image>
 ```
 
-The above command scans for vulnerabilities that are visible in the container (i.e., the squashed representation of the image). To include software from all image layers in the vulnerability scan, regardless of its presence in the final image, provide `--scope all-layers`:
+The above command scans for EOL packages that are visible in the container (i.e., the squashed representation of the image). To include software from all image layers in the vulnerability scan, regardless of its presence in the final image, provide `--scope all-layers`:
 
 ```
 xeol <image> --scope all-layers
@@ -85,10 +85,10 @@ registry:yourrepo/yourimage:tag        pull image directly from a registry (no c
 att:attestation.json --key cosign.pub  explicitly use the input as an attestation
 ```
 
-Use SBOMs for even faster vulnerability scanning in xeol:
+Use SBOMs for even faster EOL scanning in xeol:
 
 ```
-# Then scan for new vulnerabilities as frequently as needed
+# Then scan for new EOL packages as frequently as needed
 xeol sbom:./sbom.json
 
 # (You can also pipe the SBOM into xeol)
