@@ -264,3 +264,10 @@ Configuration search paths:
 - `.xeol/config.yaml`
 - `~/.xeol.yaml`
 - `<XDG_CONFIG_HOME>/xeol/config.yaml`
+
+
+## Grype - xeol
+
+A lot of the xeol codebase was taken from [grype](https://github.com/anchore/grype).
+
+The main differences only exist in the matching logic. The main changes are in `xeol` -> [`store`, `search`, `db`, `match`, `matcher`]. Most things inside internal, cmd, and ui remain the same.
