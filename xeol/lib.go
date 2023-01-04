@@ -2,8 +2,8 @@ package xeol
 
 import (
 	"github.com/anchore/go-logger"
-	"github.com/anchore/grype/grype/pkg"
 	"github.com/anchore/syft/syft/linux"
+	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/wagoodman/go-partybus"
 
 	"github.com/noqcks/xeol/internal/bus"

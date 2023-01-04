@@ -4,13 +4,13 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/anchore/grype/grype/pkg"
 	"github.com/anchore/stereoscope/pkg/image"
 	"github.com/anchore/syft/syft/linux"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/sbom"
 	syftSource "github.com/anchore/syft/syft/source"
 	"github.com/google/uuid"
+	"github.com/noqcks/xeol/xeol/pkg"
 
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/match"

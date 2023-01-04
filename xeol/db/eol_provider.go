@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/anchore/grype/grype/pkg"
+	"github.com/noqcks/xeol/xeol/pkg"
 
 	"github.com/noqcks/xeol/internal/purl"
 	xeolDB "github.com/noqcks/xeol/xeol/db/v1"

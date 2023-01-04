@@ -1,6 +1,6 @@
 package eol
 
-import "github.com/anchore/grype/grype/pkg"
+import "github.com/noqcks/xeol/xeol/pkg"
 
 type Provider interface {
 	ProviderByPurl

@@ -3,10 +3,10 @@ package models
 import (
 	"testing"
 
-	"github.com/anchore/grype/grype/pkg"
 	"github.com/anchore/syft/syft/linux"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	syftSource "github.com/anchore/syft/syft/source"
+	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/noqcks/xeol/xeol/eol"

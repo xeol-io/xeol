@@ -1,9 +1,9 @@
 package models
 
 import (
-	"github.com/anchore/grype/grype/pkg"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	syftSource "github.com/anchore/syft/syft/source"
+	"github.com/noqcks/xeol/xeol/pkg"
 )
 
 // Package is meant to be only the fields that are needed when displaying a single pkg.Package object for the JSON presenter.

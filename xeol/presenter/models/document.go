@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"github.com/anchore/grype/grype/pkg"
+	"github.com/noqcks/xeol/xeol/pkg"
 
 	"github.com/noqcks/xeol/internal"
 	"github.com/noqcks/xeol/internal/version"

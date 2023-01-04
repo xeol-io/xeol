@@ -1,9 +1,9 @@
 package matcher
 
 import (
-	"github.com/anchore/grype/grype/distro"
-	"github.com/anchore/grype/grype/pkg"
 	"github.com/anchore/syft/syft/linux"
+	"github.com/noqcks/xeol/xeol/distro"
+	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/wagoodman/go-partybus"
 	"github.com/wagoodman/go-progress"
 

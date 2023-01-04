@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/anchore/grype/grype/pkg"
+	"github.com/noqcks/xeol/xeol/pkg"
 )
 
 func TestShortPurl(t *testing.T) {

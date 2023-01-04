@@ -5,9 +5,10 @@ import (
 	"os"
 	"sync"
 
-	"github.com/anchore/grype/grype/pkg"
 	"github.com/anchore/stereoscope"
+	"github.com/anchore/syft/syft/sbom"
 	"github.com/anchore/syft/syft/source"
+	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -185,6 +186,7 @@ func startWorker(userInput string) <-chan error {
 		var status *db.Status
 		var dbCloser *db.Closer
 		var sbomPackages []pkg.Package
+		var sbom *sbom.SBOM
 		var pkgContext pkg.Context
 		var wg = &sync.WaitGroup{}
 		var loadedDB, gatheredPackages bool
@@ -205,7 +207,7 @@ func startWorker(userInput string) <-chan error {
 		go func() {
 			defer wg.Done()
 			log.Debugf("gathering packages")
-			sbomPackages, pkgContext, err = pkg.Provide(userInput, getProviderConfig())
+			sbomPackages, pkgContext, sbom, err = pkg.Provide(userInput, getProviderConfig())
 			if err != nil {
 				errs <- fmt.Errorf("failed to catalog: %w", err)
 				return
@@ -235,6 +237,7 @@ func startWorker(userInput string) <-chan error {
 		pb := models.PresenterConfig{
 			Matches:   allMatches,
 			Packages:  sbomPackages,
+			SBOM:      sbom,
 			Context:   pkgContext,
 			AppConfig: appConfig,
 			DBStatus:  status,

@@ -3,7 +3,7 @@ package purl
 import (
 	"fmt"
 
-	"github.com/anchore/grype/grype/pkg"
+	"github.com/noqcks/xeol/xeol/pkg"
 	packageurl "github.com/package-url/packageurl-go"
 )
 

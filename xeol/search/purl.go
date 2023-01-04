@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/Masterminds/semver"
-	"github.com/anchore/grype/grype/pkg"
+	"github.com/noqcks/xeol/xeol/pkg"
 
 	"github.com/noqcks/xeol/internal/log"
 	"github.com/noqcks/xeol/internal/purl"

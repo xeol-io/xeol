@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/anchore/go-testutils"
-	"github.com/anchore/grype/grype/pkg"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/source"
+	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/sergi/go-diff/diffmatchpatch"
 	"github.com/stretchr/testify/assert"
 

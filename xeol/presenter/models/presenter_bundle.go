@@ -1,8 +1,8 @@
 package models
 
 import (
-	"github.com/anchore/grype/grype/pkg"
 	"github.com/anchore/syft/syft/sbom"
+	"github.com/noqcks/xeol/xeol/pkg"
 
 	"github.com/noqcks/xeol/xeol/match"
 )

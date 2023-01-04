@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/anchore/grype/grype/pkg"
+	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/olekukonko/tablewriter"
 
 	"github.com/noqcks/xeol/xeol/match"

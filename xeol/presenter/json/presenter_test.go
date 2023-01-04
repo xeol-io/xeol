@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/anchore/go-testutils"
-	"github.com/anchore/grype/grype/pkg"
 	"github.com/anchore/syft/syft/linux"
 	"github.com/anchore/syft/syft/source"
+	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/noqcks/xeol/xeol/match"

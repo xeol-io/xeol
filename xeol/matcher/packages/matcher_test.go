@@ -3,12 +3,12 @@ package packages
 import (
 	"testing"
 
-	"github.com/anchore/grype/grype/distro"
-	"github.com/anchore/grype/grype/pkg"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/google/uuid"
+	"github.com/noqcks/xeol/xeol/distro"
+	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 

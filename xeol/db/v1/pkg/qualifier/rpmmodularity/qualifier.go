@@ -3,8 +3,8 @@ package rpmmodularity
 import (
 	"fmt"
 
-	"github.com/anchore/grype/grype/pkg/qualifier"
-	"github.com/anchore/grype/grype/pkg/qualifier/rpmmodularity"
+	"github.com/noqcks/xeol/xeol/pkg/qualifier"
+	"github.com/noqcks/xeol/xeol/pkg/qualifier/rpmmodularity"
 )
 
 type Qualifier struct {

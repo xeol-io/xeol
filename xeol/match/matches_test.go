@@ -3,9 +3,9 @@ package match
 import (
 	"testing"
 
-	"github.com/anchore/grype/grype/pkg"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/google/uuid"
+	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 

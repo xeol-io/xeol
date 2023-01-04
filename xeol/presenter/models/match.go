@@ -3,7 +3,7 @@ package models
 import (
 	"sort"
 
-	"github.com/anchore/grype/grype/pkg"
+	"github.com/noqcks/xeol/xeol/pkg"
 
 	"github.com/noqcks/xeol/xeol/match"
 )
