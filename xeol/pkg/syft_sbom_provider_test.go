@@ -11,12 +11,12 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/anchore/syft/syft"
+	syftCpe "github.com/anchore/syft/syft/cpe"
 	"github.com/anchore/syft/syft/linux"
-	"github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/source"
 )
 
-func must(c pkg.CPE, e error) pkg.CPE {
+func must(c syftCpe.CPE, e error) syftCpe.CPE {
 	if e != nil {
 		panic(e)
 	}
@@ -228,8 +228,8 @@ func TestParseSyftJSON(t *testing.T) {
 						"GPL-2.0-only",
 					},
 					Type: "apk",
-					CPEs: []pkg.CPE{
-						must(pkg.NewCPE("cpe:2.3:a:alpine:alpine_baselayout:3.2.0-r6:*:*:*:*:*:*:*")),
+					CPEs: []syftCpe.CPE{
+						must(syftCpe.New("cpe:2.3:a:alpine:alpine_baselayout:3.2.0-r6:*:*:*:*:*:*:*")),
 					},
 					PURL: "pkg:alpine/alpine-baselayout@3.2.0-r6?arch=x86_64",
 					Upstreams: []UpstreamPackage{
@@ -252,9 +252,9 @@ func TestParseSyftJSON(t *testing.T) {
 						"LGPL-3.0-or-later",
 					},
 					Type: "dpkg",
-					CPEs: []pkg.CPE{
-						must(pkg.NewCPE("cpe:2.3:a:*:fake:1.2.0:*:*:*:*:*:*:*")),
-						must(pkg.NewCPE("cpe:2.3:a:fake:fake:1.2.0:*:*:*:*:*:*:*")),
+					CPEs: []syftCpe.CPE{
+						must(syftCpe.New("cpe:2.3:a:*:fake:1.2.0:*:*:*:*:*:*:*")),
+						must(syftCpe.New("cpe:2.3:a:fake:fake:1.2.0:*:*:*:*:*:*:*")),
 					},
 					PURL: "pkg:deb/debian/fake@1.2.0?arch=x86_64",
 					Upstreams: []UpstreamPackage{
@@ -278,9 +278,9 @@ func TestParseSyftJSON(t *testing.T) {
 						"LGPL-3.0-or-later",
 					},
 					Type: "java-archive",
-					CPEs: []pkg.CPE{
-						must(pkg.NewCPE("cpe:2.3:a:*:gmp:6.2.0-r0:*:*:*:*:*:*:*")),
-						must(pkg.NewCPE("cpe:2.3:a:gmp:gmp:6.2.0-r0:*:*:*:*:*:*:*")),
+					CPEs: []syftCpe.CPE{
+						must(syftCpe.New("cpe:2.3:a:*:gmp:6.2.0-r0:*:*:*:*:*:*:*")),
+						must(syftCpe.New("cpe:2.3:a:gmp:gmp:6.2.0-r0:*:*:*:*:*:*:*")),
 					},
 					PURL:         "pkg:alpine/gmp@6.2.0-r0?arch=x86_64",
 					MetadataType: JavaMetadataType,
@@ -379,9 +379,9 @@ var springImageTestCase = struct {
 			Language: "java",
 			Licenses: []string{},
 			Type:     "java-archive",
-			CPEs: []pkg.CPE{
-				must(pkg.NewCPE("cpe:2.3:a:charsets:charsets:*:*:*:*:*:java:*:*")),
-				must(pkg.NewCPE("cpe:2.3:a:charsets:charsets:*:*:*:*:*:maven:*:*")),
+			CPEs: []syftCpe.CPE{
+				must(syftCpe.New("cpe:2.3:a:charsets:charsets:*:*:*:*:*:java:*:*")),
+				must(syftCpe.New("cpe:2.3:a:charsets:charsets:*:*:*:*:*:maven:*:*")),
 			},
 			PURL:         "",
 			MetadataType: JavaMetadataType,
@@ -399,9 +399,9 @@ var springImageTestCase = struct {
 			Language: "java",
 			Licenses: []string{},
 			Type:     "java-archive",
-			CPEs: []pkg.CPE{
-				must(pkg.NewCPE("cpe:2.3:a:tomcat_embed_el:tomcat-embed-el:9.0.27:*:*:*:*:java:*:*")),
-				must(pkg.NewCPE("cpe:2.3:a:tomcat-embed-el:tomcat_embed_el:9.0.27:*:*:*:*:maven:*:*")),
+			CPEs: []syftCpe.CPE{
+				must(syftCpe.New("cpe:2.3:a:tomcat_embed_el:tomcat-embed-el:9.0.27:*:*:*:*:java:*:*")),
+				must(syftCpe.New("cpe:2.3:a:tomcat-embed-el:tomcat_embed_el:9.0.27:*:*:*:*:maven:*:*")),
 			},
 			PURL:         "",
 			MetadataType: JavaMetadataType,

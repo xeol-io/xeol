@@ -5,7 +5,7 @@ import (
 
 	"github.com/scylladb/go-set/strset"
 
-	"github.com/anchore/syft/syft/pkg"
+	syftCpe "github.com/anchore/syft/syft/cpe"
 )
 
 type UpstreamPackage struct {
@@ -41,9 +41,9 @@ func UpstreamPackages(p Package) (pkgs []Package) {
 		}
 
 		// with each entry in set, convert string to CPE and update the new CPEs
-		var updatedCPEs []pkg.CPE
+		var updatedCPEs []syftCpe.CPE
 		for _, cpeString := range cpeStrings.List() {
-			updatedCPE, _ := pkg.NewCPE(cpeString)
+			updatedCPE, _ := syftCpe.New(cpeString)
 			updatedCPEs = append(updatedCPEs, updatedCPE)
 		}
 		tmp.CPEs = updatedCPEs
