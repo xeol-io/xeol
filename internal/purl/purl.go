@@ -3,7 +3,7 @@ package purl
 import (
 	"fmt"
 	"strings"
-  
+
 	"github.com/noqcks/xeol/xeol/pkg"
 )
 
