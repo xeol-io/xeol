@@ -35,10 +35,10 @@ func (m CycleModel) TableName() string {
 
 func (m CycleModel) Inflate() (v1.Cycle, error) {
 	return v1.Cycle{
-		ReleaseDate:       m.ReleaseDate.Format(time.RFC3339),
+		ReleaseDate:       m.ReleaseDate.Format("2006-01-02"),
 		ReleaseCycle:      m.ReleaseCycle,
-		LatestReleaseDate: m.LatestReleaseDate.Format(time.RFC3339),
+		LatestReleaseDate: m.LatestReleaseDate.Format("2006-01-02"),
 		LatestRelease:     m.LatestRelease,
-		Eol:               m.Eol.Format(time.RFC3339),
+		Eol:               m.Eol.Format("2006-01-02"),
 	}, nil
 }
