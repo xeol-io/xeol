@@ -42,7 +42,7 @@ type Application struct {
 	Search            search         `yaml:"search" json:"search" mapstructure:"search"`
 }
 
-func newApplicationConfig(v *viper.Viper, cliOpts CliOnlyOptions) *Application {
+func NewApplicationConfig(v *viper.Viper, cliOpts CliOnlyOptions) *Application {
 	config := &Application{
 		CliOptions: cliOpts,
 	}
@@ -53,7 +53,7 @@ func newApplicationConfig(v *viper.Viper, cliOpts CliOnlyOptions) *Application {
 
 func LoadApplicationConfig(v *viper.Viper, cliOpts CliOnlyOptions) (*Application, error) {
 	// the user may not have a config, and this is OK, we can use the default config + default cobra cli values instead
-	config := newApplicationConfig(v, cliOpts)
+	config := NewApplicationConfig(v, cliOpts)
 
 	if err := readConfig(v, cliOpts.ConfigPath); err != nil && !errors.Is(err, ErrApplicationConfigNotFound) {
 		return nil, err

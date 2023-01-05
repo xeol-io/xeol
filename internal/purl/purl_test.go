@@ -1,7 +1,7 @@
 package purl
 
 import (
-	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/noqcks/xeol/xeol/pkg"
@@ -15,6 +15,13 @@ func TestShortPurl(t *testing.T) {
 		expectedErr error
 	}{
 		{
+			name: "No Type PURL",
+			input: pkg.Package{
+				PURL: "pkg:generic/python@2.7.16",
+			},
+			expected: "pkg:generic/python",
+		},
+		{
 			name: "Valid PURL",
 			input: pkg.Package{
 				PURL: "pkg:deb/debian/curl@7.50.3-1?arch=i386&distro=jessie",
@@ -26,14 +33,14 @@ func TestShortPurl(t *testing.T) {
 			input: pkg.Package{
 				PURL: "invalid",
 			},
-			expectedErr: errors.New("scheme is missing"),
+			expectedErr: fmt.Errorf("invalid purl"),
 		},
 		{
 			name: "Empty PURL",
 			input: pkg.Package{
 				PURL: "",
 			},
-			expectedErr: errors.New("scheme is missing"),
+			expectedErr: fmt.Errorf("empty purl"),
 		},
 	}
 

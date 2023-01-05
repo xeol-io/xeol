@@ -1,0 +1,1 @@
+FROM docker.io/mongo:3.2@sha256:0463a91d8eff189747348c154507afc7aba045baa40e8d58d8a4c798e71001f3

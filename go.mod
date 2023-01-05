@@ -33,7 +33,6 @@ require (
 	github.com/mitchellh/hashstructure/v2 v2.0.2
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/package-url/packageurl-go v0.1.0
 	github.com/scylladb/go-set v1.0.3-0.20200225121959-cc7b2070d91e
 	github.com/secure-systems-lab/go-securesystemslib v0.4.0
 	github.com/sergi/go-diff v1.2.0

@@ -2,16 +2,18 @@ package purl
 
 import (
 	"fmt"
-
-	packageurl "github.com/package-url/packageurl-go"
+	"strings"
 
 	"github.com/noqcks/xeol/xeol/pkg"
 )
 
 func ShortPurl(pkg pkg.Package) (string, error) {
-	purl, err := packageurl.FromString(pkg.PURL)
-	if err != nil {
-		return "", err
+	if pkg.PURL == "" {
+		return "", fmt.Errorf("empty purl")
 	}
-	return fmt.Sprintf("pkg:%s/%s/%s", purl.Type, purl.Namespace, purl.Name), nil
+	shortPurl := strings.Split(pkg.PURL, "@")
+	if len(shortPurl) < 2 {
+		return "", fmt.Errorf("invalid purl")
+	}
+	return shortPurl[0], nil
 }
