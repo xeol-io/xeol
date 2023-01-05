@@ -3,8 +3,15 @@ package integration
 import (
 	"testing"
 
+	"github.com/anchore/stereoscope/pkg/imagetest"
+	"github.com/anchore/syft/syft"
+	syftPkg "github.com/anchore/syft/syft/pkg"
+	"github.com/anchore/syft/syft/pkg/cataloger"
+	"github.com/anchore/syft/syft/source"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/stretchr/testify/require"
+
 	"github.com/noqcks/xeol/xeol"
 	"github.com/noqcks/xeol/xeol/db"
 	"github.com/noqcks/xeol/xeol/eol"
@@ -12,13 +19,6 @@ import (
 	"github.com/noqcks/xeol/xeol/matcher"
 	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/noqcks/xeol/xeol/store"
-	"github.com/stretchr/testify/require"
-
-	"github.com/anchore/stereoscope/pkg/imagetest"
-	"github.com/anchore/syft/syft"
-	syftPkg "github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger"
-	"github.com/anchore/syft/syft/source"
 )
 
 func addMongo32Matches(t *testing.T, theResult *match.Matches) {

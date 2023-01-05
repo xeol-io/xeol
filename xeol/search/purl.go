@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"github.com/Masterminds/semver"
-	"github.com/noqcks/xeol/xeol/pkg"
 
 	"github.com/noqcks/xeol/internal/log"
 	"github.com/noqcks/xeol/internal/purl"
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/match"
+	"github.com/noqcks/xeol/xeol/pkg"
 )
 
 func ByPackagePURL(store eol.Provider, p pkg.Package, upstreamMatcher match.MatcherType) (match.Match, error) {
@@ -26,6 +26,12 @@ func ByPackagePURL(store eol.Provider, p pkg.Package, upstreamMatcher match.Matc
 	if len(cycles) < 1 {
 		return match.Match{}, nil
 	}
+
+	// if shortPurl == "pkg:deb/debian/postgresql-9.6" {
+	// 	fmt.Println("here")
+	// 	fmt.Println(p.Version)
+	// 	fmt.Println(packageEOLMatch(shortPurl, p, cycles))
+	// }
 
 	return packageEOLMatch(shortPurl, p, cycles)
 }

@@ -7,12 +7,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/facebookincubator/nvdtools/wfn"
-	"github.com/mitchellh/go-homedir"
-
 	"github.com/anchore/packageurl-go"
 	syftCpe "github.com/anchore/syft/syft/cpe"
 	"github.com/anchore/syft/syft/pkg"
+	"github.com/facebookincubator/nvdtools/wfn"
+	"github.com/mitchellh/go-homedir"
 )
 
 const (

@@ -3,7 +3,6 @@ package xeol
 import (
 	"github.com/anchore/go-logger"
 	"github.com/anchore/syft/syft/linux"
-	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/wagoodman/go-partybus"
 
 	"github.com/noqcks/xeol/internal/bus"
@@ -11,6 +10,7 @@ import (
 	"github.com/noqcks/xeol/xeol/db"
 	"github.com/noqcks/xeol/xeol/match"
 	"github.com/noqcks/xeol/xeol/matcher"
+	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/noqcks/xeol/xeol/store"
 )
 

@@ -6,11 +6,11 @@ import (
 	"github.com/anchore/syft/syft/linux"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	syftSource "github.com/anchore/syft/syft/source"
-	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/match"
+	"github.com/noqcks/xeol/xeol/pkg"
 )
 
 func TestPackagesAreSorted(t *testing.T) {

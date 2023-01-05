@@ -3,6 +3,7 @@ package models
 import (
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	syftSource "github.com/anchore/syft/syft/source"
+
 	"github.com/noqcks/xeol/xeol/pkg"
 )
 

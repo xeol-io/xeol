@@ -3,9 +3,8 @@ package models
 import (
 	"sort"
 
-	"github.com/noqcks/xeol/xeol/pkg"
-
 	"github.com/noqcks/xeol/xeol/match"
+	"github.com/noqcks/xeol/xeol/pkg"
 )
 
 // Match is a single item for the JSON array reported
