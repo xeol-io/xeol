@@ -8,7 +8,6 @@ import (
 var _ xeolDB.EolStoreReader = &mockStore{}
 
 type mockStore struct {
-	// normalizedPackageNames map[string]map[string]string
 	backend map[string][]xeolDB.Cycle
 }
 
@@ -116,15 +115,8 @@ func cycles(name string) []xeolDB.Cycle {
 		"postgres": {
 			{
 				ProductName:  "PostgreSQL",
-				ReleaseCycle: "9.0",
-				Eol:          "2016-10-17T00:00:00Z",
-			},
-		},
-		"java": {
-			{
-				ProductName:  "Java",
-				ReleaseCycle: "12",
-				Eol:          "2019-09-17T00:00:00Z",
+				ReleaseCycle: "9.6",
+				Eol:          "2021-11-11T00:00:00Z",
 			},
 		},
 		"elasticsearch": {
@@ -139,7 +131,8 @@ func cycles(name string) []xeolDB.Cycle {
 }
 
 func (d *mockStore) stub() {
-	d.backend["pkg:generic/go"] = cycles("mongodb")
+	d.backend["pkg:deb/debian/postgresql-9.6"] = cycles("postgres")
+	d.backend["pkg:maven/org.elasticsearch#server/elasticsearch"] = cycles("elasticsearch")
 	d.backend["pkg:deb/debian/mongodb-org-server"] = cycles("mongodb")
 	d.backend["pkg:generic//python"] = cycles("python")
 }

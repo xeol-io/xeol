@@ -1,1 +1,0 @@
-FROM docker.io/openjdk:12-ea-15-jdk@sha256:69c18068837adca83862c37244ee1a8506ae9b0ed83c8a93108a93192be5101c

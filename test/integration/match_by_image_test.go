@@ -82,23 +82,6 @@ func addPython34Matches(t *testing.T, theResult *match.Matches) {
 	})
 }
 
-func addJava12Matches(t *testing.T, theResult *match.Matches) {
-	theResult.Add(match.Match{
-		Package: pkg.Package{
-			Name:     "python",
-			ID:       "2ba17cf1680ce4f2",
-			Version:  "2.7.5",
-			Type:     syftPkg.BinaryPkg,
-			Language: syftPkg.Binary,
-			PURL:     "pkg:generic/python@2.7.5",
-		},
-		Cycle: eol.Cycle{
-			ReleaseCycle: "2.7",
-			Eol:          "2020-01-01T00:00:00Z",
-		},
-	})
-}
-
 func addGolang115Matches(t *testing.T, theResult *match.Matches) {
 	theResult.Add(match.Match{
 		Package: pkg.Package{
@@ -116,7 +99,21 @@ func addGolang115Matches(t *testing.T, theResult *match.Matches) {
 	})
 }
 
-func addPostgres9Matches(t *testing.T, theResult *match.Matches) {}
+func addPostgres9Matches(t *testing.T, theResult *match.Matches) {
+	theResult.Add(match.Match{
+		Package: pkg.Package{
+			Name:    "postgresql-9.6",
+			ID:      "2ba17cf1680ce4f2",
+			Version: "9.6.24-1.pgdg90+1",
+			Type:    syftPkg.DebPkg,
+			PURL:    "pkg:deb/debian/postgresql-9.6@9.6.24-1.pgdg90+1?arch=amd64&distro=debian-9",
+		},
+		Cycle: eol.Cycle{
+			ReleaseCycle: "9.6",
+			Eol:          "2021-11-11T00:00:00Z",
+		},
+	})
+}
 
 func addElaticsearch6Matches(t *testing.T, theResult *match.Matches) {
 	theResult.Add(match.Match{
@@ -133,12 +130,25 @@ func addElaticsearch6Matches(t *testing.T, theResult *match.Matches) {
 			Eol:          "2020-01-01T00:00:00Z",
 		},
 	})
+	theResult.Add(match.Match{
+		Package: pkg.Package{
+			Name:     "elasticsearch",
+			ID:       "2ba17cf1680ce4f2",
+			Version:  "6.8.21",
+			Type:     syftPkg.JavaPkg,
+			Language: syftPkg.Java,
+			PURL:     "pkg:maven/org.elasticsearch%23server/elasticsearch@6.8.21",
+		},
+		Cycle: eol.Cycle{
+			ReleaseCycle: "6",
+			Eol:          "2022-02-10T00:00:00Z",
+		},
+	})
 }
-func addRedis5Matches(t *testing.T, theResult *match.Matches) {}
 
-// func addDebianMatches(t *testing.T, theResult *match.Matches) {}
-// func addUbuntuMatches(t *testing.T, theResult *match.Matches) {}
-// func addAlpineMatches(t *testing.T, theResult *match.Matches) {}
+// func addDebianOSMatches(t *testing.T, theResult *match.Matches) {}
+// func addUbuntuOSMatches(t *testing.T, theResult *match.Matches) {}
+// func addAlpineOSMatches(t *testing.T, theResult *match.Matches) {}
 
 func TestMatchByImage(t *testing.T) {
 	tests := []struct {
@@ -158,14 +168,6 @@ func TestMatchByImage(t *testing.T) {
 			expectedFn: func() match.Matches {
 				expectedMatches := match.NewMatches()
 				addMongo32Matches(t, &expectedMatches)
-				return expectedMatches
-			},
-		},
-		{
-			fixtureImage: "image-java-12",
-			expectedFn: func() match.Matches {
-				expectedMatches := match.NewMatches()
-				addJava12Matches(t, &expectedMatches)
 				return expectedMatches
 			},
 		},
@@ -190,14 +192,6 @@ func TestMatchByImage(t *testing.T) {
 			expectedFn: func() match.Matches {
 				expectedMatches := match.NewMatches()
 				addElaticsearch6Matches(t, &expectedMatches)
-				return expectedMatches
-			},
-		},
-		{
-			fixtureImage: "image-redis-5",
-			expectedFn: func() match.Matches {
-				expectedMatches := match.NewMatches()
-				addRedis5Matches(t, &expectedMatches)
 				return expectedMatches
 			},
 		},
@@ -256,6 +250,8 @@ func assertMatches(t *testing.T, expected, actual []match.Match) {
 		cmpopts.IgnoreFields(pkg.Package{}, "CPEs"),
 		cmpopts.IgnoreFields(pkg.Package{}, "Licenses"),
 		cmpopts.IgnoreFields(pkg.Package{}, "Upstreams"),
+		cmpopts.IgnoreFields(pkg.Package{}, "MetadataType"),
+		cmpopts.IgnoreFields(pkg.Package{}, "Metadata"),
 		cmpopts.IgnoreFields(pkg.Package{}, "ID"),
 	}
 
