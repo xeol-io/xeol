@@ -1,10 +1,12 @@
 name: PR for latest Syft release
+# on:
+#   schedule:
+#     - cron: "0 8 * * *" # 3 AM EST
+
+#   workflow_dispatch:
 on:
-  schedule:
-    - cron: "0 8 * * *" # 3 AM EST
-
-  workflow_dispatch:
-
+  push:
+    branches: [ "benji.visser/update-syft-release" ]
 env:
   GO_VERSION: "1.18.x"
 
