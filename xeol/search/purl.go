@@ -27,12 +27,6 @@ func ByPackagePURL(store eol.Provider, p pkg.Package, upstreamMatcher match.Matc
 		return match.Match{}, nil
 	}
 
-	// if shortPurl == "pkg:deb/debian/postgresql-9.6" {
-	// 	fmt.Println("here")
-	// 	fmt.Println(p.Version)
-	// 	fmt.Println(packageEOLMatch(shortPurl, p, cycles))
-	// }
-
 	return packageEOLMatch(shortPurl, p, cycles)
 }
 

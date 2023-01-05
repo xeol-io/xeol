@@ -97,6 +97,20 @@ func addGolang115Matches(t *testing.T, theResult *match.Matches) {
 			Eol:          "2020-01-01T00:00:00Z",
 		},
 	})
+	theResult.Add(match.Match{
+		Package: pkg.Package{
+			Name:     "go",
+			ID:       "5f9c938f5ff241bf",
+			Version:  "1.15.15",
+			Type:     syftPkg.BinaryPkg,
+			Language: syftPkg.Binary,
+			PURL:     "pkg:generic/go@1.15.15",
+		},
+		Cycle: eol.Cycle{
+			ReleaseCycle: "1.15",
+			Eol:          "2021-08-16T00:00:00Z",
+		},
+	})
 }
 
 func addPostgres9Matches(t *testing.T, theResult *match.Matches) {
