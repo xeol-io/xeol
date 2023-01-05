@@ -10,21 +10,21 @@ import (
 	"os"
 	"strings"
 
-	ssldsse "github.com/secure-systems-lab/go-securesystemslib/dsse"
-
 	"github.com/anchore/syft/syft"
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/in-toto/in-toto-golang/in_toto"
 	"github.com/mitchellh/go-homedir"
-	"github.com/noqcks/xeol/internal"
-	"github.com/noqcks/xeol/internal/bus"
-	"github.com/noqcks/xeol/internal/log"
-	"github.com/noqcks/xeol/xeol/event"
+	ssldsse "github.com/secure-systems-lab/go-securesystemslib/dsse"
 	"github.com/sigstore/cosign/pkg/signature"
 	"github.com/sigstore/cosign/pkg/types"
 	"github.com/sigstore/sigstore/pkg/signature/dsse"
 	"github.com/wagoodman/go-partybus"
+
+	"github.com/noqcks/xeol/internal"
+	"github.com/noqcks/xeol/internal/bus"
+	"github.com/noqcks/xeol/internal/log"
+	"github.com/noqcks/xeol/xeol/event"
 )
 
 type errEmptySBOM struct {

@@ -2,9 +2,9 @@ package models
 
 import (
 	"github.com/anchore/syft/syft/linux"
-	"github.com/noqcks/xeol/xeol/distro"
 
 	"github.com/noqcks/xeol/internal/log"
+	"github.com/noqcks/xeol/xeol/distro"
 )
 
 // distribution provides information about a detected Linux distribution.

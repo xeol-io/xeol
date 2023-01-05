@@ -7,15 +7,15 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/google/uuid"
-	"github.com/noqcks/xeol/xeol/distro"
-	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/noqcks/xeol/xeol/db"
 	xeolDB "github.com/noqcks/xeol/xeol/db/v1"
+	"github.com/noqcks/xeol/xeol/distro"
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/match"
+	"github.com/noqcks/xeol/xeol/pkg"
 )
 
 type mockStore struct {

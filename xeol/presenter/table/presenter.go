@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/olekukonko/tablewriter"
 
 	"github.com/noqcks/xeol/xeol/match"
+	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/noqcks/xeol/xeol/presenter/models"
 )
 

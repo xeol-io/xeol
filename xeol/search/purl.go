@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"github.com/Masterminds/semver"
-	"github.com/noqcks/xeol/xeol/pkg"
 
 	"github.com/noqcks/xeol/internal/log"
 	"github.com/noqcks/xeol/internal/purl"
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/match"
+	"github.com/noqcks/xeol/xeol/pkg"
 )
 
 func ByPackagePURL(store eol.Provider, p pkg.Package, upstreamMatcher match.MatcherType) (match.Match, error) {

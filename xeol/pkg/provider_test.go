@@ -3,11 +3,10 @@ package pkg
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/anchore/stereoscope/pkg/imagetest"
 	"github.com/anchore/syft/syft/pkg/cataloger"
 	"github.com/anchore/syft/syft/source"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestProviderLocationExcludes(t *testing.T) {

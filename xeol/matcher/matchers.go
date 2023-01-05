@@ -2,17 +2,17 @@ package matcher
 
 import (
 	"github.com/anchore/syft/syft/linux"
-	"github.com/noqcks/xeol/xeol/distro"
-	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/wagoodman/go-partybus"
 	"github.com/wagoodman/go-progress"
 
 	"github.com/noqcks/xeol/internal/bus"
 	"github.com/noqcks/xeol/internal/log"
+	"github.com/noqcks/xeol/xeol/distro"
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/event"
 	"github.com/noqcks/xeol/xeol/match"
 	pkgMatcher "github.com/noqcks/xeol/xeol/matcher/packages"
+	"github.com/noqcks/xeol/xeol/pkg"
 )
 
 type Monitor struct {

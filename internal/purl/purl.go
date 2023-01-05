@@ -3,8 +3,9 @@ package purl
 import (
 	"fmt"
 
-	"github.com/noqcks/xeol/xeol/pkg"
 	packageurl "github.com/package-url/packageurl-go"
+
+	"github.com/noqcks/xeol/xeol/pkg"
 )
 
 func ShortPurl(pkg pkg.Package) (string, error) {

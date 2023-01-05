@@ -3,9 +3,8 @@ package pkg
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	syftCpe "github.com/anchore/syft/syft/cpe"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestUpstreamPackages(t *testing.T) {

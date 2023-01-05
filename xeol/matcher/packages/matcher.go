@@ -2,11 +2,11 @@ package packages
 
 import (
 	syftPkg "github.com/anchore/syft/syft/pkg"
-	"github.com/noqcks/xeol/xeol/distro"
-	"github.com/noqcks/xeol/xeol/pkg"
 
+	"github.com/noqcks/xeol/xeol/distro"
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/match"
+	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/noqcks/xeol/xeol/search"
 )
 

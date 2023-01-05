@@ -5,16 +5,15 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/scylladb/go-set"
-	"github.com/scylladb/go-set/strset"
-	"github.com/stretchr/testify/assert"
-
 	"github.com/anchore/syft/syft/artifact"
 	syftCpe "github.com/anchore/syft/syft/cpe"
 	"github.com/anchore/syft/syft/file"
 	syftFile "github.com/anchore/syft/syft/file"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/source"
+	"github.com/scylladb/go-set"
+	"github.com/scylladb/go-set/strset"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNew(t *testing.T) {

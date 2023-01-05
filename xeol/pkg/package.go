@@ -10,6 +10,7 @@ import (
 	"github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/pkg/cataloger/common/cpe"
 	"github.com/anchore/syft/syft/source"
+
 	"github.com/noqcks/xeol/internal"
 	"github.com/noqcks/xeol/internal/log"
 )

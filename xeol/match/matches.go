@@ -3,9 +3,8 @@ package match
 import (
 	"sort"
 
-	"github.com/noqcks/xeol/xeol/pkg"
-
 	"github.com/noqcks/xeol/internal/log"
+	"github.com/noqcks/xeol/xeol/pkg"
 )
 
 type Matches struct {
