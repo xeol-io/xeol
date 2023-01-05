@@ -4,10 +4,10 @@
    "Cycle": {
     "ProductName": "MongoDB Server",
     "ReleaseCycle": "2.8",
-    "Eol": "2016-07-31T00:00:00Z",
+    "Eol": "2016-07-31",
     "LatestRelease": "",
-    "LatestReleaseDate": "2016-07-31T00:00:00Z",
-    "ReleaseDate": "2016-07-31T00:00:00Z"
+    "LatestReleaseDate": "2016-07-31",
+    "ReleaseDate": "2016-07-31"
    },
    "Package": {
     "ID": "",
@@ -46,10 +46,10 @@
    "Cycle": {
     "ProductName": "MongoDB Server",
     "ReleaseCycle": "3.2",
-    "Eol": "2018-07-31T00:00:00Z",
+    "Eol": "2018-07-31",
     "LatestRelease": "",
-    "LatestReleaseDate": "2018-07-31T00:00:00Z",
-    "ReleaseDate": "2018-07-31T00:00:00Z"
+    "LatestReleaseDate": "2018-07-31",
+    "ReleaseDate": "2018-07-31"
    },
    "Package": {
     "ID": "",

@@ -32,7 +32,7 @@ func addMongo32Matches(t *testing.T, theResult *match.Matches) {
 		},
 		Cycle: eol.Cycle{
 			ReleaseCycle: "3.2",
-			Eol:          "2018-07-31T00:00:00Z",
+			Eol:          "2018-07-31",
 		},
 	})
 }
@@ -49,7 +49,7 @@ func addPython34Matches(t *testing.T, theResult *match.Matches) {
 		},
 		Cycle: eol.Cycle{
 			ReleaseCycle: "3.5",
-			Eol:          "2020-09-13T00:00:00Z",
+			Eol:          "2020-09-13",
 		},
 	})
 	theResult.Add(match.Match{
@@ -63,7 +63,7 @@ func addPython34Matches(t *testing.T, theResult *match.Matches) {
 		},
 		Cycle: eol.Cycle{
 			ReleaseCycle: "3.4",
-			Eol:          "2019-03-18T00:00:00Z",
+			Eol:          "2019-03-18",
 		},
 	})
 	theResult.Add(match.Match{
@@ -77,7 +77,7 @@ func addPython34Matches(t *testing.T, theResult *match.Matches) {
 		},
 		Cycle: eol.Cycle{
 			ReleaseCycle: "2.7",
-			Eol:          "2020-01-01T00:00:00Z",
+			Eol:          "2020-01-01",
 		},
 	})
 }
@@ -94,7 +94,7 @@ func addGolang115Matches(t *testing.T, theResult *match.Matches) {
 		},
 		Cycle: eol.Cycle{
 			ReleaseCycle: "2.7",
-			Eol:          "2020-01-01T00:00:00Z",
+			Eol:          "2020-01-01",
 		},
 	})
 	theResult.Add(match.Match{
@@ -108,7 +108,7 @@ func addGolang115Matches(t *testing.T, theResult *match.Matches) {
 		},
 		Cycle: eol.Cycle{
 			ReleaseCycle: "1.15",
-			Eol:          "2021-08-16T00:00:00Z",
+			Eol:          "2021-08-16",
 		},
 	})
 }
@@ -124,7 +124,7 @@ func addPostgres9Matches(t *testing.T, theResult *match.Matches) {
 		},
 		Cycle: eol.Cycle{
 			ReleaseCycle: "9.6",
-			Eol:          "2021-11-11T00:00:00Z",
+			Eol:          "2021-11-11",
 		},
 	})
 }
@@ -141,7 +141,7 @@ func addElaticsearch6Matches(t *testing.T, theResult *match.Matches) {
 		},
 		Cycle: eol.Cycle{
 			ReleaseCycle: "2.7",
-			Eol:          "2020-01-01T00:00:00Z",
+			Eol:          "2020-01-01",
 		},
 	})
 	theResult.Add(match.Match{
@@ -155,7 +155,7 @@ func addElaticsearch6Matches(t *testing.T, theResult *match.Matches) {
 		},
 		Cycle: eol.Cycle{
 			ReleaseCycle: "6",
-			Eol:          "2022-02-10T00:00:00Z",
+			Eol:          "2022-02-10",
 		},
 	})
 }

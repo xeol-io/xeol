@@ -33,10 +33,10 @@ func (s *mockStore) GetAllProducts() (*[]xeolDB.Product, error) {
 func TestMatch(t *testing.T) {
 	cycle := xeolDB.Cycle{
 		ProductName:       "MongoDB Server",
-		ReleaseDate:       "2018-07-31T00:00:00Z",
+		ReleaseDate:       "2018-07-31",
 		ReleaseCycle:      "3.2",
-		Eol:               "2018-07-31T00:00:00Z",
-		LatestReleaseDate: "2018-07-31T00:00:00Z",
+		Eol:               "2018-07-31",
+		LatestReleaseDate: "2018-07-31",
 	}
 
 	store := mockStore{
@@ -75,10 +75,10 @@ func TestMatch(t *testing.T) {
 func TestMatchPurlMismatch(t *testing.T) {
 	cycle := xeolDB.Cycle{
 		ProductName:       "MongoDB Server",
-		ReleaseDate:       "2018-07-31T00:00:00Z",
+		ReleaseDate:       "2018-07-31",
 		ReleaseCycle:      "3.2",
-		Eol:               "2018-07-31T00:00:00Z",
-		LatestReleaseDate: "2018-07-31T00:00:00Z",
+		Eol:               "2018-07-31",
+		LatestReleaseDate: "2018-07-31",
 	}
 	store := mockStore{
 		backend: map[string][]xeolDB.Cycle{
@@ -109,10 +109,10 @@ func TestMatchPurlMismatch(t *testing.T) {
 func TestMatchNoMatchingVersion(t *testing.T) {
 	cycle := xeolDB.Cycle{
 		ProductName:       "MongoDB Server",
-		ReleaseDate:       "2018-07-31T00:00:00Z",
+		ReleaseDate:       "2018-07-31",
 		ReleaseCycle:      "3.3", // different version
-		Eol:               "2018-07-31T00:00:00Z",
-		LatestReleaseDate: "2018-07-31T00:00:00Z",
+		Eol:               "2018-07-31",
+		LatestReleaseDate: "2018-07-31",
 	}
 
 	store := mockStore{
