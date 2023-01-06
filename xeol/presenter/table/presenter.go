@@ -96,7 +96,7 @@ func createRow(m match.Match) ([]string, error) {
 
 func calculateDaysEol(m match.Match) (string, error) {
 	today := now()
-	cycleEolDate, err := time.Parse("2006-01-02T15:04:05Z", m.Cycle.Eol)
+	cycleEolDate, err := time.Parse("2006-01-02", m.Cycle.Eol)
 	if err != nil {
 		return "", fmt.Errorf("unable to parse EOL date for package %s: %w", m.Package.PURL, err)
 	}

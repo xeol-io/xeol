@@ -72,7 +72,7 @@ func packageEOLMatch(shortPurl string, p pkg.Package, cycles []eol.Cycle) (match
 		return match.Match{}, nil
 	}
 
-	cycleEolDate, err := time.Parse("2006-01-02T15:04:05Z", cycle.Eol)
+	cycleEolDate, err := time.Parse("2006-01-02", cycle.Eol)
 	if err != nil {
 		log.Debugf("error parsing cycle eol date '%s' for %s: %s", cycle.Eol, shortPurl, err)
 		return match.Match{}, err
