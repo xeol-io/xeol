@@ -29,6 +29,13 @@ func newMockDbStore() *mockStore {
 
 func cycles(name string) []xeolDB.Cycle {
 	cycleDict := map[string][]xeolDB.Cycle{
+		"node": {
+			{
+				ProductName:  "Node.js",
+				ReleaseCycle: "6",
+				Eol:          "2019-04-30",
+			},
+		},
 		"mongodb": {
 			{
 				ProductName:  "MongoDB Server",
@@ -131,6 +138,7 @@ func cycles(name string) []xeolDB.Cycle {
 }
 
 func (d *mockStore) stub() {
+	d.backend["pkg:generic/node"] = cycles("node")
 	d.backend["pkg:generic/go"] = cycles("golang")
 	d.backend["pkg:deb/debian/postgresql-9.6"] = cycles("postgres")
 	d.backend["pkg:maven/org.elasticsearch%23server/elasticsearch"] = cycles("elasticsearch")

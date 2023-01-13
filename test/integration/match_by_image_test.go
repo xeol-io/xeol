@@ -160,6 +160,23 @@ func addElaticsearch6Matches(t *testing.T, theResult *match.Matches) {
 	})
 }
 
+func addNodejs6Matches(t *testing.T, theResult *match.Matches) {
+	theResult.Add(match.Match{
+		Package: pkg.Package{
+			Name:     "node",
+			ID:       "2ba17cf1680ce4f2",
+			Version:  "6.13.1",
+			Type:     syftPkg.BinaryPkg,
+			Language: syftPkg.JavaScript,
+			PURL:     "pkg:generic/node@6.13.1",
+		},
+		Cycle: eol.Cycle{
+			ReleaseCycle: "6",
+			Eol:          "2019-04-30",
+		},
+	})
+}
+
 // func addDebianOSMatches(t *testing.T, theResult *match.Matches) {}
 // func addUbuntuOSMatches(t *testing.T, theResult *match.Matches) {}
 // func addAlpineOSMatches(t *testing.T, theResult *match.Matches) {}
@@ -169,6 +186,14 @@ func TestMatchByImage(t *testing.T) {
 		fixtureImage string
 		expectedFn   func() match.Matches
 	}{
+		{
+			fixtureImage: "image-nodejs-6.13.1",
+			expectedFn: func() match.Matches {
+				expectedMatches := match.NewMatches()
+				addNodejs6Matches(t, &expectedMatches)
+				return expectedMatches
+			},
+		},
 		{
 			fixtureImage: "image-python-3.4",
 			expectedFn: func() match.Matches {
