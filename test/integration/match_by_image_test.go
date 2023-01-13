@@ -163,12 +163,12 @@ func addElaticsearch6Matches(t *testing.T, theResult *match.Matches) {
 func addNodejs6Matches(t *testing.T, theResult *match.Matches) {
 	theResult.Add(match.Match{
 		Package: pkg.Package{
-			Name:     "nodejs",
+			Name:     "node",
 			ID:       "2ba17cf1680ce4f2",
-			Version:  "6.17.1",
+			Version:  "6.13.1",
 			Type:     syftPkg.BinaryPkg,
-			Language: syftPkg.Binary,
-			PURL:     "pkg:",
+			Language: syftPkg.JavaScript,
+			PURL:     "pkg:generic/node@6.13.1",
 		},
 		Cycle: eol.Cycle{
 			ReleaseCycle: "6",
@@ -187,53 +187,53 @@ func TestMatchByImage(t *testing.T) {
 		expectedFn   func() match.Matches
 	}{
 		{
-			fixtureImage: "image-nodejs-6.17.1",
+			fixtureImage: "image-nodejs-6.13.1",
 			expectedFn: func() match.Matches {
 				expectedMatches := match.NewMatches()
 				addNodejs6Matches(t, &expectedMatches)
 				return expectedMatches
 			},
 		},
-		// {
-		// 	fixtureImage: "image-python-3.4",
-		// 	expectedFn: func() match.Matches {
-		// 		expectedMatches := match.NewMatches()
-		// 		addPython34Matches(t, &expectedMatches)
-		// 		return expectedMatches
-		// 	},
-		// },
-		// {
-		// 	fixtureImage: "image-mongo-3.2",
-		// 	expectedFn: func() match.Matches {
-		// 		expectedMatches := match.NewMatches()
-		// 		addMongo32Matches(t, &expectedMatches)
-		// 		return expectedMatches
-		// 	},
-		// },
-		// {
-		// 	fixtureImage: "image-golang-1.15",
-		// 	expectedFn: func() match.Matches {
-		// 		expectedMatches := match.NewMatches()
-		// 		addGolang115Matches(t, &expectedMatches)
-		// 		return expectedMatches
-		// 	},
-		// },
-		// {
-		// 	fixtureImage: "image-postgres-9",
-		// 	expectedFn: func() match.Matches {
-		// 		expectedMatches := match.NewMatches()
-		// 		addPostgres9Matches(t, &expectedMatches)
-		// 		return expectedMatches
-		// 	},
-		// },
-		// {
-		// 	fixtureImage: "image-elasticsearch-6",
-		// 	expectedFn: func() match.Matches {
-		// 		expectedMatches := match.NewMatches()
-		// 		addElaticsearch6Matches(t, &expectedMatches)
-		// 		return expectedMatches
-		// 	},
-		// },
+		{
+			fixtureImage: "image-python-3.4",
+			expectedFn: func() match.Matches {
+				expectedMatches := match.NewMatches()
+				addPython34Matches(t, &expectedMatches)
+				return expectedMatches
+			},
+		},
+		{
+			fixtureImage: "image-mongo-3.2",
+			expectedFn: func() match.Matches {
+				expectedMatches := match.NewMatches()
+				addMongo32Matches(t, &expectedMatches)
+				return expectedMatches
+			},
+		},
+		{
+			fixtureImage: "image-golang-1.15",
+			expectedFn: func() match.Matches {
+				expectedMatches := match.NewMatches()
+				addGolang115Matches(t, &expectedMatches)
+				return expectedMatches
+			},
+		},
+		{
+			fixtureImage: "image-postgres-9",
+			expectedFn: func() match.Matches {
+				expectedMatches := match.NewMatches()
+				addPostgres9Matches(t, &expectedMatches)
+				return expectedMatches
+			},
+		},
+		{
+			fixtureImage: "image-elasticsearch-6",
+			expectedFn: func() match.Matches {
+				expectedMatches := match.NewMatches()
+				addElaticsearch6Matches(t, &expectedMatches)
+				return expectedMatches
+			},
+		},
 	}
 
 	for _, test := range tests {

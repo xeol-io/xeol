@@ -1,1 +1,0 @@
-FROM docker.io/node:16.17.1-alpine@sha256:4d68856f48be7c73cd83ba8af3b6bae98f4679e14d1ff49e164625ae8831533a
