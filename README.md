@@ -32,6 +32,11 @@ curl -sSfL https://raw.githubusercontent.com/noqcks/xeol/main/install.sh | sh -s
 brew tap noqcks/xeol
 brew install xeol
 ```
+
+### GitHub Actions
+
+If you're using GitHub Actions, you can simply use the [Xeol GitHub action](https://github.com/marketplace/actions/xeol-end-of-life-eol-scan) to run EOL scans on your code or container images during your CI workflows.
+
 ## Getting started
 
 [Install the binary](#installation), and make sure that `xeol` is available in your path. To scan for EOL packages in an image:
