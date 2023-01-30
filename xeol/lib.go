@@ -26,7 +26,6 @@ func FindEolForPackage(store store.Store, d *linux.Release, matchers []matcher.M
 		err = xeolerr.ErrEolFound
 	}
 	return matches, err
-
 }
 
 func SetBus(b *partybus.Bus) {
