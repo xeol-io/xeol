@@ -98,6 +98,14 @@ cat ./sbom.json | xeol
 xeol supports input of [Syft](https://github.com/noqcks/xeol), [SPDX](https://spdx.dev/), and [CycloneDX](https://cyclonedx.org/)
 SBOM formats. If Syft has generated any of these file types, they should have the appropriate information to work properly with xeol.
 
+### Gating on EOL packages found
+
+You can have xeol exit with an error if it finds any EOL packages. This is useful for CI/CD pipelines. To do this, use the `--fail-on-eol-found` CLI flag.
+
+```
+xeol <image> --fail-on-eol-found
+```
+
 ## xeol's database
 
 

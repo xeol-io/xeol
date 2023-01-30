@@ -37,6 +37,7 @@ type Application struct {
 	DB                database       `yaml:"db" json:"db" mapstructure:"db"`
 	CliOptions        CliOnlyOptions `yaml:"-" json:"-"`
 	Match             matchConfig    `yaml:"match" json:"match" mapstructure:"match"`
+	FailOnEolFound    bool           `yaml:"fail-on-eol-found" json:"fail-on-eol-found" mapstructure:"fail-on-eol-found"` // whether to exit with a non-zero exit code if any EOLs are found
 	Registry          registry       `yaml:"registry" json:"registry" mapstructure:"registry"`
 	Platform          string         `yaml:"platform" json:"platform" mapstructure:"platform"` // --platform, override the target platform for a container image
 	Search            search         `yaml:"search" json:"search" mapstructure:"search"`
@@ -75,6 +76,7 @@ func LoadApplicationConfig(v *viper.Viper, cliOpts CliOnlyOptions) (*Application
 func (cfg Application) loadDefaultValues(v *viper.Viper) {
 	// set the default values for primitive fields in this struct
 	v.SetDefault("check-for-app-update", true)
+	v.SetDefault("fail-on-eol-found", false)
 
 	// for each field in the configuration struct, see if the field implements the defaultValueLoader interface and invoke it if it does
 	value := reflect.ValueOf(cfg)

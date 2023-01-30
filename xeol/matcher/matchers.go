@@ -47,7 +47,7 @@ func trackMatcher() (*progress.Manual, *progress.Manual) {
 
 func FindMatches(store interface {
 	eol.Provider
-}, release *linux.Release, matchers []Matcher, packages []pkg.Package) (match.Matches, error) {
+}, release *linux.Release, matchers []Matcher, packages []pkg.Package, failOnEolFound bool) match.Matches {
 	var err error
 	res := match.NewMatches()
 	defaultMatcher := &pkgMatcher.Matcher{UsePurls: true}
@@ -80,7 +80,7 @@ func FindMatches(store interface {
 	packagesProcessed.SetCompleted()
 	eolDiscovered.SetCompleted()
 
-	return res, nil
+	return res
 }
 
 func logMatch(p pkg.Package) {
