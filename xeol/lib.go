@@ -12,14 +12,21 @@ import (
 	"github.com/noqcks/xeol/xeol/matcher"
 	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/noqcks/xeol/xeol/store"
+	"github.com/noqcks/xeol/xeol/xeolerr"
 )
 
 func SetLogger(logger logger.Logger) {
 	log.Log = logger
 }
 
-func FindEolForPackage(store store.Store, d *linux.Release, matchers []matcher.Matcher, packages []pkg.Package) (match.Matches, error) {
-	return matcher.FindMatches(store, d, matchers, packages)
+func FindEolForPackage(store store.Store, d *linux.Release, matchers []matcher.Matcher, packages []pkg.Package, failOnEolFound bool) (match.Matches, error) {
+	matches := matcher.FindMatches(store, d, matchers, packages, failOnEolFound)
+	var err error
+	if failOnEolFound && matches.Count() > 0 {
+		err = xeolerr.ErrEolFound
+	}
+	return matches, err
+
 }
 
 func SetBus(b *partybus.Bus) {

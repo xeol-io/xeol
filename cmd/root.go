@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"sync"
@@ -29,6 +30,7 @@ import (
 	"github.com/noqcks/xeol/xeol/presenter"
 	"github.com/noqcks/xeol/xeol/presenter/models"
 	"github.com/noqcks/xeol/xeol/store"
+	"github.com/noqcks/xeol/xeol/xeolerr"
 )
 
 var persistentOpts = config.CliOnlyOptions{}
@@ -100,6 +102,11 @@ func setRootFlags(flags *pflag.FlagSet) {
 		fmt.Sprintf("report output formatter, formats=%v", presenter.AvailableFormats),
 	)
 
+	flags.BoolP(
+		"fail-on-eol-found", "f", false,
+		"set the return code to 1 if an EOL package is found",
+	)
+
 	flags.StringP(
 		"file", "", "",
 		"file to write the report output to (default is STDOUT)",
@@ -117,6 +124,10 @@ func bindRootConfigOptions(flags *pflag.FlagSet) error {
 	}
 
 	if err := viper.BindPFlag("output", flags.Lookup("output")); err != nil {
+		return err
+	}
+
+	if err := viper.BindPFlag("fail-on-eol-found", flags.Lookup("fail-on-eol-found")); err != nil {
 		return err
 	}
 
@@ -149,7 +160,7 @@ func rootExec(_ *cobra.Command, args []string) error {
 	}
 
 	return eventLoop(
-		startWorker(userInput),
+		startWorker(userInput, appConfig.FailOnEolFound),
 		setupSignals(),
 		eventSubscription,
 		stereoscope.Cleanup,
@@ -169,7 +180,7 @@ func isVerbose() (result bool) {
 }
 
 //nolint:funlen
-func startWorker(userInput string) <-chan error {
+func startWorker(userInput string, failOnEolFound bool) <-chan error {
 	errs := make(chan error)
 	go func() {
 		defer close(errs)
@@ -228,10 +239,12 @@ func startWorker(userInput string) <-chan error {
 			Packages: pkgMatcher.MatcherConfig(appConfig.Match.Packages),
 		})
 
-		allMatches, err := xeol.FindEolForPackage(*store, pkgContext.Distro, matchers, sbomPackages)
+		allMatches, err := xeol.FindEolForPackage(*store, pkgContext.Distro, matchers, sbomPackages, failOnEolFound)
 		if err != nil {
 			errs <- err
-			return
+			if !errors.Is(err, xeolerr.ErrEolFound) {
+				return
+			}
 		}
 
 		pb := models.PresenterConfig{
