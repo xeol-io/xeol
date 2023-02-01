@@ -116,7 +116,7 @@ func setRootFlags(flags *pflag.FlagSet) {
 
 	flags.StringP(
 		"lookahead", "l", "30d",
-		"an optional lookahead specifier when matching EOL dates (e.g. '1d', '1w', '1m', '1y'). Packages are matched when their EOL date < today+lookahead",
+		"an optional lookahead specifier when matching EOL dates (e.g. 'none', '1d', '1w', '1m', '1y'). Packages are matched when their EOL date < today+lookahead",
 	)
 
 	flags.StringP(

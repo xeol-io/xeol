@@ -22,7 +22,7 @@ import (
 var update = flag.Bool("update", false, "update the *.golden files for table presenters")
 
 func TestCreateRow(t *testing.T) {
-	pkg1 := pkg.Package{
+	pkg := pkg.Package{
 		ID:      "package-1-id",
 		Name:    "package-1",
 		Version: "1.0.1",
@@ -36,8 +36,19 @@ func TestCreateRow(t *testing.T) {
 			Eol:               "2018-07-31",
 			LatestReleaseDate: "2018-07-31",
 		},
-		Package: pkg1,
+		Package: pkg,
 	}
+	match2 := match.Match{
+		Cycle: eol.Cycle{
+			ProductName:       "MongoDB Server",
+			ReleaseDate:       "2018-07-31",
+			ReleaseCycle:      "2.8",
+			Eol:               "2025-01-01",
+			LatestReleaseDate: "2018-07-31",
+		},
+		Package: pkg,
+	}
+
 	cases := []struct {
 		name           string
 		match          match.Match
@@ -50,6 +61,12 @@ func TestCreateRow(t *testing.T) {
 			match:       match1,
 			expectedErr: nil,
 			expectedRow: []string{match1.Package.Name, match1.Package.Version, match1.Cycle.Eol, "1614", match1.Package.Type.PackageURLType()},
+		},
+		{
+			name:        "create row for eol in the future",
+			match:       match2,
+			expectedErr: nil,
+			expectedRow: []string{match2.Package.Name, match2.Package.Version, match2.Cycle.Eol, "-", match2.Package.Type.PackageURLType()},
 		},
 	}
 

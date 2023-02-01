@@ -28,10 +28,6 @@ type parser interface {
 	parseConfigValues() error
 }
 
-const (
-	defaultLookaheadTime = "30d"
-)
-
 type Application struct {
 	Verbosity         uint           `yaml:"verbosity,omitempty" json:"verbosity" mapstructure:"verbosity"`
 	ConfigPath        string         `yaml:",omitempty" json:"configPath"`                                                         // the location where the application config was read from (either from -c or discovered while loading)
@@ -191,11 +187,17 @@ func (cfg *Application) parseConfigValues() error {
 }
 
 func (cfg *Application) parseLookaheadOption() error {
-	eolMatchDate, err := tparse.ParseNow(time.RFC3339, fmt.Sprintf("now+%s", cfg.Lookahead))
+	if cfg.Lookahead == "none" {
+		cfg.EolMatchDate = time.Now()
+		return nil
+	}
+
+	var err error
+	cfg.EolMatchDate, err = tparse.ParseNow(time.RFC3339, fmt.Sprintf("now+%s", cfg.Lookahead))
 	if err != nil {
 		return fmt.Errorf("bad --lookahead value: '%s'", cfg.Lookahead)
 	}
-	cfg.EolMatchDate = eolMatchDate
+
 	return nil
 }
 

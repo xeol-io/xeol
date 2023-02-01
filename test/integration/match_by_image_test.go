@@ -2,6 +2,7 @@ package integration
 
 import (
 	"testing"
+	"time"
 
 	"github.com/anchore/stereoscope/pkg/imagetest"
 	"github.com/anchore/syft/syft"
@@ -271,7 +272,7 @@ func TestMatchByImage(t *testing.T) {
 				Provider: ep,
 			}
 
-			actualResults, err := xeol.FindEolForPackage(str, theDistro, matchers, pkg.FromCatalog(theCatalog, pkg.SynthesisConfig{}))
+			actualResults, err := xeol.FindEolForPackage(str, theDistro, matchers, pkg.FromCatalog(theCatalog, pkg.SynthesisConfig{}), false, time.Now())
 			require.NoError(t, err)
 
 			// build expected matches from what's discovered from the catalog
