@@ -1,6 +1,8 @@
 package xeol
 
 import (
+	"time"
+
 	"github.com/anchore/go-logger"
 	"github.com/anchore/syft/syft/linux"
 	"github.com/wagoodman/go-partybus"
@@ -19,8 +21,8 @@ func SetLogger(logger logger.Logger) {
 	log.Log = logger
 }
 
-func FindEolForPackage(store store.Store, d *linux.Release, matchers []matcher.Matcher, packages []pkg.Package, failOnEolFound bool) (match.Matches, error) {
-	matches := matcher.FindMatches(store, d, matchers, packages, failOnEolFound)
+func FindEolForPackage(store store.Store, d *linux.Release, matchers []matcher.Matcher, packages []pkg.Package, failOnEolFound bool, eolMatchDate time.Time) (match.Matches, error) {
+	matches := matcher.FindMatches(store, d, matchers, packages, failOnEolFound, eolMatchDate)
 	var err error
 	if failOnEolFound && matches.Count() > 0 {
 		err = xeolerr.ErrEolFound

@@ -6,9 +6,11 @@ import (
 	"path"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/adrg/xdg"
 	"github.com/anchore/go-logger"
+	"github.com/karrick/tparse"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
@@ -37,6 +39,8 @@ type Application struct {
 	DB                database       `yaml:"db" json:"db" mapstructure:"db"`
 	CliOptions        CliOnlyOptions `yaml:"-" json:"-"`
 	Match             matchConfig    `yaml:"match" json:"match" mapstructure:"match"`
+	Lookahead         string         `yaml:"lookahead" json:"lookahead" mapstructure:"lookahead"`
+	EolMatchDate      time.Time      `yaml:"-" json:"-"`
 	FailOnEolFound    bool           `yaml:"fail-on-eol-found" json:"fail-on-eol-found" mapstructure:"fail-on-eol-found"` // whether to exit with a non-zero exit code if any EOLs are found
 	Registry          registry       `yaml:"registry" json:"registry" mapstructure:"registry"`
 	Platform          string         `yaml:"platform" json:"platform" mapstructure:"platform"` // --platform, override the target platform for a container image
@@ -159,6 +163,7 @@ func (cfg *Application) parseConfigValues() error {
 	// parse application config options
 	for _, optionFn := range []func() error{
 		cfg.parseLogLevelOption,
+		cfg.parseLookaheadOption,
 	} {
 		if err := optionFn(); err != nil {
 			return err
@@ -178,6 +183,21 @@ func (cfg *Application) parseConfigValues() error {
 			}
 		}
 	}
+	return nil
+}
+
+func (cfg *Application) parseLookaheadOption() error {
+	if cfg.Lookahead == "none" {
+		cfg.EolMatchDate = time.Now()
+		return nil
+	}
+
+	var err error
+	cfg.EolMatchDate, err = tparse.ParseNow(time.RFC3339, fmt.Sprintf("now+%s", cfg.Lookahead))
+	if err != nil {
+		return fmt.Errorf("bad --lookahead value: '%s'", cfg.Lookahead)
+	}
+
 	return nil
 }
 

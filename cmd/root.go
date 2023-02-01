@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/anchore/stereoscope"
 	"github.com/anchore/syft/syft/sbom"
@@ -97,6 +98,7 @@ func setRootFlags(flags *pflag.FlagSet) {
 		"scope", "s", source.SquashedScope.String(),
 		fmt.Sprintf("selection of layers to analyze, options=%v", source.AllScopes),
 	)
+
 	flags.StringP(
 		"output", "o", "",
 		fmt.Sprintf("report output formatter, formats=%v", presenter.AvailableFormats),
@@ -110,6 +112,11 @@ func setRootFlags(flags *pflag.FlagSet) {
 	flags.StringP(
 		"file", "", "",
 		"file to write the report output to (default is STDOUT)",
+	)
+
+	flags.StringP(
+		"lookahead", "l", "30d",
+		"an optional lookahead specifier when matching EOL dates (e.g. 'none', '1d', '1w', '1m', '1y'). Packages are matched when their EOL date < today+lookahead",
 	)
 
 	flags.StringP(
@@ -128,6 +135,10 @@ func bindRootConfigOptions(flags *pflag.FlagSet) error {
 	}
 
 	if err := viper.BindPFlag("fail-on-eol-found", flags.Lookup("fail-on-eol-found")); err != nil {
+		return err
+	}
+
+	if err := viper.BindPFlag("lookahead", flags.Lookup("lookahead")); err != nil {
 		return err
 	}
 
@@ -160,7 +171,7 @@ func rootExec(_ *cobra.Command, args []string) error {
 	}
 
 	return eventLoop(
-		startWorker(userInput, appConfig.FailOnEolFound),
+		startWorker(userInput, appConfig.FailOnEolFound, appConfig.EolMatchDate),
 		setupSignals(),
 		eventSubscription,
 		stereoscope.Cleanup,
@@ -180,7 +191,7 @@ func isVerbose() (result bool) {
 }
 
 //nolint:funlen
-func startWorker(userInput string, failOnEolFound bool) <-chan error {
+func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) <-chan error {
 	errs := make(chan error)
 	go func() {
 		defer close(errs)
@@ -239,7 +250,7 @@ func startWorker(userInput string, failOnEolFound bool) <-chan error {
 			Packages: pkgMatcher.MatcherConfig(appConfig.Match.Packages),
 		})
 
-		allMatches, err := xeol.FindEolForPackage(*store, pkgContext.Distro, matchers, sbomPackages, failOnEolFound)
+		allMatches, err := xeol.FindEolForPackage(*store, pkgContext.Distro, matchers, sbomPackages, failOnEolFound, eolMatchDate)
 		if err != nil {
 			errs <- err
 			if !errors.Is(err, xeolerr.ErrEolFound) {

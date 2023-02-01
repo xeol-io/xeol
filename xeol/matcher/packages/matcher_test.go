@@ -2,6 +2,7 @@ package packages
 
 import (
 	"testing"
+	"time"
 
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/google/go-cmp/cmp"
@@ -67,7 +68,7 @@ func TestMatch(t *testing.T) {
 		Cycle:   *cycleFound,
 		Package: p,
 	}
-	actual, err := m.Match(provider, d, p)
+	actual, err := m.Match(provider, d, p, time.Now())
 	assert.NoError(t, err)
 	assertMatches(t, expected, actual)
 }
@@ -101,7 +102,7 @@ func TestMatchPurlMismatch(t *testing.T) {
 		PURL:    "pkg:deb/debian/mongodb-org-server@3.2.21?arch=amd64&upstream=mongodb-org&distro=debian-8",
 	}
 
-	actual, err := m.Match(provider, d, p)
+	actual, err := m.Match(provider, d, p, time.Now())
 	assert.NoError(t, err)
 	assertMatches(t, match.Match{}, actual)
 }
@@ -138,7 +139,47 @@ func TestMatchNoMatchingVersion(t *testing.T) {
 		PURL:    "pkg:deb/debian/mongodb-org-server@3.2.21?arch=amd64&upstream=mongodb-org&distro=debian-8",
 	}
 
-	actual, err := m.Match(provider, d, p)
+	actual, err := m.Match(provider, d, p, time.Now())
+	assert.NoError(t, err)
+	assertMatches(t, match.Match{}, actual)
+}
+
+func TestMatchTimeChange(t *testing.T) {
+	cycle := xeolDB.Cycle{
+		ProductName:       "MongoDB Server",
+		ReleaseDate:       "2018-07-31",
+		ReleaseCycle:      "3.2",
+		Eol:               "2018-07-31",
+		LatestReleaseDate: "2018-07-31",
+	}
+
+	store := mockStore{
+		backend: map[string][]xeolDB.Cycle{
+			"pkg:deb/debian/mongodb-org-server": {cycle},
+		},
+	}
+
+	provider, err := db.NewEolProvider(&store)
+	require.NoError(t, err)
+
+	// Set up a matcher and a package with the same PURL but a different version
+	m := Matcher{}
+	d, err := distro.New(distro.Alpine, "3.12.0", "")
+	if err != nil {
+		t.Fatalf("failed to create a new distro: %+v", err)
+	}
+	p := pkg.Package{
+		ID:      pkg.ID(uuid.NewString()),
+		Name:    "mongodb-org-server",
+		Version: "3.2.21",
+		Type:    syftPkg.DebPkg,
+		PURL:    "pkg:deb/debian/mongodb-org-server@3.2.21?arch=amd64&upstream=mongodb-org&distro=debian-8",
+	}
+
+	eolMatchTime, err := time.Parse("2006-01-02", "2018-01-01")
+	assert.NoError(t, err)
+
+	actual, err := m.Match(provider, d, p, eolMatchTime)
 	assert.NoError(t, err)
 	assertMatches(t, match.Match{}, actual)
 }

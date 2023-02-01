@@ -100,6 +100,10 @@ func calculateDaysEol(m match.Match) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("unable to parse EOL date for package %s: %w", m.Package.PURL, err)
 	}
-	daysEol := strconv.Itoa(int(today.Sub(cycleEolDate).Hours() / 24))
-	return daysEol, nil
+
+	daysEol := int((today.Sub(cycleEolDate).Hours() / 24))
+	if daysEol < 0 {
+		return "-", nil
+	}
+	return strconv.Itoa(daysEol), nil
 }
