@@ -103,6 +103,11 @@ cat ./sbom.json | xeol
 xeol supports input of [Syft](https://github.com/noqcks/xeol), [SPDX](https://spdx.dev/), and [CycloneDX](https://cyclonedx.org/)
 SBOM formats. If Syft has generated any of these file types, they should have the appropriate information to work properly with xeol.
 
+
+### Lookahead
+
+By default, xeol will match any package that has an EOL date that is less than the current date + 30d. In order to set a custom lookahead matching time, you can use `--lookahead <duration>`. where `<duration>` is like `1w`, `30d` or `1y`.
+
 ### Gating on EOL packages found
 
 You can have xeol exit with an error if it finds any EOL packages. This is useful for CI/CD pipelines. To do this, use the `--fail-on-eol-found` CLI flag.
