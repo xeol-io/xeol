@@ -9,7 +9,7 @@
 
 An end-of-life (EOL) package scannner for container images and filesystems.
 
-![xeol-demo](https://user-images.githubusercontent.com/4740147/210033514-3bf2006e-2096-4183-8f2a-039044f1a6f3.gif)
+![xeol-demo](https://user-images.githubusercontent.com/4740147/216162986-2c3add2b-af9f-4d9d-97eb-4c1617da3a71.gif)
 
 
 ## Installation
