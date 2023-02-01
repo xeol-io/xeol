@@ -13,7 +13,7 @@ import (
 	"github.com/noqcks/xeol/xeol/pkg"
 )
 
-func ByPackagePURL(store eol.Provider, p pkg.Package, upstreamMatcher match.MatcherType) (match.Match, error) {
+func ByPackagePURL(store eol.Provider, p pkg.Package, upstreamMatcher match.MatcherType, eolMatchDate time.Time) (match.Match, error) {
 	shortPurl, err := purl.ShortPurl(p)
 	if err != nil {
 		return match.Match{}, err
@@ -27,7 +27,7 @@ func ByPackagePURL(store eol.Provider, p pkg.Package, upstreamMatcher match.Matc
 		return match.Match{}, nil
 	}
 
-	return packageEOLMatch(shortPurl, p, cycles)
+	return packageEOLMatch(shortPurl, p, cycles, eolMatchDate)
 }
 
 func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) {
@@ -61,7 +61,7 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 	return eol.Cycle{}, nil
 }
 
-func packageEOLMatch(shortPurl string, p pkg.Package, cycles []eol.Cycle) (match.Match, error) {
+func packageEOLMatch(shortPurl string, p pkg.Package, cycles []eol.Cycle, eolMatchDate time.Time) (match.Match, error) {
 	cycle, err := returnMatchingCycle(p.Version, cycles)
 	if err != nil {
 		log.Debugf("error matching cycle for %s: %s", shortPurl, err)
@@ -78,8 +78,7 @@ func packageEOLMatch(shortPurl string, p pkg.Package, cycles []eol.Cycle) (match
 		return match.Match{}, err
 	}
 
-	today := time.Now()
-	if today.After(cycleEolDate) {
+	if eolMatchDate.After(cycleEolDate) {
 		return match.Match{
 			Cycle:   cycle,
 			Package: p,

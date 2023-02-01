@@ -1,6 +1,8 @@
 package matcher
 
 import (
+	"time"
+
 	"github.com/anchore/syft/syft/linux"
 	"github.com/wagoodman/go-partybus"
 	"github.com/wagoodman/go-progress"
@@ -47,7 +49,7 @@ func trackMatcher() (*progress.Manual, *progress.Manual) {
 
 func FindMatches(store interface {
 	eol.Provider
-}, release *linux.Release, matchers []Matcher, packages []pkg.Package, failOnEolFound bool) match.Matches {
+}, release *linux.Release, matchers []Matcher, packages []pkg.Package, failOnEolFound bool, eolMatchDate time.Time) match.Matches {
 	var err error
 	res := match.NewMatches()
 	defaultMatcher := &pkgMatcher.Matcher{UsePurls: true}
@@ -66,7 +68,7 @@ func FindMatches(store interface {
 		packagesProcessed.N++
 		log.Debugf("searching for eol matches for pkg=%s", p)
 
-		pkgMatch, err := defaultMatcher.Match(store, d, p)
+		pkgMatch, err := defaultMatcher.Match(store, d, p, eolMatchDate)
 		if err != nil {
 			log.Warnf("matcher failed for pkg=%s: %+v", p, err)
 		}
