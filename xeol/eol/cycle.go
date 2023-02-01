@@ -15,6 +15,7 @@ type Cycle struct {
 
 func NewCycle(cycle xeolDB.Cycle) (*Cycle, error) {
 	return &Cycle{
+		ProductName:       cycle.ProductName,
 		ReleaseCycle:      cycle.ReleaseCycle,
 		Eol:               cycle.Eol,
 		LatestRelease:     cycle.LatestRelease,
