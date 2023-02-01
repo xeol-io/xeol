@@ -105,7 +105,7 @@ func (s *store) GetAllProducts() (*[]v1.Product, error) {
 func (s *store) GetCyclesByPurl(purl string) ([]v1.Cycle, error) {
 	var models []model.CycleModel
 	if result := s.db.Table("cycles").
-		Select("cycles.*").
+		Select("cycles.*, products.name as product_name").
 		Joins("JOIN products ON cycles.product_id = products.id").
 		Joins("JOIN purls ON products.id = purls.product_id").
 		Where("purls.purl = ?", purl).Find(&models); result.Error != nil {
