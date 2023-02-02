@@ -45,7 +45,7 @@ func addPython34Matches(t *testing.T, theResult *match.Matches) {
 			ID:       "10ab199091f52dbc",
 			Version:  "3.5.3",
 			Type:     syftPkg.BinaryPkg,
-			Language: syftPkg.Binary,
+			Language: "binary",
 			PURL:     "pkg:generic/python@3.5.3",
 		},
 		Cycle: eol.Cycle{
@@ -59,7 +59,7 @@ func addPython34Matches(t *testing.T, theResult *match.Matches) {
 			ID:       "5f9c938f5ff241bf",
 			Version:  "3.4.10",
 			Type:     syftPkg.BinaryPkg,
-			Language: syftPkg.Binary,
+			Language: "binary",
 			PURL:     "pkg:generic/python@3.4.10",
 		},
 		Cycle: eol.Cycle{
@@ -73,7 +73,7 @@ func addPython34Matches(t *testing.T, theResult *match.Matches) {
 			ID:       "2ba17cf1680ce4f2",
 			Version:  "2.7.13",
 			Type:     syftPkg.BinaryPkg,
-			Language: syftPkg.Binary,
+			Language: "binary",
 			PURL:     "pkg:generic/python@2.7.13",
 		},
 		Cycle: eol.Cycle{
@@ -90,7 +90,7 @@ func addGolang115Matches(t *testing.T, theResult *match.Matches) {
 			ID:       "2ba17cf1680ce4f2",
 			Version:  "2.7.16",
 			Type:     syftPkg.BinaryPkg,
-			Language: syftPkg.Binary,
+			Language: "binary",
 			PURL:     "pkg:generic/python@2.7.16",
 		},
 		Cycle: eol.Cycle{
@@ -104,7 +104,7 @@ func addGolang115Matches(t *testing.T, theResult *match.Matches) {
 			ID:       "5f9c938f5ff241bf",
 			Version:  "1.15.15",
 			Type:     syftPkg.BinaryPkg,
-			Language: syftPkg.Binary,
+			Language: "binary",
 			PURL:     "pkg:generic/go@1.15.15",
 		},
 		Cycle: eol.Cycle{
@@ -137,7 +137,7 @@ func addElaticsearch6Matches(t *testing.T, theResult *match.Matches) {
 			ID:       "2ba17cf1680ce4f2",
 			Version:  "2.7.5",
 			Type:     syftPkg.BinaryPkg,
-			Language: syftPkg.Binary,
+			Language: "binary",
 			PURL:     "pkg:generic/python@2.7.5",
 		},
 		Cycle: eol.Cycle{
