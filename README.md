@@ -7,7 +7,7 @@
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/noqcks/xeol/badge)](https://api.securityscorecards.dev/projects/github.com/noqcks/xeol)
 
 
-An end-of-life (EOL) package scannner for container images and filesystems.
+An End Of Life (EOL) package scannner for container images and filesystems.
 
 ![xeol-demo](https://user-images.githubusercontent.com/4740147/216162986-2c3add2b-af9f-4d9d-97eb-4c1617da3a71.gif)
 
@@ -115,6 +115,13 @@ You can have xeol exit with an error if it finds any EOL packages. This is usefu
 ```
 xeol <image> --fail-on-eol-found
 ```
+
+## What is EOL software?
+
+End of Life (EOL) and End of Support (EOS) are being treated as the same by xeol, even though various vendors may use these terms differently. EOL means the vendor has decided the product in question has reached the end of its
+“useful lifespan.” After this particular date, the manufacturer no longer markets, sells, provides technical support, sustains, enhances, or fixes the product. EOL Software is a security risk because it is no longer being maintained and receiving security updates.
+
+The data that xeol uses to determine if a package is EOL is sourced from [endoflife.date](https://endoflife.date/). While endoflife.date includes extended support dates, xeol does not currently support this and we only match on the standard EOL support dates from vendors.
 
 ## xeol's database
 
