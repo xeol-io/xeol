@@ -118,8 +118,8 @@ xeol <image> --fail-on-eol-found
 
 ## What is EOL software?
 
-End of Life (EOL) and End of Support (EOS) are being treated as the same by xeol, even though various vendors may use these terms differently. EOL means the vendor has decided the product in question has reached the end of its
-“useful lifespan.” After this particular date, the manufacturer no longer markets, sells, provides technical support, sustains, enhances, or fixes the product. EOL Software is a security risk because it is no longer being maintained and receiving security updates.
+End of Life (EOL) means the vendor has decided the software in question has reached the end of its
+“useful lifespan.” After this particular date, the manufacturer no longer markets, sells, provides technical support, sustains, enhances, or fixes the product. End of Life (EOL) and End of Support (EOS) are being treated as the same by xeol, even though various vendors may use these terms differently. EOL Software is a security risk because it is no longer being maintained and receiving security updates.
 
 The data that xeol uses to determine if a package is EOL is sourced from [endoflife.date](https://endoflife.date/). While endoflife.date includes extended support dates, xeol does not currently support this and we only match on the standard EOL support dates from vendors.
 
