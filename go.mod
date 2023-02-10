@@ -11,8 +11,8 @@ require (
 	github.com/anchore/go-version v1.2.2-0.20210903204242-51efa5b487c4
 	github.com/anchore/packageurl-go v0.1.1-0.20230104203445-02e0a6721501
 	github.com/anchore/sqlite v1.4.6-0.20220607210448-bcc6ee5c4963
-	github.com/anchore/stereoscope v0.0.0-20221208011002-c5ff155d72f1
-	github.com/anchore/syft v0.70.0
+	github.com/anchore/stereoscope v0.0.0-20230208154630-5a306f07f2e7
+	github.com/anchore/syft v0.71.0
 	github.com/bmatcuk/doublestar/v2 v2.0.4
 	github.com/docker/docker v23.0.0+incompatible
 	github.com/dustin/go-humanize v1.0.1
@@ -48,7 +48,7 @@ require (
 	github.com/wagoodman/go-partybus v0.0.0-20210627031916-db1f5573bbc5
 	github.com/wagoodman/go-progress v0.0.0-20220614130704-4b1c25a33c7c
 	github.com/wagoodman/jotframe v0.0.0-20211129225309-56b0d0a4aebb
-	golang.org/x/term v0.4.0
+	golang.org/x/term v0.5.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/gorm v1.23.5
 )
@@ -79,6 +79,7 @@ require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/aws/aws-sdk-go v1.44.114 // indirect
+	github.com/becheran/wildmatch-go v1.0.0 // indirect
 	github.com/benbjohnson/clock v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
@@ -258,15 +259,15 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.23.0 // indirect
 	golang.org/x/crypto v0.3.0 // indirect
-	golang.org/x/exp v0.0.0-20220823124025-807a23277127 // indirect
-	golang.org/x/mod v0.7.0 // indirect
-	golang.org/x/net v0.5.0 // indirect
+	golang.org/x/exp v0.0.0-20230202163644-54bba9f4231b // indirect
+	golang.org/x/mod v0.8.0 // indirect
+	golang.org/x/net v0.6.0 // indirect
 	golang.org/x/oauth2 v0.1.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
-	golang.org/x/text v0.6.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/time v0.1.0 // indirect
-	golang.org/x/tools v0.1.12 // indirect
+	golang.org/x/tools v0.2.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/api v0.107.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
