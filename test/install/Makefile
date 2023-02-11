@@ -14,7 +14,7 @@ UNIT=make unit-local
 # release)
 ACCEPTANCE_CMD=sh -c '../../install.sh -b /usr/local/bin  && xeol version'
 # we also want to test against a previous release to ensure that install.sh defers execution to a former install.sh
-PREVIOUS_RELEASE=v0.24.0
+PREVIOUS_RELEASE=v0.2.3
 ACCEPTANCE_PREVIOUS_RELEASE_CMD=sh -c "../../install.sh -b /usr/local/bin $(PREVIOUS_RELEASE) && xeol version"
 
 # CI cache busting values; change these if you want CI to not use previous stored cache
