@@ -32,6 +32,7 @@ func addMongo32Matches(t *testing.T, theResult *match.Matches) {
 			PURL:    "pkg:deb/debian/mongodb-org-server@3.2.21?arch=amd64&upstream=mongodb-org&distro=debian-8",
 		},
 		Cycle: eol.Cycle{
+			ProductName:  "MongoDB Server",
 			ReleaseCycle: "3.2",
 			Eol:          "2018-07-31",
 		},
@@ -45,10 +46,11 @@ func addPython34Matches(t *testing.T, theResult *match.Matches) {
 			ID:       "10ab199091f52dbc",
 			Version:  "3.5.3",
 			Type:     syftPkg.BinaryPkg,
-			Language: "binary",
+			Language: "",
 			PURL:     "pkg:generic/python@3.5.3",
 		},
 		Cycle: eol.Cycle{
+			ProductName:  "Python",
 			ReleaseCycle: "3.5",
 			Eol:          "2020-09-13",
 		},
@@ -59,10 +61,11 @@ func addPython34Matches(t *testing.T, theResult *match.Matches) {
 			ID:       "5f9c938f5ff241bf",
 			Version:  "3.4.10",
 			Type:     syftPkg.BinaryPkg,
-			Language: "binary",
+			Language: "",
 			PURL:     "pkg:generic/python@3.4.10",
 		},
 		Cycle: eol.Cycle{
+			ProductName:  "Python",
 			ReleaseCycle: "3.4",
 			Eol:          "2019-03-18",
 		},
@@ -73,10 +76,11 @@ func addPython34Matches(t *testing.T, theResult *match.Matches) {
 			ID:       "2ba17cf1680ce4f2",
 			Version:  "2.7.13",
 			Type:     syftPkg.BinaryPkg,
-			Language: "binary",
+			Language: "",
 			PURL:     "pkg:generic/python@2.7.13",
 		},
 		Cycle: eol.Cycle{
+			ProductName:  "Python",
 			ReleaseCycle: "2.7",
 			Eol:          "2020-01-01",
 		},
@@ -90,10 +94,11 @@ func addGolang115Matches(t *testing.T, theResult *match.Matches) {
 			ID:       "2ba17cf1680ce4f2",
 			Version:  "2.7.16",
 			Type:     syftPkg.BinaryPkg,
-			Language: "binary",
+			Language: "",
 			PURL:     "pkg:generic/python@2.7.16",
 		},
 		Cycle: eol.Cycle{
+			ProductName:  "Python",
 			ReleaseCycle: "2.7",
 			Eol:          "2020-01-01",
 		},
@@ -104,10 +109,11 @@ func addGolang115Matches(t *testing.T, theResult *match.Matches) {
 			ID:       "5f9c938f5ff241bf",
 			Version:  "1.15.15",
 			Type:     syftPkg.BinaryPkg,
-			Language: "binary",
+			Language: "",
 			PURL:     "pkg:generic/go@1.15.15",
 		},
 		Cycle: eol.Cycle{
+			ProductName:  "Go",
 			ReleaseCycle: "1.15",
 			Eol:          "2021-08-16",
 		},
@@ -124,6 +130,8 @@ func addPostgres9Matches(t *testing.T, theResult *match.Matches) {
 			PURL:    "pkg:deb/debian/postgresql-9.6@9.6.24-1.pgdg90+1?arch=amd64&distro=debian-9",
 		},
 		Cycle: eol.Cycle{
+			ProductName: "PostgreSQL",
+
 			ReleaseCycle: "9.6",
 			Eol:          "2021-11-11",
 		},
@@ -137,10 +145,11 @@ func addElaticsearch6Matches(t *testing.T, theResult *match.Matches) {
 			ID:       "2ba17cf1680ce4f2",
 			Version:  "2.7.5",
 			Type:     syftPkg.BinaryPkg,
-			Language: "binary",
+			Language: "",
 			PURL:     "pkg:generic/python@2.7.5",
 		},
 		Cycle: eol.Cycle{
+			ProductName:  "Python",
 			ReleaseCycle: "2.7",
 			Eol:          "2020-01-01",
 		},
@@ -156,6 +165,7 @@ func addElaticsearch6Matches(t *testing.T, theResult *match.Matches) {
 		},
 		Cycle: eol.Cycle{
 			ReleaseCycle: "6",
+			ProductName:  "Elasticsearch",
 			Eol:          "2022-02-10",
 		},
 	})
@@ -172,15 +182,30 @@ func addNodejs6Matches(t *testing.T, theResult *match.Matches) {
 			PURL:     "pkg:generic/node@6.13.1",
 		},
 		Cycle: eol.Cycle{
+			ProductName:  "Node.js",
 			ReleaseCycle: "6",
 			Eol:          "2019-04-30",
 		},
 	})
 }
 
-// func addDebianOSMatches(t *testing.T, theResult *match.Matches) {}
-// func addUbuntuOSMatches(t *testing.T, theResult *match.Matches) {}
-// func addAlpineOSMatches(t *testing.T, theResult *match.Matches) {}
+func addRedis5Matches(t *testing.T, theResult *match.Matches) {
+	theResult.Add(match.Match{
+		Package: pkg.Package{
+			Name:     "redis",
+			ID:       "2ba17cf1680ce4f2",
+			Version:  "5.0.14",
+			Type:     syftPkg.BinaryPkg,
+			Language: "",
+			PURL:     "pkg:generic/redis@5.0.14",
+		},
+		Cycle: eol.Cycle{
+			ProductName:  "Redis",
+			ReleaseCycle: "5.0",
+			Eol:          "2021-12-31",
+		},
+	})
+}
 
 func TestMatchByImage(t *testing.T) {
 	tests := []struct {
@@ -232,6 +257,14 @@ func TestMatchByImage(t *testing.T) {
 			expectedFn: func() match.Matches {
 				expectedMatches := match.NewMatches()
 				addElaticsearch6Matches(t, &expectedMatches)
+				return expectedMatches
+			},
+		},
+		{
+			fixtureImage: "image-redis-5",
+			expectedFn: func() match.Matches {
+				expectedMatches := match.NewMatches()
+				addRedis5Matches(t, &expectedMatches)
 				return expectedMatches
 			},
 		},

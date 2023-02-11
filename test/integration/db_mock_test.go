@@ -138,6 +138,7 @@ func cycles(name string) []xeolDB.Cycle {
 }
 
 func (d *mockStore) stub() {
+	d.backend["pkg:generic/redis"] = cycles("redis")
 	d.backend["pkg:generic/node"] = cycles("node")
 	d.backend["pkg:generic/go"] = cycles("golang")
 	d.backend["pkg:deb/debian/postgresql-9.6"] = cycles("postgres")
