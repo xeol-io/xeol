@@ -47,14 +47,14 @@ jobs:
           checkName: "Unit tests"
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
-      # - name: Check integration test results
-      #   uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
-      #   id: integration
-      #   with:
-      #     token: ${{ secrets.XEOL_GITHUB_TOKEN }}
-      #     # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
-      #     checkName: "Integration tests"
-      #     ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Check integration test results
+        uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
+        id: integration
+        with:
+          token: ${{ secrets.XEOL_GITHUB_TOKEN }}
+          # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
+          checkName: "Integration tests"
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Check acceptance test results (linux)
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
