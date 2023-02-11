@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/anchore/syft/syft/artifact"
-	syftCpe "github.com/anchore/syft/syft/cpe"
+	"github.com/anchore/syft/syft/cpe"
 	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/common/cpe"
+	cpes "github.com/anchore/syft/syft/pkg/cataloger/common/cpe"
 	"github.com/anchore/syft/syft/source"
 
 	"github.com/noqcks/xeol/internal"
@@ -35,9 +35,9 @@ type Package struct {
 	Locations    source.LocationSet // the locations that lead to the discovery of this package (note: this is not necessarily the locations that make up this package)
 	Language     pkg.Language       // the language ecosystem this package belongs to (e.g. JavaScript, Python, etc)
 	Licenses     []string
-	Type         pkg.Type      // the package type (e.g. Npm, Yarn, Python, Rpm, Deb, etc)
-	CPEs         []syftCpe.CPE // all possible Common Platform Enumerators
-	PURL         string        // the Package URL (see https://github.com/package-url/purl-spec)
+	Type         pkg.Type  // the package type (e.g. Npm, Yarn, Python, Rpm, Deb, etc)
+	CPEs         []cpe.CPE // all possible Common Platform Enumerators
+	PURL         string    // the Package URL (see https://github.com/package-url/purl-spec)
 	Upstreams    []UpstreamPackage
 	MetadataType MetadataType
 	Metadata     interface{} // This is NOT 1-for-1 the syft metadata! Only the select data needed for vulnerability matching
@@ -73,7 +73,7 @@ func FromPackages(syftpkgs []pkg.Package, config SynthesisConfig) []Package {
 		if len(p.CPEs) == 0 {
 			// For SPDX (or any format, really) we may have no CPEs
 			if config.GenerateMissingCPEs {
-				p.CPEs = cpe.Generate(p)
+				p.CPEs = cpes.Generate(p)
 			} else {
 				log.Debugf("no CPEs for package: %s", p)
 				missingCPEs = true
