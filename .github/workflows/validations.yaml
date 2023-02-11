@@ -287,9 +287,8 @@ jobs:
           name: artifacts
           path: snapshot
 
-      # TODO(benij): fix this once we have real releases
-      # - name: Run install.sh tests (Mac)
-      #   run: make install-test-ci-mac
+      - name: Run install.sh tests (Mac)
+        run: make install-test-ci-mac
 
 
   Cli-Linux:
