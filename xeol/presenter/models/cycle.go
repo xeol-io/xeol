@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/noqcks/xeol/xeol/eol"
 )
 
@@ -14,10 +16,17 @@ type Cycle struct {
 }
 
 func NewCycle(c eol.Cycle) Cycle {
+	var eol string
+	if c.Eol == "0001-01-01" || len(c.Eol) < 1 {
+		eol = fmt.Sprintf("%t", c.EolBool)
+	} else {
+		eol = c.Eol
+	}
+
 	return Cycle{
 		ProductName:       c.ProductName,
 		ReleaseCycle:      c.ReleaseCycle,
-		Eol:               c.Eol,
+		Eol:               eol,
 		LatestRelease:     c.LatestRelease,
 		LatestReleaseDate: c.LatestReleaseDate,
 		ReleaseDate:       c.ReleaseDate,

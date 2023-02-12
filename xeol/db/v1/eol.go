@@ -14,6 +14,7 @@ type Cycle struct {
 	LatestReleaseDate string `json:"latestReleaseDate"`
 	LatestRelease     string `json:"latestRelease"`
 	Eol               string `json:"eol"`
+	EolBool           bool   `json:"eolBool"`
 }
 
 type Purl struct {
