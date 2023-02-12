@@ -18,7 +18,7 @@ An End Of Life (EOL) package scannner for container images and filesystems.
 
 ```bash
 curl -sSfL https://raw.githubusercontent.com/noqcks/xeol/main/install.sh |\
-  sudo sh -s -- -b /usr/local/bin
+  sh -s -- -b /usr/local/bin
 xeol version
 
 ```
