@@ -93,9 +93,9 @@ func createRow(m match.Match) ([]string, error) {
 
 	if m.Cycle.EolBool {
 		return []string{m.Package.Name, m.Package.Version, "YES", "-", string(m.Package.Type)}, nil
-	} else {
-		return []string{m.Package.Name, m.Package.Version, m.Cycle.Eol, daysEol, string(m.Package.Type)}, nil
 	}
+
+	return []string{m.Package.Name, m.Package.Version, m.Cycle.Eol, daysEol, string(m.Package.Type)}, nil
 }
 
 func calculateDaysEol(m match.Match) (string, error) {
