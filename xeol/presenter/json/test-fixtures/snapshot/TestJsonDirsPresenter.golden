@@ -4,7 +4,7 @@
    "Cycle": {
     "ProductName": "MongoDB Server",
     "ReleaseCycle": "2.8",
-    "Eol": "2016-07-31",
+    "Eol": "true",
     "LatestRelease": "",
     "LatestReleaseDate": "2016-07-31",
     "ReleaseDate": "2016-07-31"

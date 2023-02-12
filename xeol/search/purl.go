@@ -72,6 +72,15 @@ func packageEOLMatch(shortPurl string, p pkg.Package, cycles []eol.Cycle, eolMat
 		return match.Match{}, nil
 	}
 
+	// return the cycle if it is boolean EOL
+	if cycle.EolBool {
+		return match.Match{
+			Cycle:   cycle,
+			Package: p,
+		}, nil
+	}
+
+	// return the cycle if the EOL date is after the match date
 	cycleEolDate, err := time.Parse("2006-01-02", cycle.Eol)
 	if err != nil {
 		log.Debugf("error parsing cycle eol date '%s' for %s: %s", cycle.Eol, shortPurl, err)

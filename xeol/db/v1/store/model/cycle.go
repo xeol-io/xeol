@@ -15,20 +15,10 @@ type CycleModel struct {
 	ID                int       `gorm:"primary_key;column:id;"`
 	ReleaseCycle      string    `gorm:"column:release_cycle"`
 	Eol               time.Time `gorm:"column:eol"`
+	EolBool           bool      `gorm:"column:eol_bool"`
 	LatestRelease     string    `gorm:"column:latest_release"`
 	LatestReleaseDate time.Time `gorm:"column:latest_release_date"`
 	ReleaseDate       time.Time `gorm:"column:release_date"`
-}
-
-func NewCycleModel(cycle v1.Cycle) CycleModel {
-	return CycleModel{
-		ProductName:       cycle.ProductName,
-		ReleaseDate:       time.Now(),
-		ReleaseCycle:      cycle.ReleaseCycle,
-		LatestReleaseDate: time.Now(),
-		LatestRelease:     cycle.LatestRelease,
-		Eol:               time.Now(),
-	}
 }
 
 func (m CycleModel) TableName() string {
@@ -43,5 +33,6 @@ func (m CycleModel) Inflate() (v1.Cycle, error) {
 		LatestReleaseDate: m.LatestReleaseDate.Format("2006-01-02"),
 		LatestRelease:     m.LatestRelease,
 		Eol:               m.Eol.Format("2006-01-02"),
+		EolBool:           m.EolBool,
 	}, nil
 }
