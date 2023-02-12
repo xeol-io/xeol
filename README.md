@@ -17,7 +17,10 @@ An End Of Life (EOL) package scannner for container images and filesystems.
 ### Recommended
 
 ```bash
-curl -sSfL https://raw.githubusercontent.com/noqcks/xeol/main/install.sh | sh -s -- -b /usr/local/bin
+curl -sSfL https://raw.githubusercontent.com/noqcks/xeol/main/install.sh |\
+  sh -s -- -b /usr/local/bin
+xeol version
+
 ```
 
 You can also choose another destination directory and release version for the installation. The destination directory doesn't need to be `/usr/local/bin`, it just needs to be a location found in the user's PATH and writable by the user that's installing xeol.
