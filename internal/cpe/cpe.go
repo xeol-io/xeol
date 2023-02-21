@@ -1,15 +1,16 @@
 package cpe
 
 import (
-	"log"
 	"strings"
+
+	"github.com/noqcks/xeol/internal/log"
 )
 
 func Destructure(cpe string) (shortCPE, version string) {
 	parts := strings.Split(cpe, ":")
 
 	if len(parts) < 5 {
-		log.Printf("CPE string '%s' is too short", cpe)
+		log.Debugf("CPE string '%s' is too short", cpe)
 		return "", ""
 	}
 

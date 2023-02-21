@@ -9,8 +9,10 @@ type matchConfig struct {
 
 type matcherConfig struct {
 	UsePurls bool `yaml:"using-purls" json:"using-purls" mapstructure:"using-purls"` // if Purls should be used during matching
+	UseCpes  bool `yaml:"using-cpes" json:"using-cpes" mapstructure:"using-cpes"`    // if CPEs should be used during matching
 }
 
 func (cfg matchConfig) loadDefaultValues(v *viper.Viper) {
 	v.SetDefault("match.packages.using-purls", true)
+	v.SetDefault("match.packages.using-cpes", true)
 }
