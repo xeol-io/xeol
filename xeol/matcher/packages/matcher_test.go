@@ -153,7 +153,6 @@ func TestMatchTimeChange(t *testing.T) {
 	provider, err := db.NewEolProvider(&store)
 	require.NoError(t, err)
 
-	// Set up a matcher and a package with the same PURL but a different version
 	m := Matcher{}
 	p := pkg.Package{
 		ID:      pkg.ID(uuid.NewString()),
