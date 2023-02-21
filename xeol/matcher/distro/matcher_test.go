@@ -4,12 +4,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/anchore/syft/syft/linux"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/anchore/syft/syft/linux"
 	"github.com/noqcks/xeol/xeol/db"
 	xeolDB "github.com/noqcks/xeol/xeol/db/v1"
 	"github.com/noqcks/xeol/xeol/eol"

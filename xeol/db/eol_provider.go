@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/anchore/syft/syft/linux"
+
 	"github.com/noqcks/xeol/internal/cpe"
 	"github.com/noqcks/xeol/internal/purl"
 	xeolDB "github.com/noqcks/xeol/xeol/db/v1"

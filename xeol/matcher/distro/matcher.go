@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/anchore/syft/syft/linux"
+
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/match"
 	"github.com/noqcks/xeol/xeol/search"

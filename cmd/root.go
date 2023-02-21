@@ -248,8 +248,8 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 
 		log.Debugf("gathering matches")
 		matchers := matcher.NewDefaultMatchers(matcher.Config{
-			Packages: pkgMatcher.MatcherConfig(pkgMatcher.MatcherConfig{UsePurls: true}),
-			Distro:   distroMatcher.MatcherConfig(distroMatcher.MatcherConfig{UseCpes: true}),
+			Packages: pkgMatcher.MatcherConfig(appConfig.Match.Packages),
+			Distro:   distroMatcher.MatcherConfig(appConfig.Match.Distro),
 		})
 
 		allMatches, err := xeol.FindEol(*store, pkgContext.Distro, matchers, sbomPackages, failOnEolFound, eolMatchDate)

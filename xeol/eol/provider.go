@@ -2,6 +2,7 @@ package eol
 
 import (
 	"github.com/anchore/syft/syft/linux"
+
 	"github.com/noqcks/xeol/xeol/pkg"
 )
 
