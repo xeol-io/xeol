@@ -21,7 +21,7 @@ func SetLogger(logger logger.Logger) {
 	log.Log = logger
 }
 
-func FindEolForPackage(store store.Store, d *linux.Release, matchers []matcher.Matcher, packages []pkg.Package, failOnEolFound bool, eolMatchDate time.Time) (match.Matches, error) {
+func FindEol(store store.Store, d *linux.Release, matchers []matcher.Matcher, packages []pkg.Package, failOnEolFound bool, eolMatchDate time.Time) (match.Matches, error) {
 	matches := matcher.FindMatches(store, d, matchers, packages, failOnEolFound, eolMatchDate)
 	var err error
 	if failOnEolFound && matches.Count() > 0 {

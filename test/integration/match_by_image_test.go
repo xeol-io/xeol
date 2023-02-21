@@ -207,11 +207,34 @@ func addRedis5Matches(t *testing.T, theResult *match.Matches) {
 	})
 }
 
+func addFedora29Matches(t *testing.T, theResult *match.Matches) {
+	theResult.Add(match.Match{
+		Package: pkg.Package{
+			Name:    "Fedora",
+			Version: "29",
+			Type:    "os",
+		},
+		Cycle: eol.Cycle{
+			ProductName:  "Fedora",
+			ReleaseCycle: "29",
+			Eol:          "2019-11-26",
+		},
+	})
+}
+
 func TestMatchByImage(t *testing.T) {
 	tests := []struct {
 		fixtureImage string
 		expectedFn   func() match.Matches
 	}{
+		{
+			fixtureImage: "image-fedora-29",
+			expectedFn: func() match.Matches {
+				expectedMatches := match.NewMatches()
+				addFedora29Matches(t, &expectedMatches)
+				return expectedMatches
+			},
+		},
 		{
 			fixtureImage: "image-nodejs-6.13.1",
 			expectedFn: func() match.Matches {
@@ -305,7 +328,7 @@ func TestMatchByImage(t *testing.T) {
 				Provider: ep,
 			}
 
-			actualResults, err := xeol.FindEolForPackage(str, theDistro, matchers, pkg.FromCatalog(theCatalog, pkg.SynthesisConfig{}), false, time.Now())
+			actualResults, err := xeol.FindEol(str, theDistro, matchers, pkg.FromCatalog(theCatalog, pkg.SynthesisConfig{}), false, time.Now())
 			require.NoError(t, err)
 
 			// build expected matches from what's discovered from the catalog

@@ -26,6 +26,7 @@ import (
 	"github.com/noqcks/xeol/xeol/db"
 	"github.com/noqcks/xeol/xeol/event"
 	"github.com/noqcks/xeol/xeol/matcher"
+	distroMatcher "github.com/noqcks/xeol/xeol/matcher/distro"
 	pkgMatcher "github.com/noqcks/xeol/xeol/matcher/packages"
 	"github.com/noqcks/xeol/xeol/pkg"
 	"github.com/noqcks/xeol/xeol/presenter"
@@ -247,10 +248,11 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 
 		log.Debugf("gathering matches")
 		matchers := matcher.NewDefaultMatchers(matcher.Config{
-			Packages: pkgMatcher.MatcherConfig(appConfig.Match.Packages),
+			Packages: pkgMatcher.MatcherConfig(pkgMatcher.MatcherConfig{UsePurls: true}),
+			Distro:   distroMatcher.MatcherConfig(distroMatcher.MatcherConfig{UseCpes: true}),
 		})
 
-		allMatches, err := xeol.FindEolForPackage(*store, pkgContext.Distro, matchers, sbomPackages, failOnEolFound, eolMatchDate)
+		allMatches, err := xeol.FindEol(*store, pkgContext.Distro, matchers, sbomPackages, failOnEolFound, eolMatchDate)
 		if err != nil {
 			errs <- err
 			if !errors.Is(err, xeolerr.ErrEolFound) {

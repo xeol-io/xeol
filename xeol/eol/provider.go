@@ -1,11 +1,19 @@
 package eol
 
-import "github.com/noqcks/xeol/xeol/pkg"
+import (
+	"github.com/anchore/syft/syft/linux"
+	"github.com/noqcks/xeol/xeol/pkg"
+)
 
 type Provider interface {
-	ProviderByPurl
+	ProviderByPackagePurl
+	ProviderByDistroCpe
 }
 
-type ProviderByPurl interface {
-	GetByPurl(p pkg.Package) ([]Cycle, error)
+type ProviderByPackagePurl interface {
+	GetByPackagePurl(p pkg.Package) ([]Cycle, error)
+}
+
+type ProviderByDistroCpe interface {
+	GetByDistroCpe(distro *linux.Release) (string, []Cycle, error)
 }
