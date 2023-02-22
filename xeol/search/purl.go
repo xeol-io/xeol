@@ -37,6 +37,12 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 	}
 
 	for _, c := range cycles {
+		// direct match, if it exists
+		if version == c.ReleaseCycle {
+			return c, nil
+		}
+
+		// match on major, minor, or patch
 		versionLength := len(strings.Split(c.ReleaseCycle, "."))
 		cv, err := semver.NewVersion(c.ReleaseCycle)
 		if err != nil {
