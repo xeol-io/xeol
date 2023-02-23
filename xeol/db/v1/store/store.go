@@ -102,6 +102,27 @@ func (s *store) GetAllProducts() (*[]v1.Product, error) {
 	return &products, nil
 }
 
+func (s *store) GetCyclesByCpe(cpe string) ([]v1.Cycle, error) {
+	var models []model.CycleModel
+	if result := s.db.Table("cycles").
+		Select("cycles.*, products.name as product_name").
+		Joins("JOIN products ON cycles.product_id = products.id").
+		Joins("JOIN cpes ON products.id = cpes.product_id").
+		Where("cpes.cpe = ?", cpe).Find(&models); result.Error != nil {
+		return nil, result.Error
+	}
+	cycles := make([]v1.Cycle, len(models))
+
+	for i, m := range models {
+		c, err := m.Inflate()
+		if err != nil {
+			return nil, err
+		}
+		cycles[i] = c
+	}
+	return cycles, nil
+}
+
 func (s *store) GetCyclesByPurl(purl string) ([]v1.Cycle, error) {
 	var models []model.CycleModel
 	if result := s.db.Table("cycles").

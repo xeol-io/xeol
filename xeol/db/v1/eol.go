@@ -21,6 +21,10 @@ type Purl struct {
 	Purl string `json:"purl"`
 }
 
+type Cpe struct {
+	Cpe string `json:"cpe"`
+}
+
 type EolStore interface {
 	EolStoreReader
 	EolStoreWriter
@@ -28,6 +32,7 @@ type EolStore interface {
 
 type EolStoreReader interface {
 	GetCyclesByPurl(purl string) ([]Cycle, error)
+	GetCyclesByCpe(cpe string) ([]Cycle, error)
 	GetAllProducts() (*[]Product, error)
 }
 

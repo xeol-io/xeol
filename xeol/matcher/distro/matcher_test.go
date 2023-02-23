@@ -1,13 +1,12 @@
-package packages
+package distro
 
 import (
 	"testing"
 	"time"
 
-	syftPkg "github.com/anchore/syft/syft/pkg"
+	"github.com/anchore/syft/syft/linux"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -36,16 +35,16 @@ func (s *mockStore) GetAllProducts() (*[]xeolDB.Product, error) {
 
 func TestMatch(t *testing.T) {
 	cycle := xeolDB.Cycle{
-		ProductName:       "MongoDB Server",
-		ReleaseDate:       "2018-07-31",
-		ReleaseCycle:      "3.2",
-		Eol:               "2018-07-31",
-		LatestReleaseDate: "2018-07-31",
+		ProductName:       "Fedora",
+		ReleaseDate:       "2019-11-26",
+		ReleaseCycle:      "29",
+		Eol:               "2019-11-26",
+		LatestReleaseDate: "2019-11-26",
 	}
 
 	store := mockStore{
 		backend: map[string][]xeolDB.Cycle{
-			"pkg:deb/debian/mongodb-org-server": {cycle},
+			"cpe:/o:fedoraproject:fedora": {cycle},
 		},
 	}
 
@@ -54,66 +53,69 @@ func TestMatch(t *testing.T) {
 
 	m := Matcher{}
 	p := pkg.Package{
-		ID:      pkg.ID(uuid.NewString()),
-		Name:    "mongodb-org-server",
-		Version: "3.2.21",
-		Type:    syftPkg.DebPkg,
-		PURL:    "pkg:deb/debian/mongodb-org-server@3.2.21?arch=amd64&upstream=mongodb-org&distro=debian-8",
+		ID:      "",
+		Name:    "Fedora",
+		Version: "29",
+		Type:    "os",
 	}
 
 	cycleFound, err := eol.NewCycle(cycle)
+	d := &linux.Release{
+		Name:    "Fedora",
+		Version: "29",
+		CPEName: "cpe:/o:fedoraproject:fedora:29",
+	}
 	assert.NoError(t, err)
 	expected := match.Match{
 		Cycle:   *cycleFound,
 		Package: p,
 	}
-	actual, err := m.Match(provider, p, time.Now())
+	actual, err := m.Match(provider, d, time.Now())
 	assert.NoError(t, err)
 	assertMatches(t, expected, actual)
 }
 
-func TestMatchPurlMismatch(t *testing.T) {
+func TestMatchCpeMismatch(t *testing.T) {
 	cycle := xeolDB.Cycle{
-		ProductName:       "MongoDB Server",
-		ReleaseDate:       "2018-07-31",
-		ReleaseCycle:      "3.2",
-		Eol:               "2018-07-31",
-		LatestReleaseDate: "2018-07-31",
+		ProductName:       "Fedora",
+		ReleaseDate:       "2019-11-26",
+		ReleaseCycle:      "29",
+		Eol:               "2019-11-26",
+		LatestReleaseDate: "2019-11-26",
 	}
+
 	store := mockStore{
 		backend: map[string][]xeolDB.Cycle{
-			"pkg:deb/debian/different-package": {cycle},
+			"cpe:/o:canonical:ubuntu": {cycle},
 		},
 	}
+	m := Matcher{}
 	provider, err := db.NewEolProvider(&store)
 	require.NoError(t, err)
 
-	m := Matcher{}
-	p := pkg.Package{
-		ID:      pkg.ID(uuid.NewString()),
-		Name:    "mongodb-org-server",
-		Version: "3.2.21",
-		Type:    syftPkg.DebPkg,
-		PURL:    "pkg:deb/debian/mongodb-org-server@3.2.21?arch=amd64&upstream=mongodb-org&distro=debian-8",
+	d := &linux.Release{
+		Name:    "Fedora",
+		Version: "29",
+		CPEName: "cpe:/o:fedoraproject:fedora:29",
 	}
 
-	actual, err := m.Match(provider, p, time.Now())
+	actual, err := m.Match(provider, d, time.Now())
 	assert.NoError(t, err)
 	assertMatches(t, match.Match{}, actual)
 }
 
 func TestMatchNoMatchingVersion(t *testing.T) {
 	cycle := xeolDB.Cycle{
-		ProductName:       "MongoDB Server",
-		ReleaseDate:       "2018-07-31",
-		ReleaseCycle:      "3.3", // different version
-		Eol:               "2018-07-31",
-		LatestReleaseDate: "2018-07-31",
+		ProductName:       "Fedora",
+		ReleaseDate:       "2019-11-26",
+		ReleaseCycle:      "28", // different version
+		Eol:               "2019-11-26",
+		LatestReleaseDate: "2019-11-26",
 	}
 
 	store := mockStore{
 		backend: map[string][]xeolDB.Cycle{
-			"pkg:deb/debian/mongodb-org-server": {cycle},
+			"cpe:/o:fedoraproject:fedora": {cycle},
 		},
 	}
 
@@ -122,31 +124,29 @@ func TestMatchNoMatchingVersion(t *testing.T) {
 
 	// Set up a matcher and a package with the same PURL but a different version
 	m := Matcher{}
-	p := pkg.Package{
-		ID:      pkg.ID(uuid.NewString()),
-		Name:    "mongodb-org-server",
-		Version: "3.2.21", // different version
-		Type:    syftPkg.DebPkg,
-		PURL:    "pkg:deb/debian/mongodb-org-server@3.2.21?arch=amd64&upstream=mongodb-org&distro=debian-8",
+	d := &linux.Release{
+		Name:    "Fedora",
+		Version: "29",
+		CPEName: "cpe:/o:fedoraproject:fedora:29",
 	}
 
-	actual, err := m.Match(provider, p, time.Now())
+	actual, err := m.Match(provider, d, time.Now())
 	assert.NoError(t, err)
 	assertMatches(t, match.Match{}, actual)
 }
 
 func TestMatchTimeChange(t *testing.T) {
 	cycle := xeolDB.Cycle{
-		ProductName:       "MongoDB Server",
-		ReleaseDate:       "2018-07-31",
-		ReleaseCycle:      "3.2",
-		Eol:               "2018-07-31",
-		LatestReleaseDate: "2018-07-31",
+		ProductName:       "Fedora",
+		ReleaseDate:       "2019-11-26",
+		ReleaseCycle:      "29",
+		Eol:               "2019-11-26",
+		LatestReleaseDate: "2019-11-26",
 	}
 
 	store := mockStore{
 		backend: map[string][]xeolDB.Cycle{
-			"pkg:deb/debian/mongodb-org-server": {cycle},
+			"cpe:/o:fedoraproject:fedora": {cycle},
 		},
 	}
 
@@ -154,18 +154,16 @@ func TestMatchTimeChange(t *testing.T) {
 	require.NoError(t, err)
 
 	m := Matcher{}
-	p := pkg.Package{
-		ID:      pkg.ID(uuid.NewString()),
-		Name:    "mongodb-org-server",
-		Version: "3.2.21",
-		Type:    syftPkg.DebPkg,
-		PURL:    "pkg:deb/debian/mongodb-org-server@3.2.21?arch=amd64&upstream=mongodb-org&distro=debian-8",
+	d := &linux.Release{
+		Name:    "Fedora",
+		Version: "29",
+		CPEName: "cpe:/o:fedoraproject:fedora:29",
 	}
 
 	eolMatchTime, err := time.Parse("2006-01-02", "2018-01-01")
 	assert.NoError(t, err)
 
-	actual, err := m.Match(provider, p, eolMatchTime)
+	actual, err := m.Match(provider, d, eolMatchTime)
 	assert.NoError(t, err)
 	assertMatches(t, match.Match{}, actual)
 }

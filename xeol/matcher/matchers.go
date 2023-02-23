@@ -9,10 +9,10 @@ import (
 
 	"github.com/noqcks/xeol/internal/bus"
 	"github.com/noqcks/xeol/internal/log"
-	"github.com/noqcks/xeol/xeol/distro"
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/event"
 	"github.com/noqcks/xeol/xeol/match"
+	distroMatcher "github.com/noqcks/xeol/xeol/matcher/distro"
 	pkgMatcher "github.com/noqcks/xeol/xeol/matcher/packages"
 	"github.com/noqcks/xeol/xeol/pkg"
 )
@@ -25,11 +25,13 @@ type Monitor struct {
 // Config contains values used by individual matcher structs for advanced configuration
 type Config struct {
 	Packages pkgMatcher.MatcherConfig
+	Distro   distroMatcher.MatcherConfig
 }
 
 func NewDefaultMatchers(mc Config) []Matcher {
 	return []Matcher{
 		&pkgMatcher.Matcher{},
+		&distroMatcher.Matcher{},
 	}
 }
 
@@ -49,17 +51,23 @@ func trackMatcher() (*progress.Manual, *progress.Manual) {
 
 func FindMatches(store interface {
 	eol.Provider
-}, release *linux.Release, matchers []Matcher, packages []pkg.Package, failOnEolFound bool, eolMatchDate time.Time) match.Matches {
-	var err error
+}, distro *linux.Release, matchers []Matcher, packages []pkg.Package, failOnEolFound bool, eolMatchDate time.Time) match.Matches {
+	// var err error
 	res := match.NewMatches()
-	defaultMatcher := &pkgMatcher.Matcher{UsePurls: true}
+	defaultMatcher := &pkgMatcher.Matcher{
+		UsePurls: true,
+	}
+	distroMatcher := &distroMatcher.Matcher{
+		UseCpes: true,
+	}
 
-	var d *distro.Distro
-	if release != nil {
-		d, err = distro.NewFromRelease(*release)
-		if err != nil {
-			log.Warnf("unable to determine linux distribution: %+v", err)
-		}
+	distroMatch, err := distroMatcher.Match(store, distro, eolMatchDate)
+	if err != nil {
+		log.Warnf("matcher failed for distro=%s: %+v", distro, err)
+	}
+	if (distroMatch.Cycle != eol.Cycle{}) {
+		logDistroMatch(distro)
+		res.Add(distroMatch)
 	}
 
 	packagesProcessed, eolDiscovered := trackMatcher()
@@ -68,12 +76,12 @@ func FindMatches(store interface {
 		packagesProcessed.N++
 		log.Debugf("searching for eol matches for pkg=%s", p)
 
-		pkgMatch, err := defaultMatcher.Match(store, d, p, eolMatchDate)
+		pkgMatch, err := defaultMatcher.Match(store, p, eolMatchDate)
 		if err != nil {
 			log.Warnf("matcher failed for pkg=%s: %+v", p, err)
 		}
 		if (pkgMatch.Cycle != eol.Cycle{}) {
-			logMatch(p)
+			logPkgMatch(p)
 			res.Add(pkgMatch)
 			eolDiscovered.N++
 		}
@@ -85,6 +93,10 @@ func FindMatches(store interface {
 	return res
 }
 
-func logMatch(p pkg.Package) {
-	log.Debugf("found eol match for purl=%s \n", p.PURL)
+func logDistroMatch(d *linux.Release) {
+	log.Debugf("found eol match for distro cpe=%s \n", d.CPEName)
+}
+
+func logPkgMatch(p pkg.Package) {
+	log.Debugf("found eol match for pkg purl=%s \n", p.PURL)
 }

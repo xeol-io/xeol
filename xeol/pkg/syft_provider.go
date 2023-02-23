@@ -22,7 +22,7 @@ func syftProvider(userInput string, config ProviderConfig) ([]Package, Context, 
 	}
 	defer cleanup()
 
-	catalog, relationships, theDistro, err := syft.CatalogPackages(src, config.CatalogingOptions)
+	catalog, relationships, distro, err := syft.CatalogPackages(src, config.CatalogingOptions)
 	if err != nil {
 		return nil, Context{}, nil, err
 	}
@@ -32,7 +32,7 @@ func syftProvider(userInput string, config ProviderConfig) ([]Package, Context, 
 	packages := FromCatalog(catalog, config.SynthesisConfig)
 	context := Context{
 		Source: &src.Metadata,
-		Distro: theDistro,
+		Distro: distro,
 	}
 
 	sbom := &sbom.SBOM{

@@ -15,6 +15,10 @@ func (s *mockStore) GetCyclesByPurl(purl string) ([]xeolDB.Cycle, error) {
 	return s.backend[purl], nil
 }
 
+func (s *mockStore) GetCyclesByCpe(cpe string) ([]xeolDB.Cycle, error) {
+	return s.backend[cpe], nil
+}
+
 func (s *mockStore) GetAllProducts() (*[]xeolDB.Product, error) {
 	return nil, nil
 }
@@ -133,11 +137,19 @@ func cycles(name string) []xeolDB.Cycle {
 				Eol:          "2022-02-10",
 			},
 		},
+		"fedora": {
+			{
+				ProductName:  "Fedora",
+				ReleaseCycle: "29",
+				Eol:          "2019-11-26",
+			},
+		},
 	}
 	return cycleDict[name]
 }
 
 func (d *mockStore) stub() {
+	d.backend["cpe:/o:fedoraproject:fedora"] = cycles("fedora")
 	d.backend["pkg:generic/redis"] = cycles("redis")
 	d.backend["pkg:generic/node"] = cycles("node")
 	d.backend["pkg:generic/go"] = cycles("golang")

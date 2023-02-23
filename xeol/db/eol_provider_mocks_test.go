@@ -20,10 +20,19 @@ func (d *mockStore) stub() {
 			ProductName: "debian:distro:debian:8",
 		},
 	}
+	d.data["cpe:/o:fedoraproject:fedora"] = []xeolDB.Cycle{
+		{
+			ProductName: "fedora:distro:fedora:28",
+		},
+	}
 }
 
 func (s *mockStore) GetCyclesByPurl(purl string) ([]xeolDB.Cycle, error) {
 	return s.data[purl], nil
+}
+
+func (s *mockStore) GetCyclesByCpe(cpe string) ([]xeolDB.Cycle, error) {
+	return s.data[cpe], nil
 }
 
 func (s *mockStore) GetAllProducts() (*[]xeolDB.Product, error) {
