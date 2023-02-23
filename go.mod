@@ -11,8 +11,8 @@ require (
 	github.com/anchore/go-version v1.2.2-0.20210903204242-51efa5b487c4
 	github.com/anchore/packageurl-go v0.1.1-0.20230104203445-02e0a6721501
 	github.com/anchore/sqlite v1.4.6-0.20220607210448-bcc6ee5c4963
-	github.com/anchore/stereoscope v0.0.0-20230216143338-4b5ebf8c7f4b
-	github.com/anchore/syft v0.72.0
+	github.com/anchore/stereoscope v0.0.0-20230222185948-fab1c9638abc
+	github.com/anchore/syft v0.73.0
 	github.com/bmatcuk/doublestar/v2 v2.0.4
 	github.com/docker/docker v23.0.1+incompatible
 	github.com/dustin/go-humanize v1.0.1
