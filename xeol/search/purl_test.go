@@ -18,6 +18,20 @@ func TestReturnMatchingCycle(t *testing.T) {
 		err      error
 	}{
 		{
+			name:    "Match weird Amazon Linux AMI version",
+			version: "2018.03",
+			cycles: []eol.Cycle{{
+				ProductName:   "Amazon Linux AMI",
+				ReleaseCycle:  "2018.03",
+				LatestRelease: "2018.03",
+			}},
+			expected: eol.Cycle{
+				ProductName:   "Amazon Linux AMI",
+				ReleaseCycle:  "2018.03",
+				LatestRelease: "2018.03",
+			},
+		},
+		{
 			name:    "Match on major version",
 			version: "1.2.3",
 			cycles: []eol.Cycle{{
