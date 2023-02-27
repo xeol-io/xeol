@@ -49,7 +49,7 @@ func (pres *Presenter) Present(output io.Writer) error {
 	}
 
 	if len(rows) == 0 {
-		_, err := io.WriteString(output, "No eol software found\n")
+		_, err := io.WriteString(output, "✅ no EOL software has been found\n")
 		return err
 	}
 
