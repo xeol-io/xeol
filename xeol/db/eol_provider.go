@@ -26,6 +26,9 @@ func NewEolProvider(reader xeolDB.EolStoreReader) (*EolProvider, error) {
 
 func (pr *EolProvider) GetByDistroCpe(r *linux.Release) (string, []eol.Cycle, error) {
 	cycles := make([]eol.Cycle, 0)
+	if r == nil {
+		return "", []eol.Cycle{}, errors.New("empty distro release")
+	}
 
 	d, err := distro.NewFromRelease(*r)
 	if err != nil {
