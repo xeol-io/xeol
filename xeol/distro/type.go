@@ -77,6 +77,64 @@ var IDMapping = map[string]Type{
 	"wolfi":         Wolfi,
 }
 
+// CpeOsVendorMapping connects a distro type to a CPE OS vendor string
+// The reason this exists is because there is low coverage of CPE_NAME in /etc/os-release
+// file across distros. This is a best effort to map the distro type to a CPE vendor string.
+var CpeOsVendorMapping = map[Type]string{
+	Debian:       "debian",
+	Ubuntu:       "canonical",
+	RedHat:       "redhat",
+	CentOS:       "centos",
+	Fedora:       "fedoraproject",
+	Alpine:       "alpinelinux",
+	Busybox:      "busybox",
+	AmazonLinux:  "amazon",
+	OracleLinux:  "oracle",
+	ArchLinux:    "archlinux",
+	OpenSuseLeap: "opensuse",
+	SLES:         "suse",
+	Photon:       "vmware",
+	Windows:      "microsoft",
+	Mariner:      "microsoft",
+	RockyLinux:   "rocky",
+	AlmaLinux:    "almalinux",
+	Gentoo:       "gentoo",
+	Wolfi:        "wolfi",
+}
+
+// CpeOsProductMapping connects a distro type to a CPE OS product string
+// The reason this exists is because there is low coverage of CPE_NAME in /etc/os-release
+// file across distros. This is a best effort to map the distro type to a CPE vendor string.
+var CpeOsProductMapping = map[Type]string{
+	Debian:       "debian_linux",
+	Ubuntu:       "ubuntu_linux",
+	RedHat:       "enterprise_linux",
+	CentOS:       "centos",
+	Fedora:       "fedora",
+	Alpine:       "alpine_linux",
+	Busybox:      "busybox",
+	AmazonLinux:  "amazon_linux",
+	OracleLinux:  "linux",
+	ArchLinux:    "arch_linux",
+	OpenSuseLeap: "leap",
+	SLES:         "linux_enterprise_server",
+	Photon:       "photon_os",
+	Windows:      "windows",
+	Mariner:      "mariner",
+	RockyLinux:   "rocky",
+	AlmaLinux:    "almalinux",
+	Gentoo:       "gentoo",
+	Wolfi:        "wolfi",
+}
+
+func (t Type) CpeVendor() string {
+	return CpeOsVendorMapping[t]
+}
+
+func (t Type) CpeProduct() string {
+	return CpeOsProductMapping[t]
+}
+
 func TypeFromRelease(release linux.Release) Type {
 	// first try the release ID
 	t, ok := IDMapping[release.ID]

@@ -14,10 +14,11 @@ type Distro struct {
 	Version    *hashiVer.Version
 	RawVersion string
 	IDLike     []string
+	CPEName    CPEName
 }
 
 // New creates a new Distro object populated with the given values.
-func New(t Type, version string, idLikes ...string) (*Distro, error) {
+func New(t Type, cpeName, version string, idLikes ...string) (*Distro, error) {
 	var verObj *hashiVer.Version
 	var err error
 
@@ -26,6 +27,9 @@ func New(t Type, version string, idLikes ...string) (*Distro, error) {
 		if err != nil {
 			return nil, fmt.Errorf("unable to parse version: %w", err)
 		}
+		if cpeName == "" {
+			cpeName = fmt.Sprintf("cpe:2.3:o:%s:%s:%s", t.CpeVendor(), t.CpeProduct(), version)
+		}
 	}
 
 	return &Distro{
@@ -33,6 +37,7 @@ func New(t Type, version string, idLikes ...string) (*Distro, error) {
 		Version:    verObj,
 		RawVersion: version,
 		IDLike:     idLikes,
+		CPEName:    CPEName(cpeName),
 	}, nil
 }
 
@@ -56,7 +61,7 @@ func NewFromRelease(release linux.Release) (*Distro, error) {
 		}
 	}
 
-	return New(t, selectedVersion, release.IDLike...)
+	return New(t, release.CPEName, selectedVersion, release.IDLike...)
 }
 
 func (d Distro) Name() string {
