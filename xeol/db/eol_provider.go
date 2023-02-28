@@ -5,9 +5,9 @@ import (
 
 	"github.com/anchore/syft/syft/linux"
 
-	"github.com/noqcks/xeol/internal/cpe"
 	"github.com/noqcks/xeol/internal/purl"
 	xeolDB "github.com/noqcks/xeol/xeol/db/v1"
+	"github.com/noqcks/xeol/xeol/distro"
 	"github.com/noqcks/xeol/xeol/eol"
 	"github.com/noqcks/xeol/xeol/pkg"
 )
@@ -24,14 +24,19 @@ func NewEolProvider(reader xeolDB.EolStoreReader) (*EolProvider, error) {
 	}, nil
 }
 
-func (pr *EolProvider) GetByDistroCpe(d *linux.Release) (string, []eol.Cycle, error) {
+func (pr *EolProvider) GetByDistroCpe(r *linux.Release) (string, []eol.Cycle, error) {
 	cycles := make([]eol.Cycle, 0)
 
-	if d == nil || d.CPEName == "" {
+	d, err := distro.NewFromRelease(*r)
+	if err != nil {
+		return "", []eol.Cycle{}, err
+	}
+
+	if d == nil || d.CPEName.String() == "" {
 		return "", []eol.Cycle{}, errors.New("empty distro CPEName")
 	}
 
-	shortCPE, version := cpe.Destructure(d.CPEName)
+	shortCPE, version := d.CPEName.Destructured()
 	if version == "" || shortCPE == "" {
 		return "", []eol.Cycle{}, errors.New("invalid distro CPEName")
 	}
