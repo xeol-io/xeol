@@ -422,7 +422,11 @@ func TestNew(t *testing.T) {
 			syftPkg: syftPkg.Package{
 				MetadataType: syftPkg.BinaryMetadataType,
 				Metadata: syftPkg.BinaryMetadata{
-					Classifier: "classifier",
+					Matches: []syftPkg.ClassifierMatch{
+						{
+							Classifier: "node",
+						},
+					},
 				},
 			},
 		},
