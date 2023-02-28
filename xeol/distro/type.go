@@ -78,6 +78,8 @@ var IDMapping = map[string]Type{
 }
 
 // CpeOsVendorMapping connects a distro type to a CPE OS vendor string
+// The reason this exists is because there is low coverage of CPE_NAME in /etc/os-release
+// file across distros. This is a best effort to map the distro type to a CPE vendor string.
 var CpeOsVendorMapping = map[Type]string{
 	Debian:       "debian",
 	Ubuntu:       "canonical",
@@ -101,6 +103,8 @@ var CpeOsVendorMapping = map[Type]string{
 }
 
 // CpeOsProductMapping connects a distro type to a CPE OS product string
+// The reason this exists is because there is low coverage of CPE_NAME in /etc/os-release
+// file across distros. This is a best effort to map the distro type to a CPE vendor string.
 var CpeOsProductMapping = map[Type]string{
 	Debian:       "debian_linux",
 	Ubuntu:       "ubuntu_linux",
