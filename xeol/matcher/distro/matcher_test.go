@@ -61,6 +61,7 @@ func TestMatch(t *testing.T) {
 
 	cycleFound, err := eol.NewCycle(cycle)
 	d := &linux.Release{
+		ID:      "fedora",
 		Name:    "Fedora",
 		Version: "29",
 		CPEName: "cpe:/o:fedoraproject:fedora:29",
@@ -94,6 +95,7 @@ func TestMatchCpeMismatch(t *testing.T) {
 	require.NoError(t, err)
 
 	d := &linux.Release{
+		ID:      "fedora",
 		Name:    "Fedora",
 		Version: "29",
 		CPEName: "cpe:/o:fedoraproject:fedora:29",
@@ -125,6 +127,7 @@ func TestMatchNoMatchingVersion(t *testing.T) {
 	// Set up a matcher and a package with the same PURL but a different version
 	m := Matcher{}
 	d := &linux.Release{
+		ID:      "fedora",
 		Name:    "Fedora",
 		Version: "29",
 		CPEName: "cpe:/o:fedoraproject:fedora:29",
@@ -155,6 +158,7 @@ func TestMatchTimeChange(t *testing.T) {
 
 	m := Matcher{}
 	d := &linux.Release{
+		ID:      "fedora",
 		Name:    "Fedora",
 		Version: "29",
 		CPEName: "cpe:/o:fedoraproject:fedora:29",
