@@ -73,7 +73,7 @@ func FindMatches(store interface {
 	packagesProcessed, eolDiscovered := trackMatcher()
 
 	for _, p := range packages {
-		packagesProcessed.N++
+		packagesProcessed.Increment()
 		log.Debugf("searching for eol matches for pkg=%s", p)
 
 		pkgMatch, err := defaultMatcher.Match(store, p, eolMatchDate)
@@ -83,7 +83,7 @@ func FindMatches(store interface {
 		if (pkgMatch.Cycle != eol.Cycle{}) {
 			logPkgMatch(p)
 			res.Add(pkgMatch)
-			eolDiscovered.N++
+			eolDiscovered.Increment()
 		}
 	}
 
