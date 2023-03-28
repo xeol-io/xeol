@@ -28,7 +28,7 @@ type Config struct {
 	Distro   distroMatcher.MatcherConfig
 }
 
-func NewDefaultMatchers(mc Config) []Matcher {
+func NewDefaultMatchers(_ Config) []Matcher {
 	return []Matcher{
 		&pkgMatcher.Matcher{},
 		&distroMatcher.Matcher{},
@@ -51,7 +51,7 @@ func trackMatcher() (*progress.Manual, *progress.Manual) {
 
 func FindMatches(store interface {
 	eol.Provider
-}, distro *linux.Release, matchers []Matcher, packages []pkg.Package, failOnEolFound bool, eolMatchDate time.Time) match.Matches {
+}, distro *linux.Release, _ []Matcher, packages []pkg.Package, _ bool, eolMatchDate time.Time) match.Matches {
 	// var err error
 	res := match.NewMatches()
 	defaultMatcher := &pkgMatcher.Matcher{

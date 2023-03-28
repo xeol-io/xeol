@@ -147,11 +147,8 @@ func bindRootConfigOptions(flags *pflag.FlagSet) error {
 		return err
 	}
 
-	if err := viper.BindPFlag("platform", flags.Lookup("platform")); err != nil {
-		return err
-	}
-
-	return nil
+	err := viper.BindPFlag("platform", flags.Lookup("platform"))
+	return err
 }
 
 func rootExec(_ *cobra.Command, args []string) error {
