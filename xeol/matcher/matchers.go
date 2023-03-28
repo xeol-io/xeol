@@ -51,7 +51,7 @@ func trackMatcher() (*progress.Manual, *progress.Manual) {
 
 func FindMatches(store interface {
 	eol.Provider
-}, distro *linux.Release, _ []Matcher, packages []pkg.Package, failOnEolFound bool, eolMatchDate time.Time) match.Matches {
+}, distro *linux.Release, _ []Matcher, packages []pkg.Package, _ bool, eolMatchDate time.Time) match.Matches {
 	// var err error
 	res := match.NewMatches()
 	defaultMatcher := &pkgMatcher.Matcher{
