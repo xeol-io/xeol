@@ -13,7 +13,7 @@ import (
 	"github.com/noqcks/xeol/xeol/pkg"
 )
 
-func ByPackagePURL(store eol.Provider, p pkg.Package, upstreamMatcher match.MatcherType, eolMatchDate time.Time) (match.Match, error) {
+func ByPackagePURL(store eol.Provider, p pkg.Package, _ match.MatcherType, eolMatchDate time.Time) (match.Match, error) {
 	cycles, err := store.GetByPackagePurl(p)
 	if err != nil {
 		return match.Match{}, err
