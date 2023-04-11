@@ -3,7 +3,7 @@ package pkg
 import (
 	"testing"
 
-	syftCpe "github.com/anchore/syft/syft/cpe"
+	"github.com/anchore/syft/syft/cpe"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -26,8 +26,8 @@ func TestUpstreamPackages(t *testing.T) {
 			pkg: Package{
 				Name:    "name",
 				Version: "version",
-				CPEs: []syftCpe.CPE{
-					must(syftCpe.New("cpe:2.3:*:name:name:version:*:*:*:*:*:*:*")),
+				CPEs: []cpe.CPE{
+					cpe.Must("cpe:2.3:*:name:name:version:*:*:*:*:*:*:*"),
 				},
 				Upstreams: []UpstreamPackage{
 					{
@@ -39,9 +39,9 @@ func TestUpstreamPackages(t *testing.T) {
 				{
 					Name:    "new-name", // new
 					Version: "version",  // original
-					CPEs: []syftCpe.CPE{
+					CPEs: []cpe.CPE{
 						// name and vendor replaced
-						must(syftCpe.New("cpe:2.3:*:new-name:new-name:version:*:*:*:*:*:*:*")),
+						cpe.Must("cpe:2.3:*:new-name:new-name:version:*:*:*:*:*:*:*"),
 					},
 					// no upstreams
 				},
@@ -52,8 +52,8 @@ func TestUpstreamPackages(t *testing.T) {
 			pkg: Package{
 				Name:    "name",
 				Version: "version",
-				CPEs: []syftCpe.CPE{
-					must(syftCpe.New("cpe:2.3:*:name:name:version:*:*:*:*:*:*:*")),
+				CPEs: []cpe.CPE{
+					cpe.Must("cpe:2.3:*:name:name:version:*:*:*:*:*:*:*"),
 				},
 				Upstreams: []UpstreamPackage{
 					{
@@ -66,9 +66,9 @@ func TestUpstreamPackages(t *testing.T) {
 				{
 					Name:    "new-name",    // new
 					Version: "new-version", // new
-					CPEs: []syftCpe.CPE{
+					CPEs: []cpe.CPE{
 						// name, vendor, and version replaced
-						must(syftCpe.New("cpe:2.3:*:new-name:new-name:new-version:*:*:*:*:*:*:*")),
+						cpe.Must("cpe:2.3:*:new-name:new-name:new-version:*:*:*:*:*:*:*"),
 					},
 					// no upstreams
 				},
@@ -79,8 +79,8 @@ func TestUpstreamPackages(t *testing.T) {
 			pkg: Package{
 				Name:    "name",
 				Version: "version",
-				CPEs: []syftCpe.CPE{
-					must(syftCpe.New("cpe:2.3:*:name:name:version:*:*:*:*:*:*:*")),
+				CPEs: []cpe.CPE{
+					cpe.Must("cpe:2.3:*:name:name:version:*:*:*:*:*:*:*"),
 				},
 				Upstreams: []UpstreamPackage{
 					{

@@ -28,7 +28,6 @@ func Provide(userInput string, config ProviderConfig) ([]Package, Context, *sbom
 	if !errors.Is(err, errDoesNotProvide) {
 		return packages, ctx, s, err
 	}
-
 	return syftProvider(userInput, config)
 }
 

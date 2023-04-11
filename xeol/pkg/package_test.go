@@ -1,13 +1,9 @@
 package pkg
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
-	"github.com/anchore/syft/syft/artifact"
-	syftCpe "github.com/anchore/syft/syft/cpe"
-	"github.com/anchore/syft/syft/file"
+	"github.com/anchore/syft/syft/cpe"
 	syftFile "github.com/anchore/syft/syft/file"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/source"
@@ -53,7 +49,7 @@ func TestNew(t *testing.T) {
 					Files: []syftPkg.DpkgFileRecord{
 						{
 							Path: "path-info",
-							Digest: &file.Digest{
+							Digest: &syftFile.Digest{
 								Algorithm: "algo-info",
 								Value:     "digest-info",
 							},
@@ -88,7 +84,7 @@ func TestNew(t *testing.T) {
 							Path: "path-info",
 							Mode: 20,
 							Size: 10,
-							Digest: file.Digest{
+							Digest: syftFile.Digest{
 								Algorithm: "algo-info",
 								Value:     "digest-info",
 							},
@@ -300,6 +296,83 @@ func TestNew(t *testing.T) {
 			},
 		},
 		{
+			name: "dart-pub-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.DartPubMetadataType,
+				Metadata: syftPkg.DartPubMetadata{
+					Name:    "a",
+					Version: "a",
+				},
+			},
+		},
+		{
+			name: "dotnet-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.DotnetDepsMetadataType,
+				Metadata: syftPkg.DotnetDepsMetadata{
+					Name:     "a",
+					Version:  "a",
+					Path:     "a",
+					Sha512:   "a",
+					HashPath: "a",
+				},
+			},
+		},
+		{
+			name: "cpp conan-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.ConanMetadataType,
+				Metadata: syftPkg.ConanMetadata{
+					Ref: "catch2/2.13.8",
+				},
+			},
+		},
+		{},
+		{
+			name: "cpp conan lock metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.ConanLockMetadataType,
+				Metadata: syftPkg.ConanLockMetadata{
+					Ref: "zlib/1.2.12",
+					Options: map[string]string{
+						"fPIC":   "True",
+						"shared": "False",
+					},
+					Path:    "all/conansyftFile.py",
+					Context: "host",
+				},
+			},
+		},
+		{
+			name: "cocoapods cocoapods-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.CocoapodsMetadataType,
+				Metadata: syftPkg.CocoapodsMetadata{
+					Checksum: "123eere234",
+				},
+			},
+		},
+		{
+			name: "portage-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.PortageMetadataType,
+				Metadata: syftPkg.PortageMetadata{
+					InstalledSize: 1,
+					Files:         []syftPkg.PortageFileRecord{},
+				},
+			},
+		},
+		{
+			name: "hackage-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.HackageMetadataType,
+				Metadata: syftPkg.HackageMetadata{
+					Name:    "hackage",
+					Version: "v0.0.1",
+				},
+			},
+		},
+		{
 			name: "rebar-metadata",
 			syftPkg: syftPkg.Package{
 				MetadataType: syftPkg.RebarLockMetadataType,
@@ -342,82 +415,6 @@ func TestNew(t *testing.T) {
 			},
 		},
 		{
-			name: "dart-pub-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.DartPubMetadataType,
-				Metadata: syftPkg.DartPubMetadata{
-					Name:    "a",
-					Version: "a",
-				},
-			},
-		},
-		{
-			name: "dotnet-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.DotnetDepsMetadataType,
-				Metadata: syftPkg.DotnetDepsMetadata{
-					Name:     "a",
-					Version:  "a",
-					Path:     "a",
-					Sha512:   "a",
-					HashPath: "a",
-				},
-			},
-		},
-		{
-			name: "cpp conan-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.ConanMetadataType,
-				Metadata: syftPkg.ConanMetadata{
-					Ref: "catch2/2.13.8",
-				},
-			},
-		},
-		{
-			name: "cpp conan lock metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.ConanLockMetadataType,
-				Metadata: syftPkg.ConanLockMetadata{
-					Ref: "zlib/1.2.12",
-					Options: map[string]string{
-						"fPIC":   "True",
-						"shared": "False",
-					},
-					Path:    "all/conanfile.py",
-					Context: "host",
-				},
-			},
-		},
-		{
-			name: "cocoapods cocoapods-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.CocoapodsMetadataType,
-				Metadata: syftPkg.CocoapodsMetadata{
-					Checksum: "123eere234",
-				},
-			},
-		},
-		{
-			name: "portage-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.PortageMetadataType,
-				Metadata: syftPkg.PortageMetadata{
-					InstalledSize: 1,
-					Files:         []syftPkg.PortageFileRecord{},
-				},
-			},
-		},
-		{
-			name: "hackage-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.HackageMetadataType,
-				Metadata: syftPkg.HackageMetadata{
-					Name:    "hackage",
-					Version: "v0.0.1",
-				},
-			},
-		},
-		{
 			name: "binary-metadata",
 			syftPkg: syftPkg.Package{
 				MetadataType: syftPkg.BinaryMetadataType,
@@ -427,6 +424,15 @@ func TestNew(t *testing.T) {
 							Classifier: "node",
 						},
 					},
+				},
+			},
+		},
+		{
+			name: "nix-store-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.NixStoreMetadataType,
+				Metadata: syftPkg.NixStoreMetadata{
+					Files: []string{},
 				},
 			},
 		},
@@ -486,7 +492,7 @@ func TestFromCatalog_GeneratesCPEs(t *testing.T) {
 	catalog.Add(syftPkg.Package{
 		Name:    "first",
 		Version: "1",
-		CPEs: []syftCpe.CPE{
+		CPEs: []cpe.CPE{
 			{},
 		},
 	})
@@ -546,112 +552,4 @@ func Test_getNameAndELVersion(t *testing.T) {
 
 func intRef(i int) *int {
 	return &i
-}
-
-func Test_RemoveBinaryPackagesByOverlap(t *testing.T) {
-	tests := []struct {
-		name             string
-		sbom             catalogRelationships
-		expectedPackages []string
-	}{
-		{
-			name: "includes all packages without overlap",
-			sbom: catalogWithOverlaps(
-				[]string{":go@1.18", "apk:node@19.2-r1", "binary:python@3.9"},
-				[]string{}),
-			expectedPackages: []string{":go@1.18", "apk:node@19.2-r1", "binary:python@3.9"},
-		},
-		{
-			name: "excludes single package by overlap",
-			sbom: catalogWithOverlaps(
-				[]string{"apk:go@1.18", "apk:node@19.2-r1", "binary:node@19.2"},
-				[]string{"apk:node@19.2-r1 -> binary:node@19.2"}),
-			expectedPackages: []string{"apk:go@1.18", "apk:node@19.2-r1"},
-		},
-		{
-			name: "excludes multiple package by overlap",
-			sbom: catalogWithOverlaps(
-				[]string{"apk:go@1.18", "apk:node@19.2-r1", "binary:node@19.2", "apk:python@3.9-r9", ":python@3.9"},
-				[]string{"apk:node@19.2-r1 -> binary:node@19.2", "apk:python@3.9-r9 -> :python@3.9"}),
-			expectedPackages: []string{"apk:go@1.18", "apk:node@19.2-r1", "apk:python@3.9-r9"},
-		},
-		{
-			name: "does not exclude with different types",
-			sbom: catalogWithOverlaps(
-				[]string{"rpm:node@19.2-r1", "apk:node@19.2"},
-				[]string{"rpm:node@19.2-r1 -> apk:node@19.2"}),
-			expectedPackages: []string{"apk:node@19.2", "rpm:node@19.2-r1"},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			catalog := removePackagesByOverlap(test.sbom.catalog, test.sbom.relationships)
-			pkgs := FromCatalog(catalog, SynthesisConfig{})
-			var pkgNames []string
-			for _, p := range pkgs {
-				pkgNames = append(pkgNames, fmt.Sprintf("%s:%s@%s", p.Type, p.Name, p.Version))
-			}
-			assert.EqualValues(t, test.expectedPackages, pkgNames)
-		})
-	}
-}
-
-type catalogRelationships struct {
-	catalog       *syftPkg.Catalog
-	relationships []artifact.Relationship
-}
-
-func catalogWithOverlaps(packages []string, overlaps []string) catalogRelationships {
-	var pkgs []syftPkg.Package
-	var relationships []artifact.Relationship
-
-	toPkg := func(str string) syftPkg.Package {
-		var typ, name, version string
-		s := strings.Split(strings.TrimSpace(str), ":")
-		if len(s) > 1 {
-			typ = s[0]
-			str = s[1]
-		}
-		s = strings.Split(str, "@")
-		name = s[0]
-		if len(s) > 1 {
-			version = s[1]
-		}
-
-		p := syftPkg.Package{
-			Type:    syftPkg.Type(typ),
-			Name:    name,
-			Version: version,
-		}
-		p.SetID()
-
-		return p
-	}
-
-	for _, pkg := range packages {
-		p := toPkg(pkg)
-		pkgs = append(pkgs, p)
-	}
-
-	for _, overlap := range overlaps {
-		parts := strings.Split(overlap, "->")
-		if len(parts) < 2 {
-			panic("invalid overlap, use -> to specify, e.g.: pkg1->pkg2")
-		}
-		from := toPkg(parts[0])
-		to := toPkg(parts[1])
-
-		relationships = append(relationships, artifact.Relationship{
-			From: from,
-			To:   to,
-			Type: artifact.OwnershipByFileOverlapRelationship,
-		})
-	}
-
-	catalog := syftPkg.NewCatalog(pkgs...)
-
-	return catalogRelationships{
-		catalog:       catalog,
-		relationships: relationships,
-	}
 }
