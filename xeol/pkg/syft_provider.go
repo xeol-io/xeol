@@ -11,7 +11,7 @@ func syftProvider(userInput string, config ProviderConfig) ([]Package, Context, 
 		return nil, Context{}, nil, errDoesNotProvide
 	}
 
-	sourceInput, err := source.ParseInput(userInput, config.Platform, true)
+	sourceInput, err := source.ParseInputWithName(userInput, config.Platform, config.Name, config.DefaultImagePullSource)
 	if err != nil {
 		return nil, Context{}, nil, err
 	}
@@ -22,17 +22,19 @@ func syftProvider(userInput string, config ProviderConfig) ([]Package, Context, 
 	}
 	defer cleanup()
 
-	catalog, relationships, distro, err := syft.CatalogPackages(src, config.CatalogingOptions)
+	catalog, relationships, theDistro, err := syft.CatalogPackages(src, config.CatalogingOptions)
 	if err != nil {
 		return nil, Context{}, nil, err
 	}
 
-	catalog = removePackagesByOverlap(catalog, relationships)
+	// TODO: disabling this as it was removing binary packages like
+	// pkg:generic/postgresql in postgres:9 that were not overlapping
+	// catalog = removePackagesByOverlap(catalog, relationships)
 
 	packages := FromCatalog(catalog, config.SynthesisConfig)
 	context := Context{
 		Source: &src.Metadata,
-		Distro: distro,
+		Distro: theDistro,
 	}
 
 	sbom := &sbom.SBOM{

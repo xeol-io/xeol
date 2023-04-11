@@ -6,8 +6,7 @@ import (
 	"testing"
 
 	"github.com/anchore/syft/syft/artifact"
-	syftCpe "github.com/anchore/syft/syft/cpe"
-	"github.com/anchore/syft/syft/file"
+	"github.com/anchore/syft/syft/cpe"
 	syftFile "github.com/anchore/syft/syft/file"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/source"
@@ -53,7 +52,7 @@ func TestNew(t *testing.T) {
 					Files: []syftPkg.DpkgFileRecord{
 						{
 							Path: "path-info",
-							Digest: &file.Digest{
+							Digest: &syftFile.Digest{
 								Algorithm: "algo-info",
 								Value:     "digest-info",
 							},
@@ -88,7 +87,7 @@ func TestNew(t *testing.T) {
 							Path: "path-info",
 							Mode: 20,
 							Size: 10,
-							Digest: file.Digest{
+							Digest: syftFile.Digest{
 								Algorithm: "algo-info",
 								Value:     "digest-info",
 							},
@@ -300,6 +299,83 @@ func TestNew(t *testing.T) {
 			},
 		},
 		{
+			name: "dart-pub-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.DartPubMetadataType,
+				Metadata: syftPkg.DartPubMetadata{
+					Name:    "a",
+					Version: "a",
+				},
+			},
+		},
+		{
+			name: "dotnet-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.DotnetDepsMetadataType,
+				Metadata: syftPkg.DotnetDepsMetadata{
+					Name:     "a",
+					Version:  "a",
+					Path:     "a",
+					Sha512:   "a",
+					HashPath: "a",
+				},
+			},
+		},
+		{
+			name: "cpp conan-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.ConanMetadataType,
+				Metadata: syftPkg.ConanMetadata{
+					Ref: "catch2/2.13.8",
+				},
+			},
+		},
+		{},
+		{
+			name: "cpp conan lock metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.ConanLockMetadataType,
+				Metadata: syftPkg.ConanLockMetadata{
+					Ref: "zlib/1.2.12",
+					Options: map[string]string{
+						"fPIC":   "True",
+						"shared": "False",
+					},
+					Path:    "all/conansyftFile.py",
+					Context: "host",
+				},
+			},
+		},
+		{
+			name: "cocoapods cocoapods-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.CocoapodsMetadataType,
+				Metadata: syftPkg.CocoapodsMetadata{
+					Checksum: "123eere234",
+				},
+			},
+		},
+		{
+			name: "portage-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.PortageMetadataType,
+				Metadata: syftPkg.PortageMetadata{
+					InstalledSize: 1,
+					Files:         []syftPkg.PortageFileRecord{},
+				},
+			},
+		},
+		{
+			name: "hackage-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.HackageMetadataType,
+				Metadata: syftPkg.HackageMetadata{
+					Name:    "hackage",
+					Version: "v0.0.1",
+				},
+			},
+		},
+		{
 			name: "rebar-metadata",
 			syftPkg: syftPkg.Package{
 				MetadataType: syftPkg.RebarLockMetadataType,
@@ -342,82 +418,6 @@ func TestNew(t *testing.T) {
 			},
 		},
 		{
-			name: "dart-pub-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.DartPubMetadataType,
-				Metadata: syftPkg.DartPubMetadata{
-					Name:    "a",
-					Version: "a",
-				},
-			},
-		},
-		{
-			name: "dotnet-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.DotnetDepsMetadataType,
-				Metadata: syftPkg.DotnetDepsMetadata{
-					Name:     "a",
-					Version:  "a",
-					Path:     "a",
-					Sha512:   "a",
-					HashPath: "a",
-				},
-			},
-		},
-		{
-			name: "cpp conan-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.ConanMetadataType,
-				Metadata: syftPkg.ConanMetadata{
-					Ref: "catch2/2.13.8",
-				},
-			},
-		},
-		{
-			name: "cpp conan lock metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.ConanLockMetadataType,
-				Metadata: syftPkg.ConanLockMetadata{
-					Ref: "zlib/1.2.12",
-					Options: map[string]string{
-						"fPIC":   "True",
-						"shared": "False",
-					},
-					Path:    "all/conanfile.py",
-					Context: "host",
-				},
-			},
-		},
-		{
-			name: "cocoapods cocoapods-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.CocoapodsMetadataType,
-				Metadata: syftPkg.CocoapodsMetadata{
-					Checksum: "123eere234",
-				},
-			},
-		},
-		{
-			name: "portage-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.PortageMetadataType,
-				Metadata: syftPkg.PortageMetadata{
-					InstalledSize: 1,
-					Files:         []syftPkg.PortageFileRecord{},
-				},
-			},
-		},
-		{
-			name: "hackage-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.HackageMetadataType,
-				Metadata: syftPkg.HackageMetadata{
-					Name:    "hackage",
-					Version: "v0.0.1",
-				},
-			},
-		},
-		{
 			name: "binary-metadata",
 			syftPkg: syftPkg.Package{
 				MetadataType: syftPkg.BinaryMetadataType,
@@ -427,6 +427,15 @@ func TestNew(t *testing.T) {
 							Classifier: "node",
 						},
 					},
+				},
+			},
+		},
+		{
+			name: "nix-store-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.NixStoreMetadataType,
+				Metadata: syftPkg.NixStoreMetadata{
+					Files: []string{},
 				},
 			},
 		},
@@ -486,7 +495,7 @@ func TestFromCatalog_GeneratesCPEs(t *testing.T) {
 	catalog.Add(syftPkg.Package{
 		Name:    "first",
 		Version: "1",
-		CPEs: []syftCpe.CPE{
+		CPEs: []cpe.CPE{
 			{},
 		},
 	})
