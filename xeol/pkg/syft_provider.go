@@ -27,9 +27,7 @@ func syftProvider(userInput string, config ProviderConfig) ([]Package, Context, 
 		return nil, Context{}, nil, err
 	}
 
-	// TODO: disabling this as it was removing binary packages like
-	// pkg:generic/postgresql in postgres:9 that were not overlapping
-	// catalog = removePackagesByOverlap(catalog, relationships)
+	catalog = removePackagesByOverlap(catalog, relationships)
 
 	packages := FromCatalog(catalog, config.SynthesisConfig)
 	context := Context{

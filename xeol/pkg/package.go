@@ -122,16 +122,7 @@ func excludePackage(p pkg.Package, parent pkg.Package) bool {
 	// python3.9   3.9.2-1    deb
 
 	// If the version is not effectively the same, keep both
-	if !strings.HasPrefix(parent.Version, p.Version) {
-		return false
-	}
-
-	// filter out only binary pkg, empty types, or equal types
-	if p.Type != pkg.BinaryPkg && p.Type != "" && p.Type != parent.Type {
-		return false
-	}
-
-	return true
+	return !strings.HasPrefix(parent.Version, p.Version)
 }
 
 func dataFromPkg(p pkg.Package) (MetadataType, interface{}, []UpstreamPackage) {

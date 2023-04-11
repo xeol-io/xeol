@@ -252,12 +252,6 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 			defer dbCloser.Close()
 		}
 
-		log.Debugf("gathering matches")
-		log.Debugf("BENJI: found %d packages", len(sbomPackages))
-		for _, p := range sbomPackages {
-			log.Debugf("BENJI: %s", p.PURL)
-		}
-
 		matchers := matcher.NewDefaultMatchers(matcher.Config{
 			Packages: pkgMatcher.MatcherConfig(appConfig.Match.Packages),
 			Distro:   distroMatcher.MatcherConfig(appConfig.Match.Distro),
