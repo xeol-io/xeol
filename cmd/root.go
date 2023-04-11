@@ -285,9 +285,8 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 func getProviderConfig() pkg.ProviderConfig {
 	return pkg.ProviderConfig{
 		SyftProviderConfig: pkg.SyftProviderConfig{
-			RegistryOptions: appConfig.Registry.ToOptions(),
-			Exclusions:      nil,
-			// TODO(benji1)
+			RegistryOptions:        appConfig.Registry.ToOptions(),
+			Exclusions:             nil,
 			CatalogingOptions:      appConfig.Search.ToConfig(),
 			Platform:               appConfig.Platform,
 			Name:                   appConfig.Name,
