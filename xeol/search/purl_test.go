@@ -18,6 +18,20 @@ func TestReturnMatchingCycle(t *testing.T) {
 		err      error
 	}{
 		{
+			name:    "Match versions with rc information",
+			version: "1.21.6-r1",
+			cycles: []eol.Cycle{{
+				ProductName:   "Nginx",
+				ReleaseCycle:  "1.21",
+				LatestRelease: "1.21.6",
+			}},
+			expected: eol.Cycle{
+				ProductName:   "Nginx",
+				ReleaseCycle:  "1.21",
+				LatestRelease: "1.21.6",
+			},
+		},
+		{
 			name:    "Match weird Amazon Linux AMI version",
 			version: "2018.03",
 			cycles: []eol.Cycle{{
