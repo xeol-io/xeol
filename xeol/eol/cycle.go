@@ -1,7 +1,7 @@
 package eol
 
 import (
-	xeolDB "github.com/noqcks/xeol/xeol/db/v1"
+	xeolDB "github.com/xeol-io/xeol/xeol/db/v1"
 )
 
 type Cycle struct {

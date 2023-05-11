@@ -8,8 +8,8 @@ import (
 
 	hashiVersion "github.com/anchore/go-version"
 
-	"github.com/noqcks/xeol/internal"
-	"github.com/noqcks/xeol/internal/log"
+	"github.com/xeol-io/xeol/internal"
+	"github.com/xeol-io/xeol/internal/log"
 )
 
 var latestAppVersionURL = struct {

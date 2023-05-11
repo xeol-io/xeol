@@ -5,8 +5,8 @@ import (
 
 	"github.com/wagoodman/go-partybus"
 
-	"github.com/noqcks/xeol/internal/log"
-	xeolEvent "github.com/noqcks/xeol/xeol/event"
+	"github.com/xeol-io/xeol/internal/log"
+	xeolEvent "github.com/xeol-io/xeol/xeol/event"
 )
 
 type loggerUI struct {

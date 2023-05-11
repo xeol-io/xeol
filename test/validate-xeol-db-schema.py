@@ -6,7 +6,7 @@ import collections
 
 dir_pattern = r'xeol/db/v(?P<version>\d+)'
 db_dir_regex = re.compile(dir_pattern)
-import_regex = re.compile(rf'github.com/noqcks/xeol/{dir_pattern}')
+import_regex = re.compile(rf'github.com/xeol-io/xeol/{dir_pattern}')
 
 
 def report_schema_versions_found(title, schema_to_locations):

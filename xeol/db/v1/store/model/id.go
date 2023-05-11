@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	v1 "github.com/noqcks/xeol/xeol/db/v1"
+	v1 "github.com/xeol-io/xeol/xeol/db/v1"
 )
 
 const (

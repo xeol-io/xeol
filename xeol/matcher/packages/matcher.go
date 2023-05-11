@@ -5,10 +5,10 @@ import (
 
 	syftPkg "github.com/anchore/syft/syft/pkg"
 
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/noqcks/xeol/xeol/pkg"
-	"github.com/noqcks/xeol/xeol/search"
+	"github.com/xeol-io/xeol/xeol/eol"
+	"github.com/xeol-io/xeol/xeol/match"
+	"github.com/xeol-io/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/search"
 )
 
 type Matcher struct {

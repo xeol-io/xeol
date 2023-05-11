@@ -3,8 +3,8 @@ package models
 import (
 	"github.com/anchore/syft/syft/sbom"
 
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/match"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 type PresenterConfig struct {

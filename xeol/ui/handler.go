@@ -8,7 +8,7 @@ import (
 	"github.com/wagoodman/go-partybus"
 	"github.com/wagoodman/jotframe/pkg/frame"
 
-	xeolEvent "github.com/noqcks/xeol/xeol/event"
+	xeolEvent "github.com/xeol-io/xeol/xeol/event"
 )
 
 type Handler struct {

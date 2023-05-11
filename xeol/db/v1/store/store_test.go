@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-test/deep"
 
-	v1 "github.com/noqcks/xeol/xeol/db/v1"
+	v1 "github.com/xeol-io/xeol/xeol/db/v1"
 )
 
 func assertIDReader(t *testing.T, reader v1.IDReader, expected v1.ID) {

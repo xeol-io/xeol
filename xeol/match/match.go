@@ -3,8 +3,8 @@ package match
 import (
 	"fmt"
 
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/eol"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 var ErrCannotMerge = fmt.Errorf("unable to merge eol matches")

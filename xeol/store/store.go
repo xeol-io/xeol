@@ -1,7 +1,7 @@
 package store
 
 import (
-	"github.com/noqcks/xeol/xeol/eol"
+	"github.com/xeol-io/xeol/xeol/eol"
 )
 
 type Store struct {

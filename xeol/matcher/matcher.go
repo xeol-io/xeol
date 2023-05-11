@@ -1,7 +1,7 @@
 package matcher
 
 import (
-	"github.com/noqcks/xeol/xeol/match"
+	"github.com/xeol-io/xeol/xeol/match"
 )
 
 type Matcher interface {

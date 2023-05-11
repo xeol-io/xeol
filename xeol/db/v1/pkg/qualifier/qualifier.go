@@ -3,7 +3,7 @@ package qualifier
 import (
 	"fmt"
 
-	"github.com/noqcks/xeol/xeol/pkg/qualifier"
+	"github.com/xeol-io/xeol/xeol/pkg/qualifier"
 )
 
 type Qualifier interface {

@@ -3,10 +3,10 @@ package models
 import (
 	"fmt"
 
-	"github.com/noqcks/xeol/internal"
-	"github.com/noqcks/xeol/internal/version"
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/internal"
+	"github.com/xeol-io/xeol/internal/version"
+	"github.com/xeol-io/xeol/xeol/match"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 // Document represents the JSON document to be presented

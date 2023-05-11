@@ -1,6 +1,6 @@
 package model
 
-import v1 "github.com/noqcks/xeol/xeol/db/v1"
+import v1 "github.com/xeol-io/xeol/xeol/db/v1"
 
 const (
 	ProductTableName = "products"

@@ -13,9 +13,9 @@ import (
 	"github.com/wagoodman/go-partybus"
 	"github.com/wagoodman/jotframe/pkg/frame"
 
-	"github.com/noqcks/xeol/internal"
-	"github.com/noqcks/xeol/internal/version"
-	xeolEventParsers "github.com/noqcks/xeol/xeol/event/parsers"
+	"github.com/xeol-io/xeol/internal"
+	"github.com/xeol-io/xeol/internal/version"
+	xeolEventParsers "github.com/xeol-io/xeol/xeol/event/parsers"
 )
 
 func handleAppUpdateAvailable(_ context.Context, fr *frame.Frame, event partybus.Event, _ *sync.WaitGroup) error {

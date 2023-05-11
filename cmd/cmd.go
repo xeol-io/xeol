@@ -15,10 +15,10 @@ import (
 	"github.com/spf13/viper"
 	"github.com/wagoodman/go-partybus"
 
-	"github.com/noqcks/xeol/internal/config"
-	"github.com/noqcks/xeol/internal/log"
-	"github.com/noqcks/xeol/internal/version"
-	"github.com/noqcks/xeol/xeol"
+	"github.com/xeol-io/xeol/internal/config"
+	"github.com/xeol-io/xeol/internal/log"
+	"github.com/xeol-io/xeol/internal/version"
+	"github.com/xeol-io/xeol/xeol"
 )
 
 var (

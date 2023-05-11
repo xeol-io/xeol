@@ -6,7 +6,7 @@ import (
 
 	"github.com/wagoodman/go-partybus"
 
-	xeolEventParsers "github.com/noqcks/xeol/xeol/event/parsers"
+	xeolEventParsers "github.com/xeol-io/xeol/xeol/event/parsers"
 )
 
 func handleEolScanningFinished(event partybus.Event, reportOutput io.Writer) error {

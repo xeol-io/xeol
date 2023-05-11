@@ -21,8 +21,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/wagoodman/go-progress"
 
-	"github.com/noqcks/xeol/internal"
-	"github.com/noqcks/xeol/internal/file"
+	"github.com/xeol-io/xeol/internal"
+	"github.com/xeol-io/xeol/internal/file"
 )
 
 type testGetter struct {

@@ -7,8 +7,8 @@ import (
 	"github.com/adrg/xdg"
 	"github.com/spf13/viper"
 
-	"github.com/noqcks/xeol/internal"
-	"github.com/noqcks/xeol/xeol/db"
+	"github.com/xeol-io/xeol/internal"
+	"github.com/xeol-io/xeol/xeol/db"
 )
 
 type database struct {

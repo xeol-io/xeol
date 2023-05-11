@@ -9,9 +9,9 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/noqcks/xeol/xeol/pkg"
-	"github.com/noqcks/xeol/xeol/presenter/models"
+	"github.com/xeol-io/xeol/xeol/match"
+	"github.com/xeol-io/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/presenter/models"
 )
 
 var now = time.Now

@@ -13,13 +13,13 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/stretchr/testify/require"
 
-	"github.com/noqcks/xeol/xeol"
-	"github.com/noqcks/xeol/xeol/db"
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/noqcks/xeol/xeol/matcher"
-	"github.com/noqcks/xeol/xeol/pkg"
-	"github.com/noqcks/xeol/xeol/store"
+	"github.com/xeol-io/xeol/xeol"
+	"github.com/xeol-io/xeol/xeol/db"
+	"github.com/xeol-io/xeol/xeol/eol"
+	"github.com/xeol-io/xeol/xeol/match"
+	"github.com/xeol-io/xeol/xeol/matcher"
+	"github.com/xeol-io/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/store"
 )
 
 func addMongo32Matches(t *testing.T, theResult *match.Matches) {

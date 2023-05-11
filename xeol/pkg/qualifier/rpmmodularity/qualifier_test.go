@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/noqcks/xeol/xeol/pkg"
-	"github.com/noqcks/xeol/xeol/pkg/qualifier"
+	"github.com/xeol-io/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/pkg/qualifier"
 )
 
 func TestRpmModularity_Satisfied(t *testing.T) {

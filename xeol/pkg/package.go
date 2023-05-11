@@ -11,8 +11,8 @@ import (
 	cpes "github.com/anchore/syft/syft/pkg/cataloger/common/cpe"
 	"github.com/anchore/syft/syft/source"
 
-	"github.com/noqcks/xeol/internal"
-	"github.com/noqcks/xeol/internal/log"
+	"github.com/xeol-io/xeol/internal"
+	"github.com/xeol-io/xeol/internal/log"
 )
 
 // the source-rpm field has something akin to "util-linux-ng-2.17.2-12.28.el6_9.2.src.rpm"

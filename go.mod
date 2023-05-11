@@ -1,4 +1,4 @@
-module github.com/noqcks/xeol
+module github.com/xeol-io/xeol
 
 go 1.18
 

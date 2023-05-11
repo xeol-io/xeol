@@ -15,8 +15,8 @@ import (
 	"github.com/wagoodman/go-progress/format"
 	"github.com/wagoodman/jotframe/pkg/frame"
 
-	"github.com/noqcks/xeol/internal/ui/components"
-	xeolEventParsers "github.com/noqcks/xeol/xeol/event/parsers"
+	"github.com/xeol-io/xeol/internal/ui/components"
+	xeolEventParsers "github.com/xeol-io/xeol/xeol/event/parsers"
 )
 
 const maxBarWidth = 50

@@ -6,9 +6,9 @@ import (
 	"github.com/wagoodman/go-partybus"
 	"github.com/wagoodman/go-progress"
 
-	"github.com/noqcks/xeol/xeol/event"
-	"github.com/noqcks/xeol/xeol/matcher"
-	"github.com/noqcks/xeol/xeol/presenter"
+	"github.com/xeol-io/xeol/xeol/event"
+	"github.com/xeol-io/xeol/xeol/matcher"
+	"github.com/xeol-io/xeol/xeol/presenter"
 )
 
 type ErrBadPayload struct {

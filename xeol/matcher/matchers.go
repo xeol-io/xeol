@@ -7,14 +7,14 @@ import (
 	"github.com/wagoodman/go-partybus"
 	"github.com/wagoodman/go-progress"
 
-	"github.com/noqcks/xeol/internal/bus"
-	"github.com/noqcks/xeol/internal/log"
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/event"
-	"github.com/noqcks/xeol/xeol/match"
-	distroMatcher "github.com/noqcks/xeol/xeol/matcher/distro"
-	pkgMatcher "github.com/noqcks/xeol/xeol/matcher/packages"
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/internal/bus"
+	"github.com/xeol-io/xeol/internal/log"
+	"github.com/xeol-io/xeol/xeol/eol"
+	"github.com/xeol-io/xeol/xeol/event"
+	"github.com/xeol-io/xeol/xeol/match"
+	distroMatcher "github.com/xeol-io/xeol/xeol/matcher/distro"
+	pkgMatcher "github.com/xeol-io/xeol/xeol/matcher/packages"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 type Monitor struct {

@@ -5,8 +5,8 @@ import (
 
 	"github.com/mitchellh/mapstructure"
 
-	"github.com/noqcks/xeol/internal/log"
-	"github.com/noqcks/xeol/xeol/db/v1/pkg/qualifier/rpmmodularity"
+	"github.com/xeol-io/xeol/internal/log"
+	"github.com/xeol-io/xeol/xeol/db/v1/pkg/qualifier/rpmmodularity"
 )
 
 func FromJSON(data []byte) ([]Qualifier, error) {

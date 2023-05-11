@@ -3,8 +3,8 @@ package rpmmodularity
 import (
 	"fmt"
 
-	"github.com/noqcks/xeol/xeol/pkg/qualifier"
-	"github.com/noqcks/xeol/xeol/pkg/qualifier/rpmmodularity"
+	"github.com/xeol-io/xeol/xeol/pkg/qualifier"
+	"github.com/xeol-io/xeol/xeol/pkg/qualifier/rpmmodularity"
 )
 
 type Qualifier struct {
