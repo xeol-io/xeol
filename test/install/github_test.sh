@@ -32,7 +32,7 @@ test_download_github_release_checksums() {
   tmpdir=$(mktemp -d)
 
   tag=v0.2.2
-  github_download="https://github.com/noqcks/xeol/releases/download/${tag}"
+  github_download="https://github.com/xeol-io/xeol/releases/download/${tag}"
   name=${PROJECT_NAME}
   version=$(tag_to_version "${tag}")
 
