@@ -5,7 +5,7 @@ COVER_REPORT = $(RESULTSDIR)/cover.report
 COVER_TOTAL = $(RESULTSDIR)/cover.total
 LICENSES_REPORT = $(RESULTSDIR)/licenses.json
 LINTCMD = $(TEMPDIR)/golangci-lint run --tests=false --timeout 5m --config .golangci.yaml
-GOIMPORTS_CMD = $(TEMPDIR)/gosimports -local github.com/noqcks
+GOIMPORTS_CMD = $(TEMPDIR)/gosimports -local github.com/xeol-io
 RELEASE_CMD=$(TEMPDIR)/goreleaser release --clean
 SNAPSHOT_CMD=$(RELEASE_CMD) --skip-publish --snapshot
 VERSION=$(shell git describe --dirty --always --tags)
@@ -146,7 +146,7 @@ validate-xeol-db-schema:
 unit: ## Run unit tests (with coverage)
 	$(call title,Running unit tests)
 	mkdir -p $(RESULTSDIR)
-	go test -coverprofile $(COVER_REPORT) $(shell go list ./... | grep -v noqcks/xeol/test)
+	go test -coverprofile $(COVER_REPORT) $(shell go list ./... | grep -v xeol-io/xeol/test)
 	@go tool cover -func $(COVER_REPORT) | grep total |  awk '{print substr($$3, 1, length($$3)-1)}' > $(COVER_TOTAL)
 	@echo "Coverage: $$(cat $(COVER_TOTAL))"
 	@if [ $$(echo "$$(cat $(COVER_TOTAL)) >= $(COVERAGE_THRESHOLD)" | bc -l) -ne 1 ]; then echo "$(RED)$(BOLD)Failed coverage quality gate (> $(COVERAGE_THRESHOLD)%)$(RESET)" && false; fi

@@ -3,9 +3,9 @@ package presenter
 import (
 	"io"
 
-	"github.com/noqcks/xeol/xeol/presenter/json"
-	"github.com/noqcks/xeol/xeol/presenter/models"
-	"github.com/noqcks/xeol/xeol/presenter/table"
+	"github.com/xeol-io/xeol/xeol/presenter/json"
+	"github.com/xeol-io/xeol/xeol/presenter/models"
+	"github.com/xeol-io/xeol/xeol/presenter/table"
 )
 
 type Presenter interface {

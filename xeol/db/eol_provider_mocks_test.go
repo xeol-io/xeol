@@ -1,6 +1,6 @@
 package db
 
-import xeolDB "github.com/noqcks/xeol/xeol/db/v1"
+import xeolDB "github.com/xeol-io/xeol/xeol/db/v1"
 
 type mockStore struct {
 	data map[string][]xeolDB.Cycle

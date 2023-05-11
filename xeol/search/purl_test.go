@@ -6,7 +6,7 @@ import (
 
 	"github.com/Masterminds/semver"
 
-	"github.com/noqcks/xeol/xeol/eol"
+	"github.com/xeol-io/xeol/xeol/eol"
 )
 
 func TestReturnMatchingCycle(t *testing.T) {

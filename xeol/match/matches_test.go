@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/eol"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 func TestMatchesSortByCycleProductName(t *testing.T) {

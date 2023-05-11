@@ -7,7 +7,7 @@ VERSION=$2
 
 # the source of truth as to whether we want to notify users of an update is if the release just created is NOT
 # flagged as a pre-release on github
-if [[ "$(curl -SsL https://api.github.com/repos/noqcks/${BIN}/releases/tags/${VERSION} | jq .prerelease)" == "true" ]] ; then
+if [[ "$(curl -SsL https://api.github.com/repos/xeol-io/${BIN}/releases/tags/${VERSION} | jq .prerelease)" == "true" ]] ; then
    echo "skipping publishing a version file (this is a pre-release: ${VERSION})"
    exit 0
 fi

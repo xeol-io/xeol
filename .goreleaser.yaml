@@ -20,11 +20,11 @@ builds:
       -w
       -s
       -extldflags '-static'
-      -X github.com/noqcks/xeol/internal/version.version={{.Version}}
-      -X github.com/noqcks/xeol/internal/version.syftVersion={{.Env.SYFT_VERSION}}
-      -X github.com/noqcks/xeol/internal/version.gitCommit={{.Commit}}
-      -X github.com/noqcks/xeol/internal/version.buildDate={{.Date}}
-      -X github.com/noqcks/xeol/internal/version.gitDescription={{.Summary}}
+      -X github.com/xeol-io/xeol/internal/version.version={{.Version}}
+      -X github.com/xeol-io/xeol/internal/version.syftVersion={{.Env.SYFT_VERSION}}
+      -X github.com/xeol-io/xeol/internal/version.gitCommit={{.Commit}}
+      -X github.com/xeol-io/xeol/internal/version.buildDate={{.Date}}
+      -X github.com/xeol-io/xeol/internal/version.gitDescription={{.Summary}}
 
   - id: darwin-build
     binary: xeol
@@ -64,7 +64,7 @@ archives:
 nfpms:
   - license: "Apache 2.0"
     maintainer: "noqcks"
-    homepage: &website "https://github.com/noqcks/xeol"
+    homepage: &website "https://github.com/xeol-io/xeol"
     description: &description "An EOL package scanner for container images, systems, and SBOMs"
     formats:
       - rpm
@@ -72,7 +72,7 @@ nfpms:
 
 brews:
   - tap:
-      owner: noqcks
+      owner: xeol-io
       name: homebrew-xeol
     ids:
       - darwin-archives

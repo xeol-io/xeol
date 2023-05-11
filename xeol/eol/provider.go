@@ -3,7 +3,7 @@ package eol
 import (
 	"github.com/anchore/syft/syft/linux"
 
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 type Provider interface {

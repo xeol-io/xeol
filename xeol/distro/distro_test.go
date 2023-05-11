@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/noqcks/xeol/internal"
+	"github.com/xeol-io/xeol/internal"
 )
 
 func Test_NewDistroFromRelease(t *testing.T) {

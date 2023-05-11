@@ -6,7 +6,7 @@ import (
 
 	"gorm.io/gorm/logger"
 
-	"github.com/noqcks/xeol/internal/log"
+	"github.com/xeol-io/xeol/internal/log"
 )
 
 type logAdapter struct {

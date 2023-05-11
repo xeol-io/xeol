@@ -11,7 +11,7 @@ import (
 
 	"github.com/spf13/afero"
 
-	"github.com/noqcks/xeol/internal/file"
+	"github.com/xeol-io/xeol/internal/file"
 )
 
 // ListingEntry represents basic metadata about a database archive such as what is in the archive (built/version)

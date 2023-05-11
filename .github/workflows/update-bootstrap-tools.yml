@@ -14,7 +14,7 @@ permissions:
 jobs:
   update-bootstrap-tools:
     runs-on: ubuntu-latest
-    if: github.repository == 'noqcks/xeol' # only run for main repo
+    if: github.repository == 'xeol-io/xeol' # only run for main repo
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v2.5.0
 

@@ -7,10 +7,10 @@ import (
 	"github.com/Masterminds/semver"
 	"github.com/anchore/syft/syft/linux"
 
-	"github.com/noqcks/xeol/internal/log"
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/internal/log"
+	"github.com/xeol-io/xeol/xeol/eol"
+	"github.com/xeol-io/xeol/xeol/match"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 func ByPackagePURL(store eol.Provider, p pkg.Package, _ match.MatcherType, eolMatchDate time.Time) (match.Match, error) {

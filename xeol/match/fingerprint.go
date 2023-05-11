@@ -5,7 +5,7 @@ import (
 
 	"github.com/mitchellh/hashstructure/v2"
 
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 type Fingerprint struct {

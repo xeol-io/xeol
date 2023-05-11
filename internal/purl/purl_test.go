@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 func TestShortPurl(t *testing.T) {

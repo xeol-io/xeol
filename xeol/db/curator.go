@@ -17,13 +17,13 @@ import (
 	"github.com/wagoodman/go-partybus"
 	"github.com/wagoodman/go-progress"
 
-	"github.com/noqcks/xeol/internal/bus"
-	"github.com/noqcks/xeol/internal/file"
-	"github.com/noqcks/xeol/internal/log"
-	xeolDB "github.com/noqcks/xeol/xeol/db/v1"
-	"github.com/noqcks/xeol/xeol/db/v1/store"
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/event"
+	"github.com/xeol-io/xeol/internal/bus"
+	"github.com/xeol-io/xeol/internal/file"
+	"github.com/xeol-io/xeol/internal/log"
+	xeolDB "github.com/xeol-io/xeol/xeol/db/v1"
+	"github.com/xeol-io/xeol/xeol/db/v1/store"
+	"github.com/xeol-io/xeol/xeol/eol"
+	"github.com/xeol-io/xeol/xeol/event"
 )
 
 const (

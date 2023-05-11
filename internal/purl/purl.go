@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 func ShortPurl(pkg pkg.Package) (string, error) {

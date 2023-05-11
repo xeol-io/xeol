@@ -3,7 +3,7 @@ package distro
 import (
 	"strings"
 
-	"github.com/noqcks/xeol/internal/log"
+	"github.com/xeol-io/xeol/internal/log"
 )
 
 // CPEName returns the CPE name for the distro.

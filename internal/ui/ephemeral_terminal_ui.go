@@ -15,9 +15,9 @@ import (
 	"github.com/wagoodman/go-partybus"
 	"github.com/wagoodman/jotframe/pkg/frame"
 
-	"github.com/noqcks/xeol/internal/log"
-	xeolEvent "github.com/noqcks/xeol/xeol/event"
-	"github.com/noqcks/xeol/xeol/ui"
+	"github.com/xeol-io/xeol/internal/log"
+	xeolEvent "github.com/xeol-io/xeol/xeol/event"
+	"github.com/xeol-io/xeol/xeol/ui"
 )
 
 // ephemeralTerminalUI provides an "ephemeral" terminal user interface to display the application state dynamically.

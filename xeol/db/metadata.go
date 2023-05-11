@@ -9,8 +9,8 @@ import (
 
 	"github.com/spf13/afero"
 
-	"github.com/noqcks/xeol/internal/file"
-	"github.com/noqcks/xeol/internal/log"
+	"github.com/xeol-io/xeol/internal/file"
+	"github.com/xeol-io/xeol/internal/log"
 )
 
 const MetadataFileName = "metadata.json"

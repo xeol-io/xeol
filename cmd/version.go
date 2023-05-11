@@ -7,8 +7,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/noqcks/xeol/internal"
-	"github.com/noqcks/xeol/internal/version"
+	"github.com/xeol-io/xeol/internal"
+	"github.com/xeol-io/xeol/internal/version"
 )
 
 var versionOutputFormat string

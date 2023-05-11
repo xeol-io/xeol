@@ -1,10 +1,10 @@
 # xeol
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/noqcks/xeol)](https://goreportcard.com/report/github.com/noqcks/xeol)
-[![GitHub release](https://img.shields.io/github/release/noqcks/xeol.svg)](https://github.com/noqcks/xeol/releases/latest)
-[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/noqcks/xeol.svg)](https://github.com/noqcks/xeol)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/noqcks/xeol/blob/main/LICENSE)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/noqcks/xeol/badge)](https://api.securityscorecards.dev/projects/github.com/noqcks/xeol)
+[![Go Report Card](https://goreportcard.com/badge/github.com/xeol-io/xeol)](https://goreportcard.com/report/github.com/xeol-io/xeol)
+[![GitHub release](https://img.shields.io/github/release/xeol-io/xeol.svg)](https://github.com/xeol-io/xeol/releases/latest)
+[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/xeol-io/xeol.svg)](https://github.com/xeol-io/xeol)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/xeol-io/xeol/blob/main/LICENSE)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol/badge)](https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol)
 
 
 An End Of Life (EOL) package scannner for container images and filesystems.
@@ -17,7 +17,7 @@ An End Of Life (EOL) package scannner for container images and filesystems.
 ### Recommended
 
 ```bash
-curl -sSfL https://raw.githubusercontent.com/noqcks/xeol/main/install.sh | sh -s -- -b /usr/local/bin
+curl -sSfL https://raw.githubusercontent.com/xeol-io/xeol/main/install.sh | sh -s -- -b /usr/local/bin
 ```
 
 Check installation or check version of xeol
@@ -28,13 +28,13 @@ xeol version
 You can also choose another destination directory and release version for the installation. The destination directory doesn't need to be `/usr/local/bin`, it just needs to be a location found in the user's PATH and writable by the user that's installing xeol.
 
 ```
-curl -sSfL https://raw.githubusercontent.com/noqcks/xeol/main/install.sh | sh -s -- -b <DESTINATION_DIR> <RELEASE_VERSION>
+curl -sSfL https://raw.githubusercontent.com/xeol-io/xeol/main/install.sh | sh -s -- -b <DESTINATION_DIR> <RELEASE_VERSION>
 ```
 
 ### Homebrew
 
 ```bash
-brew tap noqcks/xeol
+brew tap xeol-io/xeol
 brew install xeol
 ```
 
@@ -105,7 +105,7 @@ xeol sbom:./sbom.json
 cat ./sbom.json | xeol
 ```
 
-xeol supports input of [Syft](https://github.com/noqcks/xeol), [SPDX](https://spdx.dev/), and [CycloneDX](https://cyclonedx.org/)
+xeol supports input of [Syft](https://github.com/xeol-io/xeol), [SPDX](https://spdx.dev/), and [CycloneDX](https://cyclonedx.org/)
 SBOM formats. If Syft has generated any of these file types, they should have the appropriate information to work properly with xeol.
 
 

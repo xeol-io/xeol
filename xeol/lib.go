@@ -7,14 +7,14 @@ import (
 	"github.com/anchore/syft/syft/linux"
 	"github.com/wagoodman/go-partybus"
 
-	"github.com/noqcks/xeol/internal/bus"
-	"github.com/noqcks/xeol/internal/log"
-	"github.com/noqcks/xeol/xeol/db"
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/noqcks/xeol/xeol/matcher"
-	"github.com/noqcks/xeol/xeol/pkg"
-	"github.com/noqcks/xeol/xeol/store"
-	"github.com/noqcks/xeol/xeol/xeolerr"
+	"github.com/xeol-io/xeol/internal/bus"
+	"github.com/xeol-io/xeol/internal/log"
+	"github.com/xeol-io/xeol/xeol/db"
+	"github.com/xeol-io/xeol/xeol/match"
+	"github.com/xeol-io/xeol/xeol/matcher"
+	"github.com/xeol-io/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/store"
+	"github.com/xeol-io/xeol/xeol/xeolerr"
 )
 
 func SetLogger(logger logger.Logger) {

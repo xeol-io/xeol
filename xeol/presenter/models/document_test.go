@@ -8,9 +8,9 @@ import (
 	syftSource "github.com/anchore/syft/syft/source"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/eol"
+	"github.com/xeol-io/xeol/xeol/match"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 func TestPackagesAreSorted(t *testing.T) {

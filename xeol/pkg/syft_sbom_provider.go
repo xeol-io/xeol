@@ -12,8 +12,8 @@ import (
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/mitchellh/go-homedir"
 
-	"github.com/noqcks/xeol/internal"
-	"github.com/noqcks/xeol/internal/log"
+	"github.com/xeol-io/xeol/internal"
+	"github.com/xeol-io/xeol/internal/log"
 )
 
 type errEmptySBOM struct {

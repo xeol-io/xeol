@@ -15,7 +15,7 @@ import (
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
 
-	"github.com/noqcks/xeol/internal"
+	"github.com/xeol-io/xeol/internal"
 )
 
 var ErrApplicationConfigNotFound = fmt.Errorf("application config not found")

@@ -5,11 +5,11 @@ import (
 
 	"github.com/anchore/syft/syft/linux"
 
-	"github.com/noqcks/xeol/internal/purl"
-	xeolDB "github.com/noqcks/xeol/xeol/db/v1"
-	"github.com/noqcks/xeol/xeol/distro"
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/internal/purl"
+	xeolDB "github.com/xeol-io/xeol/xeol/db/v1"
+	"github.com/xeol-io/xeol/xeol/distro"
+	"github.com/xeol-io/xeol/xeol/eol"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 var _ eol.Provider = (*EolProvider)(nil)

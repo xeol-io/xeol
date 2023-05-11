@@ -11,9 +11,9 @@ import (
 	syftSource "github.com/anchore/syft/syft/source"
 	"github.com/google/uuid"
 
-	"github.com/noqcks/xeol/xeol/eol"
-	"github.com/noqcks/xeol/xeol/match"
-	"github.com/noqcks/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/eol"
+	"github.com/xeol-io/xeol/xeol/match"
+	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 func GenerateAnalysis(t *testing.T, scheme syftSource.Scheme) (match.Matches, []pkg.Package, pkg.Context, interface{}, interface{}) {

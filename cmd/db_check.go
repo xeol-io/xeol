@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/noqcks/xeol/xeol/db"
+	"github.com/xeol-io/xeol/xeol/db"
 )
 
 var dbCheckCmd = &cobra.Command{
