@@ -90,6 +90,41 @@
      "modularityLabel": ""
     }
    }
+  },
+  {
+   "Cycle": {
+    "ProductName": "Ubuntu",
+    "ReleaseCycle": "16.04",
+    "Eol": "2021-04-02",
+    "LatestRelease": "",
+    "LatestReleaseDate": "2016-07-31",
+    "ReleaseDate": "2016-07-31"
+   },
+   "Package": {
+    "ID": "",
+    "Name": "",
+    "Version": "",
+    "Locations": {},
+    "Language": "",
+    "Licenses": null,
+    "Type": "",
+    "CPEs": null,
+    "PURL": "",
+    "Upstreams": null,
+    "MetadataType": "",
+    "Metadata": null
+   },
+   "artifact": {
+    "name": "ubuntu",
+    "version": "16.04",
+    "type": "os",
+    "locations": [],
+    "language": "",
+    "licenses": [],
+    "cpes": [],
+    "purl": "",
+    "upstreams": []
+   }
   }
  ],
  "source": {

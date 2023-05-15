@@ -82,7 +82,6 @@ func generateMatches(t *testing.T, p, p2 pkg.Package) match.Matches {
 			Package: p,
 		},
 		{
-
 			Cycle: eol.Cycle{
 				ProductName:       "MongoDB Server",
 				ReleaseDate:       "2016-07-31",
@@ -92,6 +91,22 @@ func generateMatches(t *testing.T, p, p2 pkg.Package) match.Matches {
 				LatestReleaseDate: "2016-07-31",
 			},
 			Package: p2,
+		},
+		{
+			Cycle: eol.Cycle{
+				ProductName:       "Ubuntu",
+				ReleaseDate:       "2016-07-31",
+				ReleaseCycle:      "16.04",
+				Eol:               "2021-04-02",
+				EolBool:           false,
+				LatestReleaseDate: "2016-07-31",
+			},
+			Package: pkg.Package{
+				ID:      pkg.ID(uuid.NewString()),
+				Name:    "ubuntu",
+				Version: "16.04",
+				Type:    "os",
+			},
 		},
 	}
 

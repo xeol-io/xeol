@@ -22,13 +22,20 @@ func NewDocument(packages []pkg.Package, context pkg.Context, matches match.Matc
 	// we must preallocate the findings to ensure the JSON document does not show "null" when no matches are found
 	var findings = make([]Match, 0)
 	for _, m := range matches.Sorted() {
-		p := pkg.ByID(m.Package.ID, packages)
-		if p == nil {
-			return Document{}, fmt.Errorf("unable to find package in collection: %+v", p)
-		}
+		// syft doesn't treat OS packages as real "packages", so they won't exist in the
+		// packages collection. we need to handle this case separately.
+		if m.Package.Type == "os" {
+			matchModel := newMatch(m, m.Package)
+			findings = append(findings, *matchModel)
+		} else {
+			p := pkg.ByID(m.Package.ID, packages)
+			if p == nil {
+				return Document{}, fmt.Errorf("unable to find package in collection: %+v", p)
+			}
 
-		matchModel := newMatch(m, *p)
-		findings = append(findings, *matchModel)
+			matchModel := newMatch(m, *p)
+			findings = append(findings, *matchModel)
+		}
 	}
 
 	var src *source
