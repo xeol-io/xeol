@@ -1,3 +1,4 @@
 NAME       VERSION  EOL         DAYS EOL  TYPE 
 package-1  1.1.1    2018-07-31  1614      rpm   
 package-2  2.2.2    YES         -         deb   
+ubuntu     16.04    2021-04-02  638       os    

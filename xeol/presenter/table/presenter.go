@@ -18,14 +18,14 @@ var now = time.Now
 
 // Presenter is a generic struct for holding fields needed for reporting
 type Presenter struct {
-	results  match.Matches
+	matches  match.Matches
 	packages []pkg.Package
 }
 
 // NewPresenter is a *Presenter constructor
 func NewPresenter(pb models.PresenterConfig) *Presenter {
 	return &Presenter{
-		results:  pb.Matches,
+		matches:  pb.Matches,
 		packages: pb.Packages,
 	}
 }
@@ -36,7 +36,7 @@ func (pres *Presenter) Present(output io.Writer) error {
 
 	columns := []string{"NAME", "VERSION", "EOL", "DAYS EOL", "TYPE"}
 	// Generate rows for matches
-	for m := range pres.results.Enumerate() {
+	for m := range pres.matches.Enumerate() {
 		if m.Package.Name == "" {
 			continue
 		}

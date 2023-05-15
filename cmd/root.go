@@ -214,7 +214,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		var store *store.Store
 		var status *db.Status
 		var dbCloser *db.Closer
-		var sbomPackages []pkg.Package
+		var packages []pkg.Package
 		var sbom *sbom.SBOM
 		var pkgContext pkg.Context
 		var wg = &sync.WaitGroup{}
@@ -236,7 +236,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		go func() {
 			defer wg.Done()
 			log.Debugf("gathering packages")
-			sbomPackages, pkgContext, sbom, err = pkg.Provide(userInput, getProviderConfig())
+			packages, pkgContext, sbom, err = pkg.Provide(userInput, getProviderConfig())
 			if err != nil {
 				errs <- fmt.Errorf("failed to catalog: %w", err)
 				return
@@ -257,7 +257,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 			Distro:   distroMatcher.MatcherConfig(appConfig.Match.Distro),
 		})
 
-		allMatches, err := xeol.FindEol(*store, pkgContext.Distro, matchers, sbomPackages, failOnEolFound, eolMatchDate)
+		allMatches, err := xeol.FindEol(*store, pkgContext.Distro, matchers, packages, failOnEolFound, eolMatchDate)
 		if err != nil {
 			errs <- err
 			if !errors.Is(err, xeolerr.ErrEolFound) {
@@ -267,7 +267,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 
 		pb := models.PresenterConfig{
 			Matches:   allMatches,
-			Packages:  sbomPackages,
+			Packages:  packages,
 			SBOM:      sbom,
 			Context:   pkgContext,
 			AppConfig: appConfig,
