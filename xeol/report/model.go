@@ -6,7 +6,7 @@ import (
 )
 
 type XeolEventPayload struct {
-	Matches   match.Matches
+	Matches   []match.Match
 	Packages  []pkg.Package
 	Context   pkg.Context
 	AppConfig interface{}

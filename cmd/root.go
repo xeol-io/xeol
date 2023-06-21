@@ -305,7 +305,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 
 		if appConfig.APIKey != "" && appConfig.APIURL != "" {
 			x := xeolio.NewXeolEvent(appConfig.APIURL, appConfig.APIKey, report.XeolEventPayload{
-				Matches:   allMatches,
+				Matches:   allMatches.Sorted(),
 				Packages:  packages,
 				Context:   pkgContext,
 				AppConfig: appConfig,
