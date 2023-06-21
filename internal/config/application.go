@@ -10,6 +10,7 @@ import (
 
 	"github.com/adrg/xdg"
 	"github.com/anchore/go-logger"
+	git "github.com/go-git/go-git/v5"
 	"github.com/karrick/tparse"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
@@ -23,6 +24,8 @@ var ErrApplicationConfigNotFound = fmt.Errorf("application config not found")
 type defaultValueLoader interface {
 	loadDefaultValues(*viper.Viper)
 }
+
+const XeolAPIUrl = "https://zpegvh2jmi.execute-api.us-east-1.amazonaws.com/v1/scan"
 
 type parser interface {
 	parseConfigValues() error
@@ -42,6 +45,10 @@ type Application struct {
 	Lookahead              string         `yaml:"lookahead" json:"lookahead" mapstructure:"lookahead"`
 	EolMatchDate           time.Time      `yaml:"-" json:"-"`
 	FailOnEolFound         bool           `yaml:"fail-on-eol-found" json:"fail-on-eol-found" mapstructure:"fail-on-eol-found"` // whether to exit with a non-zero exit code if any EOLs are found
+	APIKey                 string         `yaml:"api-key" json:"api-key" mapstructure:"api-key"`
+	APIURL                 string         `yaml:"api-url" json:"api-url" mapstructure:"api-url"`
+	ProjectName            string         `yaml:"project-name" json:"project-name" mapstructure:"project-name"`
+	ImagePath              string         `yaml:"image-path" json:"image-path" mapstructure:"image-path"`
 	Registry               registry       `yaml:"registry" json:"registry" mapstructure:"registry"`
 	Platform               string         `yaml:"platform" json:"platform" mapstructure:"platform"` // --platform, override the target platform for a container image
 	Name                   string         `yaml:"name" json:"name" mapstructure:"name"`
@@ -83,6 +90,9 @@ func (cfg Application) loadDefaultValues(v *viper.Viper) {
 	// set the default values for primitive fields in this struct
 	v.SetDefault("check-for-app-update", true)
 	v.SetDefault("fail-on-eol-found", false)
+	v.SetDefault("project-name", getDefaultProjectName())
+	v.SetDefault("api-url", XeolAPIUrl)
+	v.SetDefault("image-path", "Dockerfile")
 	v.SetDefault("default-image-pull-source", "")
 
 	// for each field in the configuration struct, see if the field implements the defaultValueLoader interface and invoke it if it does
@@ -94,6 +104,16 @@ func (cfg Application) loadDefaultValues(v *viper.Viper) {
 			loadable.loadDefaultValues(v)
 		}
 	}
+}
+
+func getDefaultProjectName() string {
+	repo, err := git.PlainOpen(".")
+	if err != nil {
+		return ""
+	}
+
+	p := NewProject(repo)
+	return p.Name
 }
 
 // readConfig attempts to read the given config path from disk or discover an alternate store location

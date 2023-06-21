@@ -22,6 +22,7 @@ import (
 	"github.com/xeol-io/xeol/internal/log"
 	"github.com/xeol-io/xeol/internal/ui"
 	"github.com/xeol-io/xeol/internal/version"
+	"github.com/xeol-io/xeol/internal/xeolio"
 	"github.com/xeol-io/xeol/xeol"
 	"github.com/xeol-io/xeol/xeol/db"
 	"github.com/xeol-io/xeol/xeol/event"
@@ -31,6 +32,7 @@ import (
 	"github.com/xeol-io/xeol/xeol/pkg"
 	"github.com/xeol-io/xeol/xeol/presenter"
 	"github.com/xeol-io/xeol/xeol/presenter/models"
+	"github.com/xeol-io/xeol/xeol/report"
 	"github.com/xeol-io/xeol/xeol/store"
 	"github.com/xeol-io/xeol/xeol/xeolerr"
 )
@@ -110,6 +112,21 @@ func setRootFlags(flags *pflag.FlagSet) {
 		fmt.Sprintf("report output formatter, formats=%v", presenter.AvailableFormats),
 	)
 
+	flags.StringP(
+		"project-name", "", "",
+		"set the name of the project being analyzed for xeol.io.",
+	)
+
+	flags.StringP(
+		"image-path", "", "",
+		"set the path to the image being analyzed for xeol.io (e.g /src/Dockerfile)",
+	)
+
+	flags.StringP(
+		"api-key", "", "",
+		"set the API key for xeol.io. When this is set, scans will be uploaded to xeol.io.",
+	)
+
 	flags.BoolP(
 		"fail-on-eol-found", "f", false,
 		"set the return code to 1 if an EOL package is found",
@@ -141,6 +158,18 @@ func bindRootConfigOptions(flags *pflag.FlagSet) error {
 	}
 
 	if err := viper.BindPFlag("fail-on-eol-found", flags.Lookup("fail-on-eol-found")); err != nil {
+		return err
+	}
+
+	if err := viper.BindPFlag("project-name", flags.Lookup("project-name")); err != nil {
+		return err
+	}
+
+	if err := viper.BindPFlag("image-path", flags.Lookup("image-path")); err != nil {
+		return err
+	}
+
+	if err := viper.BindPFlag("api-key", flags.Lookup("api-key")); err != nil {
 		return err
 	}
 
@@ -272,6 +301,19 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 			Context:   pkgContext,
 			AppConfig: appConfig,
 			DBStatus:  status,
+		}
+
+		if appConfig.APIKey != "" && appConfig.APIURL != "" {
+			x := xeolio.NewXeolEvent(appConfig.APIURL, appConfig.APIKey, report.XeolEventPayload{
+				Matches:   allMatches,
+				Packages:  packages,
+				Context:   pkgContext,
+				AppConfig: appConfig,
+			})
+			if err := x.Send(); err != nil {
+				errs <- fmt.Errorf("failed to send eol event: %w", err)
+				return
+			}
 		}
 
 		bus.Publish(partybus.Event{
