@@ -25,7 +25,7 @@ type defaultValueLoader interface {
 	loadDefaultValues(*viper.Viper)
 }
 
-const XeolAPIUrl = "https://zpegvh2jmi.execute-api.us-east-1.amazonaws.com/v1/scan"
+const XeolAPIUrl = "https://engine.xeol.io/v1/scan"
 
 type parser interface {
 	parseConfigValues() error
