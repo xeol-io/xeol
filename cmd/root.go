@@ -32,6 +32,7 @@ import (
 	"github.com/xeol-io/xeol/xeol/pkg"
 	"github.com/xeol-io/xeol/xeol/presenter"
 	"github.com/xeol-io/xeol/xeol/presenter/models"
+	"github.com/xeol-io/xeol/xeol/report"
 	"github.com/xeol-io/xeol/xeol/store"
 	"github.com/xeol-io/xeol/xeol/xeolerr"
 )
@@ -303,7 +304,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		}
 
 		if appConfig.APIKey != "" && appConfig.APIURL != "" {
-			x := xeolio.NewXeolEvent(appConfig.APIURL, appConfig.APIKey, xeolio.XeolEventPayload{
+			x := xeolio.NewXeolEvent(appConfig.APIURL, appConfig.APIKey, report.XeolEventPayload{
 				Matches:   allMatches,
 				Packages:  packages,
 				Context:   pkgContext,

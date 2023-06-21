@@ -8,21 +8,13 @@ import (
 	"time"
 
 	"github.com/xeol-io/xeol/internal/log"
-	"github.com/xeol-io/xeol/xeol/match"
-	"github.com/xeol-io/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/report"
 )
 
 type XeolEvent struct {
 	URL     string
 	APIKey  string
-	Payload XeolEventPayload
-}
-
-type XeolEventPayload struct {
-	Matches   match.Matches
-	Packages  []pkg.Package
-	Context   pkg.Context
-	AppConfig interface{}
+	Payload report.XeolEventPayload
 }
 
 func (x *XeolEvent) Send() error {
@@ -56,7 +48,7 @@ func (x *XeolEvent) Send() error {
 	return nil
 }
 
-func NewXeolEvent(url string, apiKey string, payload XeolEventPayload) *XeolEvent {
+func NewXeolEvent(url string, apiKey string, payload report.XeolEventPayload) *XeolEvent {
 	return &XeolEvent{
 		URL:     url,
 		APIKey:  apiKey,
