@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/xeol-io/xeol/internal/log"
 	"github.com/xeol-io/xeol/xeol/match"
@@ -13,7 +14,7 @@ import (
 
 type XeolEvent struct {
 	URL     string
-	ApiKey  string
+	APIKey  string
 	Payload XeolEventPayload
 }
 
@@ -36,9 +37,11 @@ func (x *XeolEvent) Send() error {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("ApiKey %v", x.ApiKey))
+	req.Header.Set("Authorization", fmt.Sprintf("ApiKey %v", x.APIKey))
 
-	client := &http.Client{}
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+	}
 	resp, err := client.Do(req)
 	if err != nil {
 		return fmt.Errorf("xeol.io API request failed: %v", err)
@@ -56,7 +59,7 @@ func (x *XeolEvent) Send() error {
 func NewXeolEvent(url string, apiKey string, payload XeolEventPayload) *XeolEvent {
 	return &XeolEvent{
 		URL:     url,
-		ApiKey:  apiKey,
+		APIKey:  apiKey,
 		Payload: payload,
 	}
 }

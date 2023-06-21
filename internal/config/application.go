@@ -25,7 +25,7 @@ type defaultValueLoader interface {
 	loadDefaultValues(*viper.Viper)
 }
 
-const XEOL_API_URL = "https://engine.xeol.io/v1/scan"
+const XeolAPIUrl = "https://zpegvh2jmi.execute-api.us-east-1.amazonaws.com/v1/scan"
 
 type parser interface {
 	parseConfigValues() error
@@ -45,8 +45,8 @@ type Application struct {
 	Lookahead              string         `yaml:"lookahead" json:"lookahead" mapstructure:"lookahead"`
 	EolMatchDate           time.Time      `yaml:"-" json:"-"`
 	FailOnEolFound         bool           `yaml:"fail-on-eol-found" json:"fail-on-eol-found" mapstructure:"fail-on-eol-found"` // whether to exit with a non-zero exit code if any EOLs are found
-	ApiKey                 string         `yaml:"api-key" json:"api-key" mapstructure:"api-key"`
-	ApiURL                 string         `yaml:"api-url" json:"api-url" mapstructure:"api-url"`
+	APIKey                 string         `yaml:"api-key" json:"api-key" mapstructure:"api-key"`
+	APIURL                 string         `yaml:"api-url" json:"api-url" mapstructure:"api-url"`
 	ProjectName            string         `yaml:"project-name" json:"project-name" mapstructure:"project-name"`
 	ImagePath              string         `yaml:"image-path" json:"image-path" mapstructure:"image-path"`
 	Registry               registry       `yaml:"registry" json:"registry" mapstructure:"registry"`
@@ -91,7 +91,7 @@ func (cfg Application) loadDefaultValues(v *viper.Viper) {
 	v.SetDefault("check-for-app-update", true)
 	v.SetDefault("fail-on-eol-found", false)
 	v.SetDefault("project-name", getDefaultProjectName())
-	v.SetDefault("api-url", XEOL_API_URL)
+	v.SetDefault("api-url", XeolAPIUrl)
 	v.SetDefault("image-path", "Dockerfile")
 	v.SetDefault("default-image-pull-source", "")
 

@@ -302,8 +302,8 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 			DBStatus:  status,
 		}
 
-		if appConfig.ApiKey != "" && appConfig.ApiURL != "" {
-			x := xeolio.NewXeolEvent(appConfig.ApiURL, appConfig.ApiKey, xeolio.XeolEventPayload{
+		if appConfig.APIKey != "" && appConfig.APIURL != "" {
+			x := xeolio.NewXeolEvent(appConfig.APIURL, appConfig.APIKey, xeolio.XeolEventPayload{
 				Matches:   allMatches,
 				Packages:  packages,
 				Context:   pkgContext,
