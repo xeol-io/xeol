@@ -10,7 +10,6 @@ import (
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/sbom"
 	syftSource "github.com/anchore/syft/syft/source"
-
 	"github.com/google/uuid"
 
 	"github.com/xeol-io/xeol/xeol/eol"
