@@ -5,10 +5,12 @@ import (
 	"testing"
 
 	"github.com/anchore/stereoscope/pkg/image"
+	"github.com/anchore/syft/syft/file"
 	"github.com/anchore/syft/syft/linux"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/sbom"
 	syftSource "github.com/anchore/syft/syft/source"
+
 	"github.com/google/uuid"
 
 	"github.com/xeol-io/xeol/xeol/eol"
@@ -31,12 +33,12 @@ func SBOMFromPackages(t *testing.T, packages []pkg.Package) *sbom.SBOM {
 
 	sbom := &sbom.SBOM{
 		Artifacts: sbom.Artifacts{
-			PackageCatalog: syftPkg.NewCatalog(),
+			Packages: syftPkg.NewCollection(),
 		},
 	}
 
 	for _, p := range packages {
-		sbom.Artifacts.PackageCatalog.Add(toSyftPkg(p))
+		sbom.Artifacts.Packages.Add(toSyftPkg(p))
 	}
 
 	return sbom
@@ -124,7 +126,7 @@ func generatePackages(t *testing.T) []pkg.Package {
 			Name:      "package-1",
 			Version:   "1.1.1",
 			Type:      syftPkg.RpmPkg,
-			Locations: syftSource.NewLocationSet(syftSource.NewVirtualLocation("/foo/bar/somefile-1.txt", "somefile-1.txt")),
+			Locations: file.NewLocationSet(file.NewVirtualLocation("/foo/bar/somefile-1.txt", "somefile-1.txt")),
 			Upstreams: []pkg.UpstreamPackage{
 				{
 					Name:    "nothing",
@@ -141,7 +143,7 @@ func generatePackages(t *testing.T) []pkg.Package {
 			Name:      "package-2",
 			Version:   "2.2.2",
 			Type:      syftPkg.DebPkg,
-			Locations: syftSource.NewLocationSet(syftSource.NewVirtualLocation("/foo/bar/somefile-2.txt", "somefile-2.txt")),
+			Locations: file.NewLocationSet(file.NewVirtualLocation("/foo/bar/somefile-2.txt", "somefile-2.txt")),
 			Licenses:  []string{"MIT", "Apache-2.0"},
 		},
 	}
