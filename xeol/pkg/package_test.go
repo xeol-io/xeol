@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/anchore/syft/syft/cpe"
+	"github.com/anchore/syft/syft/file"
 	syftFile "github.com/anchore/syft/syft/file"
 	syftPkg "github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/source"
 	"github.com/scylladb/go-set"
 	"github.com/scylladb/go-set/strset"
 	"github.com/stretchr/testify/assert"
@@ -77,7 +77,6 @@ func TestNew(t *testing.T) {
 					Release:   "release-info",
 					SourceRpm: "sqlite-3.26.0-6.el8.src.rpm",
 					Size:      40,
-					License:   "license-info",
 					Vendor:    "vendor-info",
 					Files: []syftPkg.RpmdbFileRecord{
 						{
@@ -180,7 +179,6 @@ func TestNew(t *testing.T) {
 					OriginPackage: "libcurl",
 					Maintainer:    "somone",
 					Version:       "1.2.3",
-					License:       "Apache",
 					Architecture:  "a",
 					URL:           "a",
 					Description:   "a",
@@ -214,7 +212,6 @@ func TestNew(t *testing.T) {
 				Metadata: syftPkg.PythonPackageMetadata{
 					Name:                 "a",
 					Version:              "a",
-					License:              "a",
 					Author:               "a",
 					AuthorEmail:          "a",
 					Platform:             "a",
@@ -504,6 +501,25 @@ func TestNew(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "r-description-file-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.RDescriptionFileMetadataType,
+				Metadata: syftPkg.RDescriptionFileMetadata{
+					Title:            "a",
+					Description:      "a",
+					Author:           "a",
+					Maintainer:       "a",
+					URL:              []string{"a"},
+					Repository:       "a",
+					Built:            "a",
+					NeedsCompilation: true,
+					Imports:          []string{"a"},
+					Depends:          []string{"a"},
+					Suggests:         []string{"a"},
+				},
+			},
+		},
 	}
 
 	// capture each observed metadata type, we should see all of them relate to what syft provides by the end of testing
@@ -539,8 +555,8 @@ func TestFromCollection_DoesNotPanic(t *testing.T) {
 	examplePackage := syftPkg.Package{
 		Name:    "test",
 		Version: "1.2.3",
-		Locations: source.NewLocationSet(
-			source.NewLocation("/test-path"),
+		Locations: file.NewLocationSet(
+			file.NewLocation("/test-path"),
 		),
 		Type: syftPkg.NpmPkg,
 	}
