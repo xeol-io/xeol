@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/anchore/syft/syft/cpe"
+	"github.com/anchore/syft/syft/file"
 	syftFile "github.com/anchore/syft/syft/file"
 	syftPkg "github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/source"
 	"github.com/scylladb/go-set"
 	"github.com/scylladb/go-set/strset"
 	"github.com/stretchr/testify/assert"
@@ -77,7 +77,6 @@ func TestNew(t *testing.T) {
 					Release:   "release-info",
 					SourceRpm: "sqlite-3.26.0-6.el8.src.rpm",
 					Size:      40,
-					License:   "license-info",
 					Vendor:    "vendor-info",
 					Files: []syftPkg.RpmdbFileRecord{
 						{
@@ -180,7 +179,6 @@ func TestNew(t *testing.T) {
 					OriginPackage: "libcurl",
 					Maintainer:    "somone",
 					Version:       "1.2.3",
-					License:       "Apache",
 					Architecture:  "a",
 					URL:           "a",
 					Description:   "a",
@@ -214,7 +212,6 @@ func TestNew(t *testing.T) {
 				Metadata: syftPkg.PythonPackageMetadata{
 					Name:                 "a",
 					Version:              "a",
-					License:              "a",
 					Author:               "a",
 					AuthorEmail:          "a",
 					Platform:             "a",
@@ -415,6 +412,19 @@ func TestNew(t *testing.T) {
 			},
 		},
 		{
+			name: "python-requirements-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.PythonRequirementsMetadataType,
+				Metadata: syftPkg.PythonRequirementsMetadata{
+					Name:              "a",
+					Extras:            []string{"a"},
+					VersionConstraint: "a",
+					URL:               "a",
+					Markers:           map[string]string{"a": "a"},
+				},
+			},
+		},
+		{
 			name: "binary-metadata",
 			syftPkg: syftPkg.Package{
 				MetadataType: syftPkg.BinaryMetadataType,
@@ -433,6 +443,80 @@ func TestNew(t *testing.T) {
 				MetadataType: syftPkg.NixStoreMetadataType,
 				Metadata: syftPkg.NixStoreMetadata{
 					Files: []string{},
+				},
+			},
+		},
+		{
+			name: "nix-store-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.NixStoreMetadataType,
+				Metadata: syftPkg.NixStoreMetadata{
+					OutputHash: "a",
+					Output:     "a",
+					Files: []string{
+						"a",
+					},
+				},
+			},
+		},
+		{
+			name: "linux-kernel-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.LinuxKernelMetadataType,
+				Metadata: syftPkg.LinuxKernelMetadata{
+					Name:            "a",
+					Architecture:    "a",
+					Version:         "a",
+					ExtendedVersion: "a",
+					BuildTime:       "a",
+					Author:          "a",
+					Format:          "a",
+					RWRootFS:        true,
+					SwapDevice:      10,
+					RootDevice:      11,
+					VideoMode:       "a",
+				},
+			},
+		},
+		{
+			name: "linux-kernel-module-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.LinuxKernelModuleMetadataType,
+				Metadata: syftPkg.LinuxKernelModuleMetadata{
+					Name:          "a",
+					Version:       "a",
+					SourceVersion: "a",
+					Path:          "a",
+					Description:   "a",
+					Author:        "a",
+					License:       "a",
+					KernelVersion: "a",
+					VersionMagic:  "a",
+					Parameters: map[string]syftPkg.LinuxKernelModuleParameter{
+						"a": {
+							Type:        "a",
+							Description: "a",
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "r-description-file-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.RDescriptionFileMetadataType,
+				Metadata: syftPkg.RDescriptionFileMetadata{
+					Title:            "a",
+					Description:      "a",
+					Author:           "a",
+					Maintainer:       "a",
+					URL:              []string{"a"},
+					Repository:       "a",
+					Built:            "a",
+					NeedsCompilation: true,
+					Imports:          []string{"a"},
+					Depends:          []string{"a"},
+					Suggests:         []string{"a"},
 				},
 			},
 		},
@@ -465,31 +549,31 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func TestFromCatalog_DoesNotPanic(t *testing.T) {
-	catalog := syftPkg.NewCatalog()
+func TestFromCollection_DoesNotPanic(t *testing.T) {
+	collection := syftPkg.NewCollection()
 
 	examplePackage := syftPkg.Package{
 		Name:    "test",
 		Version: "1.2.3",
-		Locations: source.NewLocationSet(
-			source.NewLocation("/test-path"),
+		Locations: file.NewLocationSet(
+			file.NewLocation("/test-path"),
 		),
 		Type: syftPkg.NpmPkg,
 	}
 
-	catalog.Add(examplePackage)
+	collection.Add(examplePackage)
 	// add it again!
-	catalog.Add(examplePackage)
+	collection.Add(examplePackage)
 
 	assert.NotPanics(t, func() {
-		_ = FromCatalog(catalog, SynthesisConfig{})
+		_ = FromCollection(collection, SynthesisConfig{})
 	})
 }
 
-func TestFromCatalog_GeneratesCPEs(t *testing.T) {
-	catalog := syftPkg.NewCatalog()
+func TestFromCollection_GeneratesCPEs(t *testing.T) {
+	collection := syftPkg.NewCollection()
 
-	catalog.Add(syftPkg.Package{
+	collection.Add(syftPkg.Package{
 		Name:    "first",
 		Version: "1",
 		CPEs: []cpe.CPE{
@@ -497,18 +581,18 @@ func TestFromCatalog_GeneratesCPEs(t *testing.T) {
 		},
 	})
 
-	catalog.Add(syftPkg.Package{
+	collection.Add(syftPkg.Package{
 		Name:    "second",
 		Version: "2",
 	})
 
 	// doesn't generate cpes when no flag
-	pkgs := FromCatalog(catalog, SynthesisConfig{})
+	pkgs := FromCollection(collection, SynthesisConfig{})
 	assert.Len(t, pkgs[0].CPEs, 1)
 	assert.Len(t, pkgs[1].CPEs, 0)
 
 	// does generate cpes with the flag
-	pkgs = FromCatalog(catalog, SynthesisConfig{
+	pkgs = FromCollection(collection, SynthesisConfig{
 		GenerateMissingCPEs: true,
 	})
 	assert.Len(t, pkgs[0].CPEs, 1)

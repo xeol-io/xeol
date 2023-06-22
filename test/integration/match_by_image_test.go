@@ -317,7 +317,7 @@ func TestMatchByImage(t *testing.T) {
 			// enable all catalogers to cover non default cases
 			config.Catalogers = []string{"all"}
 
-			theCatalog, _, theDistro, err := syft.CatalogPackages(theSource, config)
+			collection, _, theDistro, err := syft.CatalogPackages(theSource, config)
 			require.NoError(t, err)
 
 			matchers := matcher.NewDefaultMatchers(matcher.Config{})
@@ -328,7 +328,7 @@ func TestMatchByImage(t *testing.T) {
 				Provider: ep,
 			}
 
-			actualResults, err := xeol.FindEol(str, theDistro, matchers, pkg.FromCatalog(theCatalog, pkg.SynthesisConfig{}), false, time.Now())
+			actualResults, err := xeol.FindEol(str, theDistro, matchers, pkg.FromCollection(collection, pkg.SynthesisConfig{}), false, time.Now())
 			require.NoError(t, err)
 
 			// build expected matches from what's discovered from the catalog
