@@ -10,4 +10,5 @@ type XeolEventPayload struct {
 	Packages  []pkg.Package
 	Context   pkg.Context
 	AppConfig interface{}
+	ImageName string
 }
