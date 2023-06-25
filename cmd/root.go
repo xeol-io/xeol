@@ -309,6 +309,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 				Packages:  packages,
 				Context:   pkgContext,
 				AppConfig: appConfig,
+				ImageName: sbom.Source.ImageMetadata.UserInput,
 			})
 			if err := x.Send(); err != nil {
 				errs <- fmt.Errorf("failed to send eol event: %w", err)
