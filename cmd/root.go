@@ -72,6 +72,10 @@ func validateRootArgs(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("an image/directory argument is required")
 	}
 
+	if appConfig.APIKey != "" && appConfig.ProjectName == "" {
+		return fmt.Errorf("err: couldn't automatically detect a project name. Please set the project name using --project-name flag when using --api-key flag with xeol.io")
+	}
+
 	return cobra.MaximumNArgs(1)(cmd, args)
 }
 
@@ -114,7 +118,7 @@ func setRootFlags(flags *pflag.FlagSet) {
 
 	flags.StringP(
 		"project-name", "", "",
-		"set the name of the project being analyzed for xeol.io.",
+		"manually set the name of the project being analyzed for xeol.io. If you are running xeol inside a git repository, this will be automatically detected.",
 	)
 
 	flags.StringP(

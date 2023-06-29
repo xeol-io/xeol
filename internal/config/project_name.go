@@ -29,12 +29,24 @@ func NewProject(repo *git.Repository) *Project {
 }
 
 func (p *Project) GetRemoteURL() string {
+	// try to get the origin remote
 	origin, err := p.Repo.Remote("origin")
+	if err == nil {
+		return origin.Config().URLs[0]
+	}
+
+	// if origin is not found, get the list of remotes
+	remotes, err := p.Repo.Remotes()
 	if err != nil {
 		return ""
 	}
 
-	return origin.Config().URLs[0]
+	if len(remotes) == 0 {
+		return ""
+	}
+
+	// return the URL of the first remote found
+	return remotes[0].Config().URLs[0]
 }
 
 func (p *Project) GetDefaultProjectName() string {
