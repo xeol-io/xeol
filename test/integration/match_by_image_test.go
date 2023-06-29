@@ -220,6 +220,21 @@ func addFedora29Matches(t *testing.T, theResult *match.Matches) {
 			Eol:          "2019-11-26",
 		},
 	})
+	theResult.Add(match.Match{
+		Package: pkg.Package{
+			Name:     "python",
+			ID:       "2ba17cf1680ce4f2",
+			Version:  "3.7.2",
+			Type:     syftPkg.BinaryPkg,
+			Language: "",
+			PURL:     "pkg:generic/python@3.7.2",
+		},
+		Cycle: eol.Cycle{
+			ProductName:  "Python",
+			ReleaseCycle: "3.7",
+			Eol:          "2023-06-27",
+		},
+	})
 }
 
 func TestMatchByImage(t *testing.T) {
