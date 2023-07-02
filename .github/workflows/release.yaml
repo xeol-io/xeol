@@ -131,7 +131,7 @@ jobs:
       - name: Build & publish release artifacts
         run: make release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.XEOL_GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.DATA_XEOL_IO_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DATA_XEOL_IO_AWS_SECRET_ACCESS_KEY }}
 
