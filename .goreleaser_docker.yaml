@@ -97,7 +97,6 @@ dockers:
 
   - image_templates:
       - ghcr.io/xeol-io/xeol:{{.Tag}}-s390x
-      - ghcr.io/xeol-io/xeol:{{.Tag}}-s390x
     goarch: s390x
     dockerfile: Dockerfile
     use: buildx
@@ -125,24 +124,6 @@ docker_manifests:
       - ghcr.io/xeol-io/xeol:{{.Tag}}-s390x
 
   - name_template: ghcr.io/xeol-io/xeol:debug
-      - ghcr.io/xeol-io/xeol:{{.Tag}}-debug
-      - ghcr.io/xeol-io/xeol:{{.Tag}}-debug-arm64v8
-      - ghcr.io/xeol-io/xeol:{{.Tag}}-debug-s390x
-
-  - name_template: ghcr.io/xeol-io/xeol:{{.Tag}}
-    image_templates:
-      - ghcr.io/xeol-io/xeol:{{.Tag}}
-      - ghcr.io/xeol-io/xeol:{{.Tag}}-arm64v8
-      - ghcr.io/xeol-io/xeol:{{.Tag}}-s390x
-
-  - name_template: ghcr.io/xeol-io/xeol:latest
-    image_templates:
-      - ghcr.io/xeol-io/xeol:{{.Tag}}
-      - ghcr.io/xeol-io/xeol:{{.Tag}}-arm64v8
-      - ghcr.io/xeol-io/xeol:{{.Tag}}-s390x
-
-  - name_template: ghcr.io/xeol-io/xeol:debug
-    image_templates:
       - ghcr.io/xeol-io/xeol:{{.Tag}}-debug
       - ghcr.io/xeol-io/xeol:{{.Tag}}-debug-arm64v8
       - ghcr.io/xeol-io/xeol:{{.Tag}}-debug-s390x
