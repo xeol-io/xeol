@@ -97,6 +97,7 @@ bootstrap-tools: $(TEMPDIR)
 	GOBIN="$(shell realpath $(TEMPDIR))" go install github.com/rinchsan/gosimports/cmd/gosimports@$(GOSIMPORTS_VERSION)
 	GOBIN="$(shell realpath $(TEMPDIR))" go install github.com/neilpa/yajsv@$(YAJSV_VERSION)
 	GOBIN="$(shell realpath $(TEMP_DIR))" go install github.com/sigstore/cosign/v2/cmd/cosign@$(COSIGN_VERSION)
+	GOBIN="$(shell realpath $(TEMP_DIR))" go install github.com/anchore/syft/cmd/syft@$(SYFT_VERSION)
 	.github/scripts/goreleaser-install.sh -b $(TEMPDIR)/ $(GORELEASER_VERSION)
 
 .PHONY: bootstrap-go
