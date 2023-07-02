@@ -47,6 +47,13 @@ builds:
     env: *build-env
     ldflags: *build-ldflags
 
+checksum:
+  name_template: 'checksums.txt'
+
+sboms:
+  - id: archive
+    artifacts: archive
+
 archives:
   - id: linux-archives
     builds:
