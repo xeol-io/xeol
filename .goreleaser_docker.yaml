@@ -109,13 +109,13 @@ dockers:
       - "--build-arg=VCS_URL={{.GitURL}}"
 
 docker_signs:
-  artifacts: all
-  cmd: cosign
-  args:
-    - "sign"
-    - "${artifact}"
-    - "--yes" # needed on cosign 2.0.0+
-  output: true
+  - artifacts: all
+    cmd: cosign
+    args:
+      - "sign"
+      - "${artifact}"
+      - "--yes" # needed on cosign 2.0.0+
+    output: true
 
 docker_manifests:
   - name_template: ghcr.io/xeol-io/xeol:latest
