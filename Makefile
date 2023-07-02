@@ -34,6 +34,7 @@ GOLANGCILINT_VERSION = v1.52.2
 BOUNCER_VERSION = v0.4.0
 CHRONICLE_VERSION = v0.6.0
 GOSIMPORTS_VERSION = v0.3.8
+COSIGN_VERSION = v2.1.1
 YAJSV_VERSION = v1.4.1
 GORELEASER_VERSION = v1.18.2
 
@@ -94,6 +95,7 @@ bootstrap-tools: $(TEMPDIR)
 	# the only difference between goimports and gosimports is that gosimports removes extra whitespace between import blocks (see https://github.com/golang/go/issues/20818)
 	GOBIN="$(shell realpath $(TEMPDIR))" go install github.com/rinchsan/gosimports/cmd/gosimports@$(GOSIMPORTS_VERSION)
 	GOBIN="$(shell realpath $(TEMPDIR))" go install github.com/neilpa/yajsv@$(YAJSV_VERSION)
+	GOBIN="$(shell realpath $(TEMP_DIR))" go install github.com/sigstore/cosign/v2/cmd/cosign@$(COSIGN_VERSION)
 	.github/scripts/goreleaser-install.sh -b $(TEMPDIR)/ $(GORELEASER_VERSION)
 
 .PHONY: bootstrap-go

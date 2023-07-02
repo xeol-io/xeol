@@ -182,3 +182,5 @@ jobs:
 
       - name: Build & Publish docker images
         run: make release-docker-assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

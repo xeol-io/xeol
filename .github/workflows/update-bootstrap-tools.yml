@@ -28,6 +28,7 @@ jobs:
           CHRONICLE_LATEST_VERSION=$(go list -m -json github.com/anchore/chronicle@latest 2>/dev/null | jq -r '.Version')
           GORELEASER_LATEST_VERSION=$(go list -m -json github.com/goreleaser/goreleaser@latest 2>/dev/null | jq -r '.Version')
           GOSIMPORTS_LATEST_VERSION=$(go list -m -json github.com/rinchsan/gosimports@latest 2>/dev/null | jq -r '.Version')
+          COSIGN_LATEST_VERSION=$(go list -m -json github.com/sigstore/cosign/v2@latest 2>/dev/null | jq -r '.Version')
           YAJSV_LATEST_VERSION=$(go list -m -json github.com/neilpa/yajsv@latest 2>/dev/null | jq -r '.Version')
 
           # update version variables in the Makefile
@@ -36,6 +37,7 @@ jobs:
           sed -r -i -e 's/^(CHRONICLE_VERSION = ).*/\1'${CHRONICLE_LATEST_VERSION}'/' Makefile
           sed -r -i -e 's/^(GORELEASER_VERSION = ).*/\1'${GORELEASER_LATEST_VERSION}'/' Makefile
           sed -r -i -e 's/^(GOSIMPORTS_VERSION = ).*/\1'${GOSIMPORTS_LATEST_VERSION}'/' Makefile
+          sed -r -i -e 's/^(COSIGN_VERSION := ).*/\1'${COSIGN_LATEST_VERSION}'/' Makefile
           sed -r -i -e 's/^(YAJSV_VERSION = ).*/\1'${YAJSV_LATEST_VERSION}'/' Makefile
 
           # export the versions for use with create-pull-request
@@ -44,6 +46,7 @@ jobs:
           echo "::set-output name=CHRONICLE::$CHRONICLE_LATEST_VERSION"
           echo "::set-output name=GORELEASER::$GORELEASER_LATEST_VERSION"
           echo "::set-output name=GOSIMPORTS::$GOSIMPORTS_LATEST_VERSION"
+          echo "::set-output name=COSIGN::$COSIGN_LATEST_VERSION"
           echo "::set-output name=YAJSV::$YAJSV_LATEST_VERSION"
         id: latest-versions
 
@@ -67,6 +70,7 @@ jobs:
             - [chronicle ${{ steps.latest-versions.outputs.CHRONICLE }}](https://github.com/anchore/chronicle/releases/tag/${{ steps.latest-versions.outputs.CHRONICLE }})
             - [goreleaser ${{ steps.latest-versions.outputs.GORELEASER }}](https://github.com/goreleaser/goreleaser/releases/tag/${{ steps.latest-versions.outputs.GORELEASER }})
             - [gosimports ${{ steps.latest-versions.outputs.GOSIMPORTS }}](https://github.com/rinchsan/gosimports/releases/tag/${{ steps.latest-versions.outputs.GOSIMPORTS }})
+            - [cosign ${{ steps.latest-versions.outputs.COSIGN }}](https://github.com/sigstore/cosign/releases/tag/${{ steps.latest-versions.outputs.COSIGN }})
             - [yajsv ${{ steps.latest-versions.outputs.YAJSV }}](https://github.com/neilpa/yajsv/releases/tag/${{ steps.latest-versions.outputs.YAJSV }})
             This is an auto-generated pull request to update all of the bootstrap tools to the latest versions.
           token: ${{ steps.generate-token.outputs.token }}
