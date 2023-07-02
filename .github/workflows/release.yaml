@@ -1,14 +1,12 @@
 name: "Release"
 on:
   push:
-    branches:
-      - signing
     # take no actions on push to any branch...
-    # branches-ignore:
-    #   - "**"
-    # # ... only act on release tags
-    # tags:
-    #   - "v*"
+    branches-ignore:
+      - "**"
+    # ... only act on release tags
+    tags:
+      - "v*"
 
 env:
   GO_VERSION: "1.18.x"
@@ -95,77 +93,27 @@ jobs:
   #         echo "CLI Test (Linux) Status: ${{ steps.cli-linux.outputs.conclusion }}"
   #         false
 
-  # release:
-  #   needs: [quality-gate]
-  #   # due to our code signing process, it's vital that we run our release steps on macOS
-  #   runs-on: macos-latest
-  #   steps:
-  #     - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
-  #       with:
-  #         go-version: ${{ env.GO_VERSION }}
-
-  #     - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v2.5.0
-  #       with:
-  #         fetch-depth: 0
-
-  #     - name: Restore tool cache
-  #       id: tool-cache
-  #       uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
-  #       with:
-  #         path: ${{ github.workspace }}/.tmp
-  #         key: ${{ runner.os }}-tool-${{ hashFiles('Makefile') }}
-
-  #     - name: Restore go cache
-  #       id: go-cache
-  #       uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
-  #       with:
-  #         path: ~/go/pkg/mod
-  #         key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-go-${{ env.GO_VERSION }}-
-
-  #     - name: (cache-miss) Bootstrap all project dependencies
-  #       if: steps.tool-cache.outputs.cache-hit != 'true' || steps.go-cache.outputs.cache-hit != 'true'
-  #       run: make bootstrap
-
-  #     - name: Build & publish release artifacts
-  #       run: make release
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.XEOL_GITHUB_TOKEN }}
-  #         AWS_ACCESS_KEY_ID: ${{ secrets.DATA_XEOL_IO_AWS_ACCESS_KEY_ID }}
-  #         AWS_SECRET_ACCESS_KEY: ${{ secrets.DATA_XEOL_IO_AWS_SECRET_ACCESS_KEY }}
-
-  #     - uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
-  #       with:
-  #         name: artifacts
-  #         path: dist/**/*
-
-  release-docker-assets:
-    # needs: [release]
+  release:
+    # needs: [quality-gate]
     runs-on: ubuntu-latest
     permissions:
       contents: write # needed to write releases
-      packages: write # needed for ghcr.io access
       id-token: write # needed for keyless signing using cosign (OIDC signing)
-    env:
-      COSIGN_EXPERIMENTAL: "true"
     steps:
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@main
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
         with:
           go-version: ${{ env.GO_VERSION }}
 
-
-      - name: Login to ghcr.io
-        uses: docker/login-action@v2
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v2.5.0
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Restore tool cache
+        id: tool-cache
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
+        with:
+          path: ${{ github.workspace }}/.tmp
+          key: ${{ runner.os }}-tool-${{ hashFiles('Makefile') }}
 
       - name: Restore go cache
         id: go-cache
@@ -180,7 +128,59 @@ jobs:
         if: steps.tool-cache.outputs.cache-hit != 'true' || steps.go-cache.outputs.cache-hit != 'true'
         run: make bootstrap
 
-      - name: Build & Publish docker images
-        run: make release-docker-assets
+      - name: Build & publish release artifacts
+        run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.DATA_XEOL_IO_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DATA_XEOL_IO_AWS_SECRET_ACCESS_KEY }}
+
+      - uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
+        with:
+          name: artifacts
+          path: dist/**/*
+
+  # release-docker-assets:
+  #   # needs: [release]
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write # needed to write releases
+  #     packages: write # needed for ghcr.io access
+  #     id-token: write # needed for keyless signing using cosign (OIDC signing)
+  #   env:
+  #     COSIGN_EXPERIMENTAL: "true"
+  #   steps:
+  #     - name: Install Cosign
+  #       uses: sigstore/cosign-installer@main
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #     - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.3.1
+  #       with:
+  #         go-version: ${{ env.GO_VERSION }}
+
+
+  #     - name: Login to ghcr.io
+  #       uses: docker/login-action@v2
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{ github.repository_owner }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
+
+  #     - name: Restore go cache
+  #       id: go-cache
+  #       uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
+  #       with:
+  #         path: ~/go/pkg/mod
+  #         key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-go-${{ env.GO_VERSION }}-
+
+  #     - name: (cache-miss) Bootstrap all project dependencies
+  #       if: steps.tool-cache.outputs.cache-hit != 'true' || steps.go-cache.outputs.cache-hit != 'true'
+  #       run: make bootstrap
+
+  #     - name: Build & Publish docker images
+  #       run: make release-docker-assets
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

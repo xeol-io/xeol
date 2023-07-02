@@ -243,7 +243,6 @@ release: clean-dist # CHANGELOG.md ## Build and publish final binaries and packa
 		SYFT_VERSION=$(SYFT_VERSION)\
 			$(RELEASE_CMD) \
 				--config $(TEMPDIR)/goreleaser.yaml \
-				--skip-sign \
 				# --release-notes <(cat CHANGELOG.md)\
 					 || false"
 
