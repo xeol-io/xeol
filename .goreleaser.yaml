@@ -101,7 +101,7 @@ nfpms:
       - deb
 
 brews:
-  - tap:
+  - repository:
       owner: xeol-io
       name: homebrew-xeol
     ids:
