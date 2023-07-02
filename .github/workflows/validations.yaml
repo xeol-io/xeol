@@ -228,7 +228,7 @@ jobs:
             ${{ runner.os }}-go-${{ env.GO_VERSION }}-
 
       - name: (cache-miss) Bootstrap all project dependencies
-        # if: steps.tool-cache.outputs.cache-hit != 'true' || steps.go-cache.outputs.cache-hit != 'true'
+        if: steps.tool-cache.outputs.cache-hit != 'true' || steps.go-cache.outputs.cache-hit != 'true'
         run: make bootstrap
 
       - name: Build snapshot artifacts
