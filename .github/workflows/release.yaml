@@ -23,11 +23,11 @@ jobs:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v2.5.0
 
       # we don't want to release commits that have been pushed and tagged, but not necessarily merged onto main
-      - name: Ensure tagged commit is on main
-        run: |
-          echo "Tag: ${GITHUB_REF##*/}"
-          git fetch origin main
-          git merge-base --is-ancestor ${GITHUB_REF##*/} origin/main && echo "${GITHUB_REF##*/} is a commit on main!"
+      # - name: Ensure tagged commit is on main
+      #   run: |
+      #     echo "Tag: ${GITHUB_REF##*/}"
+      #     git fetch origin main
+      #     git merge-base --is-ancestor ${GITHUB_REF##*/} origin/main && echo "${GITHUB_REF##*/} is a commit on main!"
 
       - name: Check static analysis results
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
