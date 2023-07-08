@@ -5,6 +5,7 @@
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/xeol-io/xeol.svg)](https://github.com/xeol-io/xeol)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/xeol-io/xeol/blob/main/LICENSE)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol/badge)](https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol)
+[![Github All Releases](https://img.shields.io/github/downloads/xeol-io/xeol/total.svg)](https://img.shields.io/github/downloads/xeol-io/xeol/total.svg)
 
 
 An End Of Life (EOL) package scannner for container images and filesystems.
