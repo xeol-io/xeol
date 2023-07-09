@@ -49,9 +49,6 @@ builds:
     env: *build-env
     ldflags: *build-ldflags
 
-checksum:
-  name_template: 'checksums.txt'
-
 gomod:
   proxy: true
 
@@ -101,7 +98,7 @@ nfpms:
       - deb
 
 brews:
-  - repository:
+  - tap:
       owner: xeol-io
       name: homebrew-xeol
     ids:
