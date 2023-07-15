@@ -78,6 +78,11 @@ func (h *ephemeralTerminalUI) Handle(event partybus.Event) error {
 			log.Errorf("unable to show %s event: %+v", event.Type, err)
 		}
 
+	case event.Type == xeolEvent.PolicyEvaluationMessage:
+		if err := handlePolicyEvaluationMessage(ctx, h.frame, event, h.waitGroup); err != nil {
+			log.Errorf("unable to show %s event: %+v", event.Type, err)
+		}
+
 	case event.Type == xeolEvent.AppUpdateAvailable:
 		if err := handleAppUpdateAvailable(ctx, h.frame, event, h.waitGroup); err != nil {
 			log.Errorf("unable to show %s event: %+v", event.Type, err)

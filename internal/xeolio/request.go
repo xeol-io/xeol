@@ -4,26 +4,70 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/xeol-io/xeol/internal/log"
 	"github.com/xeol-io/xeol/xeol/report"
 )
 
-type XeolEvent struct {
-	URL     string
-	APIKey  string
-	Payload report.XeolEventPayload
+type PolicyType string
+type CycleOperator string
+
+const (
+	PolicyTypeEol PolicyType = "EOL"
+
+	CycleOperatorLessThan        CycleOperator = "LT"
+	CycleOperatorLessThanOrEqual CycleOperator = "LTE"
+	CycleOperatorEqual           CycleOperator = "EQ"
+)
+
+type Policy struct {
+	Id            string        `json:"id"`
+	PolicyType    PolicyType    `json:"policy_type"`
+	WarnDate      string        `json:"warn_date"`
+	DenyDate      string        `json:"deny_date"`
+	ProductName   string        `json:"product_name"`
+	Cycle         string        `json:"cycle"`
+	CycleOperator CycleOperator `json:"cycle_operator"`
 }
 
-func (x *XeolEvent) Send() error {
-	payload, err := json.Marshal(x.Payload)
-	if err != nil {
-		return fmt.Errorf("error marshalling xeol.io API request: %v", err)
+func (pt *PolicyType) UnmarshalJSON(b []byte) error {
+	str := strings.Trim(string(b), "\"")
+	if str != string(PolicyTypeEol) {
+		return fmt.Errorf("invalid PolicyType %s", str)
 	}
+	*pt = PolicyType(str)
+	return nil
+}
 
-	req, err := http.NewRequest("PUT", x.URL, bytes.NewBuffer(payload))
+func (co *CycleOperator) UnmarshalJSON(b []byte) error {
+	str := strings.Trim(string(b), "\"")
+	switch str {
+	case string(CycleOperatorLessThan), string(CycleOperatorLessThanOrEqual), string(CycleOperatorEqual):
+		*co = CycleOperator(str)
+	default:
+		return fmt.Errorf("invalid CycleOperator %s", str)
+	}
+	return nil
+}
+
+type XeolClient struct {
+	URL    string
+	APIKey string
+}
+
+func NewXeolClient(url string, apiKey string) *XeolClient {
+	return &XeolClient{
+		URL:    url,
+		APIKey: apiKey,
+	}
+}
+
+func (x *XeolClient) makeRequest(method, path string, body io.Reader, out interface{}) error {
+	req, err := http.NewRequest(method, fmt.Sprintf("%s/%s", x.URL, path), body)
 	if err != nil {
 		return err
 	}
@@ -38,20 +82,38 @@ func (x *XeolEvent) Send() error {
 	if err != nil {
 		return fmt.Errorf("xeol.io API request failed: %v", err)
 	}
-
 	defer resp.Body.Close()
+
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("xeol.io API unexpected status code %d", resp.StatusCode)
 	}
 
-	log.Debug("sent event to xeol.io API at %s", x.URL)
+	if out != nil {
+		if err := json.NewDecoder(resp.Body).Decode(out); err != nil {
+			return fmt.Errorf("xeol.io API response decode failed: %v", err)
+		}
+	} else {
+		log.Debug("sent event to xeol.io API at %s", req.URL.String())
+	}
+
 	return nil
 }
 
-func NewXeolEvent(url string, apiKey string, payload report.XeolEventPayload) *XeolEvent {
-	return &XeolEvent{
-		URL:     url,
-		APIKey:  apiKey,
-		Payload: payload,
+func (x *XeolClient) FetchPolicies() ([]Policy, error) {
+	var policies []Policy
+	err := x.makeRequest("GET", "v1/policies", nil, &policies)
+	if err != nil {
+		return nil, err
 	}
+
+	return policies, nil
+}
+
+func (x *XeolClient) SendEvent(payload report.XeolEventPayload) error {
+	p, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("error marshalling xeol.io API request: %v", err)
+	}
+
+	return x.makeRequest("PUT", "v1/events", bytes.NewBuffer(p), nil)
 }
