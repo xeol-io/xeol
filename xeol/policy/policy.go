@@ -19,6 +19,8 @@ const (
 	PolicyTypeDeny PolicyEvaluationType = "DENY"
 )
 
+var timeNow = time.Now
+
 type PolicyEvaluationType string
 
 type PolicyEvaluationResult struct {
@@ -64,7 +66,7 @@ func warnMatch(policy xeolio.Policy) bool {
 		log.Debugf("Invalid policy warn date: %s", policy.WarnDate)
 		return false
 	}
-	if time.Now().After(warnDate) {
+	if timeNow().After(warnDate) {
 		return true
 	}
 	return false
@@ -76,42 +78,50 @@ func denyMatch(policy xeolio.Policy) bool {
 		log.Debugf("Invalid policy deny date: %s", policy.DenyDate)
 		return false
 	}
-	if time.Now().After(denyDate) {
+	if timeNow().After(denyDate) {
 		return true
 	}
 	return false
 }
 
-// Evaluate evaluates a set of policies against a set of matches.
-func Evaluate(policies []xeolio.Policy, matches match.Matches) error {
+func evaluateMatches(policies []xeolio.Policy, matches match.Matches) []PolicyEvaluationResult {
+	var results []PolicyEvaluationResult
 	for _, policy := range policies {
 		for _, match := range matches.Sorted() {
 			if cycleOperatorMatch(match, policy) {
 				if denyMatch(policy) {
-					bus.Publish(partybus.Event{
-						Type: event.PolicyEvaluationMessage,
-						Value: PolicyEvaluationResult{
-							Type:        PolicyTypeDeny,
-							ProductName: match.Cycle.ProductName,
-							Cycle:       match.Cycle.ReleaseCycle,
-						},
-					})
+					results = append(results, PolicyEvaluationResult{
+						Type:        PolicyTypeDeny,
+						ProductName: match.Cycle.ProductName,
+						Cycle:       match.Cycle.ReleaseCycle,
+					},
+					)
 					continue
 				}
 				if warnMatch(policy) {
-					bus.Publish(partybus.Event{
-						Type: event.PolicyEvaluationMessage,
-						Value: PolicyEvaluationResult{
-							Type:        PolicyTypeWarn,
-							ProductName: match.Cycle.ProductName,
-							Cycle:       match.Cycle.ReleaseCycle,
-							FailDate:    policy.DenyDate,
-						},
-					})
+					results = append(results, PolicyEvaluationResult{
+						Type:        PolicyTypeWarn,
+						ProductName: match.Cycle.ProductName,
+						Cycle:       match.Cycle.ReleaseCycle,
+						FailDate:    policy.DenyDate,
+					},
+					)
 					continue
 				}
 			}
 		}
+	}
+	return results
+}
+
+// Evaluate evaluates a set of policies against a set of matches.
+func Evaluate(policies []xeolio.Policy, matches match.Matches) error {
+	policyMatches := evaluateMatches(policies, matches)
+	for _, policyMatch := range policyMatches {
+		bus.Publish(partybus.Event{
+			Type:  event.PolicyEvaluationMessage,
+			Value: policyMatch,
+		})
 	}
 	return nil
 }
