@@ -26,6 +26,7 @@ type defaultValueLoader interface {
 }
 
 const XeolAPIUrl = "https://engine.xeol.io/v1/scan"
+const DEFAULT_PRO_LOOKAHEAD = "now+3y"
 
 type parser interface {
 	parseConfigValues() error
@@ -210,12 +211,22 @@ func (cfg *Application) parseConfigValues() error {
 }
 
 func (cfg *Application) parseLookaheadOption() error {
+	var err error
+	// if the user has specified an API key and is posting results to xeol.io, then we
+	// set a default lookahead value to 3 years from now
+	if cfg.APIKey != "" {
+		cfg.EolMatchDate, err = tparse.ParseNow(time.RFC3339, DEFAULT_PRO_LOOKAHEAD)
+		if err != nil {
+			return fmt.Errorf("bad --lookahead value: '%s'", cfg.Lookahead)
+		}
+		return nil
+	}
+
 	if cfg.Lookahead == "none" {
 		cfg.EolMatchDate = time.Now()
 		return nil
 	}
 
-	var err error
 	cfg.EolMatchDate, err = tparse.ParseNow(time.RFC3339, fmt.Sprintf("now+%s", cfg.Lookahead))
 	if err != nil {
 		return fmt.Errorf("bad --lookahead value: '%s'", cfg.Lookahead)
