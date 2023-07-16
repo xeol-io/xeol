@@ -68,6 +68,8 @@ func ByDistroCpe(store eol.Provider, distro *linux.Release, eolMatchDate time.Ti
 	return match.Match{}, nil
 }
 
+// returnMatchingCycle returns the first cycle that matches the version string.
+// If no cycle matches, an empty cycle is returned.
 func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) {
 	v, err := semver.NewVersion(version)
 	if err != nil {

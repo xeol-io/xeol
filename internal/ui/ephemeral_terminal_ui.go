@@ -77,6 +77,14 @@ func (h *ephemeralTerminalUI) Handle(event partybus.Event) error {
 		if err := h.handler.Handle(ctx, h.frame, event, h.waitGroup); err != nil {
 			log.Errorf("unable to show %s event: %+v", event.Type, err)
 		}
+	case event.Type == xeolEvent.PolicyEvaluationMessage:
+		// we need to close the screen now since signaling the the presenter is ready means that we
+		// are about to write bytes to stdout, so we should reset the terminal state first
+		h.closeScreen(false)
+
+		if err := handlePolicyEvaluationMessage(event, h.reportOutput); err != nil {
+			log.Errorf("unable to show %s event: %+v", event.Type, err)
+		}
 
 	case event.Type == xeolEvent.AppUpdateAvailable:
 		if err := handleAppUpdateAvailable(ctx, h.frame, event, h.waitGroup); err != nil {

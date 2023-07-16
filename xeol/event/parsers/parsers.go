@@ -8,6 +8,7 @@ import (
 
 	"github.com/xeol-io/xeol/xeol/event"
 	"github.com/xeol-io/xeol/xeol/matcher"
+	"github.com/xeol-io/xeol/xeol/policy"
 	"github.com/xeol-io/xeol/xeol/presenter"
 )
 
@@ -34,6 +35,18 @@ func checkEventType(actual, expected partybus.EventType) error {
 		return newPayloadErr(expected, "Type", actual)
 	}
 	return nil
+}
+
+func ParsePolicyEvaluationMessage(e partybus.Event) (*policy.EvaluationResult, error) {
+	if err := checkEventType(e.Type, event.PolicyEvaluationMessage); err != nil {
+		return nil, err
+	}
+
+	pt, ok := e.Value.(policy.EvaluationResult)
+	if !ok {
+		return nil, newPayloadErr(e.Type, "Value", e.Value)
+	}
+	return &pt, nil
 }
 
 func ParseAppUpdateAvailable(e partybus.Event) (string, error) {

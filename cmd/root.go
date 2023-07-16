@@ -30,6 +30,7 @@ import (
 	distroMatcher "github.com/xeol-io/xeol/xeol/matcher/distro"
 	pkgMatcher "github.com/xeol-io/xeol/xeol/matcher/packages"
 	"github.com/xeol-io/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/policy"
 	"github.com/xeol-io/xeol/xeol/presenter"
 	"github.com/xeol-io/xeol/xeol/presenter/models"
 	"github.com/xeol-io/xeol/xeol/report"
@@ -230,7 +231,7 @@ func isVerbose() (result bool) {
 	return appConfig.CliOptions.Verbosity > 0 || isPipedInput
 }
 
-//nolint:funlen
+//nolint:funlen,gocognit
 func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) <-chan error {
 	errs := make(chan error)
 	go func() {
@@ -252,8 +253,21 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		var pkgContext pkg.Context
 		var wg = &sync.WaitGroup{}
 		var loadedDB, gatheredPackages bool
+		var policies []xeolio.Policy
+		x := xeolio.NewXeolClient(appConfig.APIKey)
 
-		wg.Add(2)
+		wg.Add(3)
+		go func() {
+			defer wg.Done()
+			log.Debug("Fetching organization policies")
+			if appConfig.APIKey != "" {
+				policies, err = x.FetchPolicies()
+				if err != nil {
+					errs <- fmt.Errorf("failed to fetch policy: %w", err)
+					return
+				}
+			}
+		}()
 
 		go func() {
 			defer wg.Done()
@@ -307,18 +321,23 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 			DBStatus:  status,
 		}
 
-		if appConfig.APIKey != "" && appConfig.APIURL != "" {
-			x := xeolio.NewXeolEvent(appConfig.APIURL, appConfig.APIKey, report.XeolEventPayload{
+		if appConfig.APIKey != "" {
+			if err := x.SendEvent(report.XeolEventPayload{
 				Matches:   allMatches.Sorted(),
 				Packages:  packages,
 				Context:   pkgContext,
 				AppConfig: appConfig,
 				ImageName: sbom.Source.ImageMetadata.UserInput,
-			})
-			if err := x.Send(); err != nil {
+			}); err != nil {
 				errs <- fmt.Errorf("failed to send eol event: %w", err)
 				return
 			}
+		}
+
+		failScan := policy.Evaluate(policies, allMatches)
+		if failScan {
+			errs <- xeolerr.ErrPolicyViolation
+			return
 		}
 
 		bus.Publish(partybus.Event{
