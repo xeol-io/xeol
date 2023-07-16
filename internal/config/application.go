@@ -25,7 +25,7 @@ type defaultValueLoader interface {
 	loadDefaultValues(*viper.Viper)
 }
 
-const DEFAULT_PRO_LOOKAHEAD = "now+3y"
+const DefaultProLookahead = "now+3y"
 
 type parser interface {
 	parseConfigValues() error
@@ -212,7 +212,7 @@ func (cfg *Application) parseLookaheadOption() error {
 	// if the user has specified an API key and is posting results to xeol.io, then we
 	// set a default lookahead value to 3 years from now
 	if cfg.APIKey != "" {
-		cfg.EolMatchDate, err = tparse.ParseNow(time.RFC3339, DEFAULT_PRO_LOOKAHEAD)
+		cfg.EolMatchDate, err = tparse.ParseNow(time.RFC3339, DefaultProLookahead)
 		if err != nil {
 			return fmt.Errorf("bad --lookahead value: '%s'", cfg.Lookahead)
 		}

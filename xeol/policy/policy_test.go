@@ -7,6 +7,7 @@ import (
 
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/google/uuid"
+
 	"github.com/xeol-io/xeol/internal/xeolio"
 	"github.com/xeol-io/xeol/xeol/eol"
 	"github.com/xeol-io/xeol/xeol/match"
@@ -18,7 +19,7 @@ func TestEvaluate(t *testing.T) {
 		name    string
 		policy  []xeolio.Policy
 		matches []match.Match
-		want    []PolicyEvaluationResult
+		want    []EvaluationResult
 	}{
 		{
 			name: "policy with no matches",
@@ -72,7 +73,7 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []PolicyEvaluationResult{
+			want: []EvaluationResult{
 				{
 					Type:        PolicyTypeDeny,
 					ProductName: "foo",
@@ -105,7 +106,7 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []PolicyEvaluationResult{
+			want: []EvaluationResult{
 				{
 					Type:        PolicyTypeWarn,
 					ProductName: "foo",
@@ -139,7 +140,7 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []PolicyEvaluationResult{
+			want: []EvaluationResult{
 				{
 					Type:        PolicyTypeWarn,
 					ProductName: "foo",
@@ -173,7 +174,7 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []PolicyEvaluationResult{
+			want: []EvaluationResult{
 				{
 					Type:        PolicyTypeWarn,
 					ProductName: "foo",
@@ -226,7 +227,7 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []PolicyEvaluationResult{
+			want: []EvaluationResult{
 				{
 					Type:        PolicyTypeWarn,
 					ProductName: "foo",

@@ -37,12 +37,12 @@ func checkEventType(actual, expected partybus.EventType) error {
 	return nil
 }
 
-func ParsePolicyEvaluationMessage(e partybus.Event) (*policy.PolicyEvaluationResult, error) {
+func ParsePolicyEvaluationMessage(e partybus.Event) (*policy.EvaluationResult, error) {
 	if err := checkEventType(e.Type, event.PolicyEvaluationMessage); err != nil {
 		return nil, err
 	}
 
-	pt, ok := e.Value.(policy.PolicyEvaluationResult)
+	pt, ok := e.Value.(policy.EvaluationResult)
 	if !ok {
 		return nil, newPayloadErr(e.Type, "Value", e.Value)
 	}

@@ -231,7 +231,7 @@ func isVerbose() (result bool) {
 	return appConfig.CliOptions.Verbosity > 0 || isPipedInput
 }
 
-//nolint:funlen
+//nolint:funlen,gocognit
 func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) <-chan error {
 	errs := make(chan error)
 	go func() {

@@ -3,28 +3,28 @@ package policy
 import (
 	"time"
 
+	"github.com/Masterminds/semver"
 	"github.com/wagoodman/go-partybus"
+
 	"github.com/xeol-io/xeol/internal/bus"
 	"github.com/xeol-io/xeol/internal/log"
-
-	"github.com/Masterminds/semver"
 	"github.com/xeol-io/xeol/internal/xeolio"
 	"github.com/xeol-io/xeol/xeol/event"
 	"github.com/xeol-io/xeol/xeol/match"
 )
 
 const (
-	DateLayout                          = "2006-01-02"
-	PolicyTypeWarn PolicyEvaluationType = "WARN"
-	PolicyTypeDeny PolicyEvaluationType = "DENY"
+	DateLayout                    = "2006-01-02"
+	PolicyTypeWarn EvaluationType = "WARN"
+	PolicyTypeDeny EvaluationType = "DENY"
 )
 
 var timeNow = time.Now
 
-type PolicyEvaluationType string
+type EvaluationType string
 
-type PolicyEvaluationResult struct {
-	Type        PolicyEvaluationType
+type EvaluationResult struct {
+	Type        EvaluationType
 	ProductName string
 	Cycle       string
 	FailDate    string
@@ -84,13 +84,13 @@ func denyMatch(policy xeolio.Policy) bool {
 	return false
 }
 
-func evaluateMatches(policies []xeolio.Policy, matches match.Matches) []PolicyEvaluationResult {
-	var results []PolicyEvaluationResult
+func evaluateMatches(policies []xeolio.Policy, matches match.Matches) []EvaluationResult {
+	var results []EvaluationResult
 	for _, policy := range policies {
 		for _, match := range matches.Sorted() {
 			if cycleOperatorMatch(match, policy) {
 				if denyMatch(policy) {
-					results = append(results, PolicyEvaluationResult{
+					results = append(results, EvaluationResult{
 						Type:        PolicyTypeDeny,
 						ProductName: match.Cycle.ProductName,
 						Cycle:       match.Cycle.ReleaseCycle,
@@ -99,7 +99,7 @@ func evaluateMatches(policies []xeolio.Policy, matches match.Matches) []PolicyEv
 					continue
 				}
 				if warnMatch(policy) {
-					results = append(results, PolicyEvaluationResult{
+					results = append(results, EvaluationResult{
 						Type:        PolicyTypeWarn,
 						ProductName: match.Cycle.ProductName,
 						Cycle:       match.Cycle.ReleaseCycle,

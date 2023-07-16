@@ -17,8 +17,8 @@ type PolicyType string
 type CycleOperator string
 
 const (
-	XeolAPIUrl    = "https://api.xeol.io"
-	XeolEngineUrl = "https://engine.xeol.io"
+	XeolAPIURL    = "https://api.xeol.io"
+	XeolEngineURL = "https://engine.xeol.io"
 
 	PolicyTypeEol PolicyType = "EOL"
 
@@ -28,7 +28,7 @@ const (
 )
 
 type Policy struct {
-	Id            string        `json:"id"`
+	ID            string        `json:"id"`
 	PolicyType    PolicyType    `json:"policy_type"`
 	WarnDate      string        `json:"warn_date"`
 	DenyDate      string        `json:"deny_date"`
@@ -102,7 +102,7 @@ func (x *XeolClient) makeRequest(method, url, path string, body io.Reader, out i
 
 func (x *XeolClient) FetchPolicies() ([]Policy, error) {
 	var policies []Policy
-	err := x.makeRequest("GET", XeolAPIUrl, "v1/policy", nil, &policies)
+	err := x.makeRequest("GET", XeolAPIURL, "v1/policy", nil, &policies)
 	if err != nil {
 		return nil, err
 	}
@@ -116,5 +116,5 @@ func (x *XeolClient) SendEvent(payload report.XeolEventPayload) error {
 		return fmt.Errorf("error marshalling xeol.io API request: %v", err)
 	}
 
-	return x.makeRequest("PUT", XeolEngineUrl, "v1/scan", bytes.NewBuffer(p), nil)
+	return x.makeRequest("PUT", XeolEngineURL, "v1/scan", bytes.NewBuffer(p), nil)
 }
