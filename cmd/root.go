@@ -335,15 +335,16 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		}
 
 		failScan := policy.Evaluate(policies, allMatches)
-		if failScan {
-			errs <- xeolerr.ErrPolicyViolation
-			return
-		}
 
 		bus.Publish(partybus.Event{
 			Type:  event.EolScanningFinished,
 			Value: presenter.GetPresenter(presenterConfig, pb),
 		})
+
+		if failScan {
+			errs <- xeolerr.ErrPolicyViolation
+			return
+		}
 	}()
 	return errs
 }
