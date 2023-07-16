@@ -254,33 +254,20 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		var wg = &sync.WaitGroup{}
 		var loadedDB, gatheredPackages bool
 		var policies []xeolio.Policy
-		x := xeolio.NewXeolClient(appConfig.APIURL, appConfig.APIKey)
+		x := xeolio.NewXeolClient(appConfig.APIKey)
 
-		wg.Add(2)
-		// wg.Add(3)
-		// go func() {
-		// 	defer wg.Done()
-		// 	log.Debug("Fetching policy")
-		// 	if appConfig.APIKey != "" && appConfig.APIURL != "" {
-		// 		policies, err = x.FetchPolicies()
-		// 		if err != nil {
-		// 			errs <- fmt.Errorf("failed to fetch policy: %w", err)
-		// 			return
-		// 		}
-		// 	}
-		// 	return
-		// }()
-
-		policies = []xeolio.Policy{
-			{
-				PolicyType:    "EOL",
-				WarnDate:      "2021-01-01",
-				DenyDate:      "2021-03-01",
-				ProductName:   "MongoDB Server",
-				Cycle:         "3.6",
-				CycleOperator: "LT",
-			},
-		}
+		wg.Add(3)
+		go func() {
+			defer wg.Done()
+			log.Debug("Fetching organization policies")
+			if appConfig.APIKey != "" {
+				policies, err = x.FetchPolicies()
+				if err != nil {
+					errs <- fmt.Errorf("failed to fetch policy: %w", err)
+					return
+				}
+			}
+		}()
 
 		go func() {
 			defer wg.Done()
@@ -334,7 +321,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 			DBStatus:  status,
 		}
 
-		if appConfig.APIKey != "" && appConfig.APIURL != "" {
+		if appConfig.APIKey != "" {
 			if err := x.SendEvent(report.XeolEventPayload{
 				Matches:   allMatches.Sorted(),
 				Packages:  packages,
@@ -347,7 +334,12 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 			}
 		}
 
-		policy.Evaluate(policies, allMatches)
+		failScan := policy.Evaluate(policies, allMatches)
+		if failScan {
+			errs <- xeolerr.ErrPolicyViolation
+			return
+		}
+
 		bus.Publish(partybus.Event{
 			Type:  event.EolScanningFinished,
 			Value: presenter.GetPresenter(presenterConfig, pb),

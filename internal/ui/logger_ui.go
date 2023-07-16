@@ -28,6 +28,10 @@ func (l *loggerUI) Setup(unsubscribe func() error) error {
 
 func (l loggerUI) Handle(event partybus.Event) error {
 	switch event.Type {
+	case xeolEvent.PolicyEvaluationMessage:
+		if err := handlePolicyEvaluationMessage(event, l.reportOutput); err != nil {
+			log.Warnf("unable to show policy evaluation message event: %+v", err)
+		}
 	case xeolEvent.EolScanningFinished:
 		if err := handleEolScanningFinished(event, l.reportOutput); err != nil {
 			log.Warnf("unable to show catalog image finished event: %+v", err)

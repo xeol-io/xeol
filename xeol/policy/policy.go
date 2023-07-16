@@ -115,13 +115,19 @@ func evaluateMatches(policies []xeolio.Policy, matches match.Matches) []PolicyEv
 }
 
 // Evaluate evaluates a set of policies against a set of matches.
-func Evaluate(policies []xeolio.Policy, matches match.Matches) error {
+func Evaluate(policies []xeolio.Policy, matches match.Matches) bool {
 	policyMatches := evaluateMatches(policies, matches)
+	// whether we should fail the scan or not
+	failScan := false
+
 	for _, policyMatch := range policyMatches {
+		if policyMatch.Type == PolicyTypeDeny {
+			failScan = true
+		}
 		bus.Publish(partybus.Event{
 			Type:  event.PolicyEvaluationMessage,
 			Value: policyMatch,
 		})
 	}
-	return nil
+	return failScan
 }

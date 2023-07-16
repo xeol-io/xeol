@@ -17,6 +17,9 @@ type PolicyType string
 type CycleOperator string
 
 const (
+	XeolAPIUrl    = "https://api.xeol.io"
+	XeolEngineUrl = "https://engine.xeol.io"
+
 	PolicyTypeEol PolicyType = "EOL"
 
 	CycleOperatorLessThan        CycleOperator = "LT"
@@ -55,19 +58,17 @@ func (co *CycleOperator) UnmarshalJSON(b []byte) error {
 }
 
 type XeolClient struct {
-	URL    string
 	APIKey string
 }
 
-func NewXeolClient(url string, apiKey string) *XeolClient {
+func NewXeolClient(apiKey string) *XeolClient {
 	return &XeolClient{
-		URL:    url,
 		APIKey: apiKey,
 	}
 }
 
-func (x *XeolClient) makeRequest(method, path string, body io.Reader, out interface{}) error {
-	req, err := http.NewRequest(method, fmt.Sprintf("%s/%s", x.URL, path), body)
+func (x *XeolClient) makeRequest(method, url, path string, body io.Reader, out interface{}) error {
+	req, err := http.NewRequest(method, fmt.Sprintf("%s/%s", url, path), body)
 	if err != nil {
 		return err
 	}
@@ -101,7 +102,7 @@ func (x *XeolClient) makeRequest(method, path string, body io.Reader, out interf
 
 func (x *XeolClient) FetchPolicies() ([]Policy, error) {
 	var policies []Policy
-	err := x.makeRequest("GET", "v1/policies", nil, &policies)
+	err := x.makeRequest("GET", XeolAPIUrl, "v1/policy", nil, &policies)
 	if err != nil {
 		return nil, err
 	}
@@ -115,5 +116,5 @@ func (x *XeolClient) SendEvent(payload report.XeolEventPayload) error {
 		return fmt.Errorf("error marshalling xeol.io API request: %v", err)
 	}
 
-	return x.makeRequest("PUT", "v1/events", bytes.NewBuffer(p), nil)
+	return x.makeRequest("PUT", XeolEngineUrl, "v1/scan", bytes.NewBuffer(p), nil)
 }
