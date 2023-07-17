@@ -297,6 +297,10 @@ Configuration search paths:
 - `<XDG_CONFIG_HOME>/xeol/config.yaml`
 
 
+## Pronunciation
+
+Xeol is pronounced "zee-oh-el", like EOL but with a Z in front :-)
+
 ## Grype - xeol
 
 A lot of the xeol codebase was taken from [grype](https://github.com/anchore/grype).
