@@ -14,12 +14,24 @@ func TestFormat(t *testing.T) {
 			expected: "github//xeol-io/xeol",
 		},
 		{
+			url:      "git@ssh.dev.azure.com:v3/xeol-io/example-dotnet/v3",
+			expected: "azure//xeol-io/example-dotnet/v3",
+		},
+		{
 			url:      "git@ssh.dev.azure.com:v3/xeol-io/example-dotnet/example-dotnet",
-			expected: "azure//xeol-io/example-dotnet",
+			expected: "azure//xeol-io/example-dotnet/example-dotnet",
 		},
 		{
 			url:      "https://xeol-io@dev.azure.com/xeol-io/example-dotnet/_git/example-dotnet",
-			expected: "azure//xeol-io/example-dotnet",
+			expected: "azure//xeol-io/example-dotnet/example-dotnet",
+		},
+		{
+			url:      "git@ssh.dev.azure.com:v3/xeol-io/Software%20Development/my-dotnet-api",
+			expected: "azure//xeol-io/Software%20Development/my-dotnet-api",
+		},
+		{
+			url:      "https://dev.azure.com/xeol-io/Software%20Development/_git/my-dotnet-api",
+			expected: "azure//xeol-io/Software%20Development/my-dotnet-api",
 		},
 		{
 			url:      "git@github.com:noqcks/xeol.git",
