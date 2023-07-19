@@ -113,13 +113,14 @@ func (r *GitLab) String() string {
 
 func parseRawGitURL(rawurl string) (GitURL, error) {
 	var g GitURL
-	if strings.Contains(rawurl, "github.com") {
+	switch {
+	case strings.Contains(rawurl, "github.com"):
 		g = &GitHub{}
-	} else if strings.Contains(rawurl, "gitlab.com") {
+	case strings.Contains(rawurl, "gitlab.com"):
 		g = &GitLab{}
-	} else if strings.Contains(rawurl, "dev.azure.com") {
+	case strings.Contains(rawurl, "dev.azure.com"):
 		g = &Azure{}
-	} else if strings.HasPrefix(rawurl, "git@") {
+	default:
 		return nil, fmt.Errorf("unsupported git url: %s", rawurl)
 	}
 
