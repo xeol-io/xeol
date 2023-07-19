@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"log"
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -13,13 +15,127 @@ type Project struct {
 	Repo *git.Repository
 }
 
-type RepoType int
+type URLFormatter struct {
+	URL string
+}
 
-const (
-	Unknown RepoType = iota
-	HTTPS
-	SSH
-)
+type GitURL interface {
+	Parse(url string) error
+	String() string
+}
+
+type Azure struct {
+	Owner string
+	Path  string
+}
+
+func (r *Azure) Parse(rawurl string) error {
+	if strings.HasPrefix(rawurl, "git@") {
+		rawurl = strings.Replace(rawurl, ":", "/", 1)
+		rawurl = strings.Replace(rawurl, "git@", "https://", 1)
+	}
+
+	p, err := url.Parse(rawurl)
+	if err != nil {
+		return err
+	}
+	p.Path = strings.TrimSuffix(p.Path, ".git")
+	p.Path = strings.TrimPrefix(p.Path, "/")
+	p.Path = regexp.MustCompile(`^v\d+\/`).ReplaceAllString(p.Path, "")
+	p.Path = regexp.MustCompile(`/_git/`).ReplaceAllString(p.Path, "/")
+
+	pathParts := strings.Split(p.Path, "/")
+	r.Owner = pathParts[0]
+	r.Path = strings.Join(pathParts[1:], "/")
+	r.Path = strings.ReplaceAll(r.Path, " ", "%20")
+	return nil
+}
+
+func (r *Azure) String() string {
+	return fmt.Sprintf("azure//%s/%s", r.Owner, r.Path)
+}
+
+type GitHub struct {
+	Owner string
+	Path  string
+}
+
+func (r *GitHub) Parse(rawurl string) error {
+	if strings.HasPrefix(rawurl, "git@") {
+		rawurl = strings.Replace(rawurl, ":", "/", 1)
+		rawurl = strings.Replace(rawurl, "git@", "https://", 1)
+	}
+
+	p, err := url.Parse(rawurl)
+	if err != nil {
+		return err
+	}
+	p.Path = strings.TrimSuffix(p.Path, ".git")
+	p.Path = strings.TrimPrefix(p.Path, "/")
+
+	pathParts := strings.SplitN(p.Path, "/", 2)
+	r.Owner = pathParts[0]
+	r.Path = pathParts[1]
+	return nil
+}
+
+func (r *GitHub) String() string {
+	return fmt.Sprintf("github//%s/%s", r.Owner, r.Path)
+}
+
+type GitLab struct {
+	Owner string
+	Path  string
+}
+
+func (r *GitLab) Parse(rawurl string) error {
+	if strings.HasPrefix(rawurl, "git@") {
+		rawurl = strings.Replace(rawurl, ":", "/", 1)
+		rawurl = strings.Replace(rawurl, "git@", "https://", 1)
+	}
+
+	p, err := url.Parse(rawurl)
+	if err != nil {
+		return err
+	}
+	p.Path = strings.TrimSuffix(p.Path, ".git")
+	p.Path = strings.TrimPrefix(p.Path, "/")
+
+	pathParts := strings.SplitN(p.Path, "/", 2)
+	r.Owner = pathParts[0]
+	r.Path = pathParts[1]
+	return nil
+}
+
+func (r *GitLab) String() string {
+	return fmt.Sprintf("gitlab//%s/%s", r.Owner, r.Path)
+}
+
+func parseRawGitURL(rawurl string) (GitURL, error) {
+	var g GitURL
+	switch {
+	case strings.Contains(rawurl, "github.com"):
+		g = &GitHub{}
+	case strings.Contains(rawurl, "gitlab.com"):
+		g = &GitLab{}
+	case strings.Contains(rawurl, "dev.azure.com"):
+		g = &Azure{}
+	default:
+		return nil, fmt.Errorf("unsupported git url: %s", rawurl)
+	}
+
+	err := g.Parse(rawurl)
+	return g, err
+}
+
+func (f *URLFormatter) Format() string {
+	gURL, err := parseRawGitURL(f.URL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return gURL.String()
+}
 
 func NewProject(repo *git.Repository) *Project {
 	p := &Project{Repo: repo}
@@ -54,88 +170,4 @@ func (p *Project) GetDefaultProjectName() string {
 	formatter := URLFormatter{URL: url}
 
 	return formatter.Format()
-}
-
-type URLFormatter struct {
-	URL string
-}
-
-func (f *URLFormatter) getRepoType() RepoType {
-	httpsPattern := `^https://`
-	sshPattern := `^git@`
-
-	httpsRe, err := regexp.Compile(httpsPattern)
-	if err != nil {
-		return Unknown
-	}
-
-	sshRe, err := regexp.Compile(sshPattern)
-	if err != nil {
-		return Unknown
-	}
-
-	if httpsRe.MatchString(f.URL) {
-		return HTTPS
-	} else if sshRe.MatchString(f.URL) {
-		return SSH
-	}
-
-	return Unknown
-}
-
-func (f *URLFormatter) formatStandardHTTPS() string {
-	trimmedURL := strings.TrimPrefix(f.URL, "https://")
-	trimmedURL = strings.TrimSuffix(trimmedURL, ".git")
-
-	parts := strings.Split(trimmedURL, "/")
-	if len(parts) > 2 {
-		return fmt.Sprintf("%s/%s", parts[1], parts[2])
-	}
-	return ""
-}
-
-func (f *URLFormatter) formatStandardSSH() string {
-	trimmedURL := strings.TrimPrefix(f.URL, "git@")
-	trimmedURL = strings.TrimSuffix(trimmedURL, ".git")
-
-	parts := strings.Split(trimmedURL, ":")
-	if len(parts) < 2 {
-		return ""
-	}
-
-	parts = strings.Split(parts[1], "/")
-	if len(parts) > 2 {
-		// azure
-		return fmt.Sprintf("%s/%s", parts[1], parts[2])
-	}
-	if len(parts) == 2 {
-		// github+gitlab
-		return fmt.Sprintf("%s/%s", parts[0], parts[1])
-	}
-
-	return ""
-}
-
-func (f *URLFormatter) Format() string {
-	repoType := f.getRepoType()
-
-	var projectName string
-	if repoType == HTTPS {
-		projectName = f.formatStandardHTTPS()
-	}
-
-	if repoType == SSH {
-		projectName = f.formatStandardSSH()
-	}
-
-	switch {
-	case strings.Contains(f.URL, "github"):
-		return fmt.Sprintf("github//%s", projectName)
-	case strings.Contains(f.URL, "gitlab"):
-		return fmt.Sprintf("gitlab//%s", projectName)
-	case strings.Contains(f.URL, "azure"):
-		return fmt.Sprintf("azure//%s", projectName)
-	}
-
-	return ""
 }
