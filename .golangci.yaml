@@ -7,7 +7,6 @@ linters:
   enable:
     - asciicheck
     - bodyclose
-    - depguard
     - dogsled
     - dupl
     - errcheck
@@ -37,6 +36,7 @@ linters:
 
 # do not enable...
 #    - gochecknoglobals
+#    - depguard          # we need to setup a configuration for this
 #    - gochecknoinits    # this is too aggressive
 #    - godot
 #    - godox

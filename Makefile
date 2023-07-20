@@ -30,12 +30,12 @@ OS=$(shell uname | tr '[:upper:]' '[:lower:]')
 SYFT_VERSION=$(shell go list -m all | grep github.com/anchore/syft | awk '{print $$2}')
 SNAPSHOT_BIN=$(shell realpath $(shell pwd)/$(SNAPSHOTDIR)/$(OS)-build_$(OS)_amd64_v1/$(BIN))
 
-GOLANGCILINT_VERSION = v1.52.2
+GOLANGCILINT_VERSION = v1.53.3
 BOUNCER_VERSION = v0.4.0
 CHRONICLE_VERSION = v0.6.0
 GOSIMPORTS_VERSION = v0.3.8
 YAJSV_VERSION = v1.4.1
-GORELEASER_VERSION = v1.18.2
+GORELEASER_VERSION = v1.19.2
 
 ifndef TEMPDIR
 	$(error TEMPDIR is not set)
