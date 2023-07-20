@@ -6,12 +6,11 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/xeol-io/xeol/blob/main/LICENSE)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol/badge)](https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol)
 [![Github All Releases](https://img.shields.io/github/downloads/xeol-io/xeol/total.svg)](https://img.shields.io/github/downloads/xeol-io/xeol/total.svg)
-
+[![](https://dcbadge.vercel.app/api/server/krXEm5Fp?style=flat)](https://discord.gg/krXEm5Fp)
 
 An End Of Life (EOL) package scannner for container images and filesystems.
 
 ![xeol-demo](https://user-images.githubusercontent.com/4740147/216162986-2c3add2b-af9f-4d9d-97eb-4c1617da3a71.gif)
-
 
 ## Installation
 
@@ -306,3 +305,8 @@ Xeol is pronounced "zee-oh-el", like EOL but with a Z in front :-)
 A lot of the xeol codebase was taken from [grype](https://github.com/anchore/grype).
 
 The main differences only exist in the matching logic. The main changes are in `xeol` -> [`store`, `search`, `db`, `match`, `matcher`]. Most things inside internal, cmd, and ui remain the same.
+
+## Help
+
+Join our discord for help or feedback! [![](https://dcbadge.vercel.app/api/server/krXEm5Fp?style=flat)](https://discord.gg/krXEm5Fp)
+
