@@ -11,4 +11,5 @@ type XeolEventPayload struct {
 	Context   pkg.Context
 	AppConfig interface{}
 	ImageName string
+	Sbom      string
 }
