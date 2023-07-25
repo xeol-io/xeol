@@ -46,16 +46,27 @@ type Policy struct {
 	// the date which to start failing xeol scans
 	DenyDate string `json:"deny_date"`
 	// the project name to match policy against. Valid when PolicyScope is 'project'
-	ProjectName string `json:"project_name"`
+	ProjectName string `json:"project_name,omitempty"`
 	//
 	// the following fields are only used when PolicyScope is 'software'
 	//
 	// the product name to match policy against.
-	ProductName string `json:"product_name"`
+	ProductName string `json:"product_name,omitempty"`
 	// the cycle to match policy against.
-	Cycle string `json:"cycle"`
+	Cycle string `json:"cycle,omitempty"`
 	// the cycle operator to match policy against.
-	CycleOperator CycleOperator `json:"cycle_operator"`
+	CycleOperator CycleOperator `json:"cycle_operator,omitempty"`
+}
+
+func (ps *PolicyScope) UnmarshalJSON(b []byte) error {
+	str := strings.Trim(string(b), "\"")
+	switch str {
+	case string(PolicyScopeGlobal), string(PolicyScopeProject), string(PolicyScopeSoftware):
+		*ps = PolicyScope(str)
+	default:
+		return fmt.Errorf("invalid PolicyScope %s", str)
+	}
+	return nil
 }
 
 func (pt *PolicyType) UnmarshalJSON(b []byte) error {
@@ -73,7 +84,7 @@ func (co *CycleOperator) UnmarshalJSON(b []byte) error {
 	case string(CycleOperatorLessThan), string(CycleOperatorLessThanOrEqual), string(CycleOperatorEqual):
 		*co = CycleOperator(str)
 	default:
-		return fmt.Errorf("invalid CycleOperator %s", str)
+		return nil
 	}
 	return nil
 }
