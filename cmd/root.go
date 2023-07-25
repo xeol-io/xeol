@@ -1,13 +1,17 @@
 package cmd
 
 import (
+	"bytes"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"os"
 	"sync"
 	"time"
 
+	"github.com/CycloneDX/cyclonedx-go"
 	"github.com/anchore/stereoscope"
+	"github.com/anchore/syft/syft/formats/common/cyclonedxhelpers"
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/anchore/syft/syft/source"
 	"github.com/spf13/cobra"
@@ -322,12 +326,21 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		}
 
 		if appConfig.APIKey != "" {
+			buf := new(bytes.Buffer)
+			bom := cyclonedxhelpers.ToFormatModel(*sbom)
+			enc := cyclonedx.NewBOMEncoder(buf, cyclonedx.BOMFileFormatJSON)
+			if err := enc.Encode(bom); err != nil {
+				errs <- fmt.Errorf("failed to encode sbom: %w", err)
+				return
+			}
+
 			if err := x.SendEvent(report.XeolEventPayload{
 				Matches:   allMatches.Sorted(),
 				Packages:  packages,
 				Context:   pkgContext,
 				AppConfig: appConfig,
 				ImageName: sbom.Source.ImageMetadata.UserInput,
+				Sbom:      base64.StdEncoding.EncodeToString(buf.Bytes()),
 			}); err != nil {
 				errs <- fmt.Errorf("failed to send eol event: %w", err)
 				return
