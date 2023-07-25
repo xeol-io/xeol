@@ -14,6 +14,7 @@ import (
 )
 
 type PolicyType string
+type PolicyScope string
 type CycleOperator string
 
 const (
@@ -22,18 +23,38 @@ const (
 
 	PolicyTypeEol PolicyType = "EOL"
 
+	PolicyScopeGlobal   PolicyScope = "global"
+	PolicyScopeProject  PolicyScope = "project"
+	PolicyScopeSoftware PolicyScope = "software"
+
 	CycleOperatorLessThan        CycleOperator = "LT"
 	CycleOperatorLessThanOrEqual CycleOperator = "LTE"
 	CycleOperatorEqual           CycleOperator = "EQ"
 )
 
 type Policy struct {
-	ID            string        `json:"id"`
-	PolicyType    PolicyType    `json:"policy_type"`
-	WarnDate      string        `json:"warn_date"`
-	DenyDate      string        `json:"deny_date"`
-	ProductName   string        `json:"product_name"`
-	Cycle         string        `json:"cycle"`
+	ID string `json:"id"`
+	// the policy scope can be one of: global, project, software
+	// global: the policy applies to all projects and software
+	// project: the policy applies to all software in a project
+	// software: the policy applies to a specific software
+	PolicyScope PolicyScope `json:"policy_scope"`
+	// the type of policy [eol]
+	PolicyType PolicyType `json:"policy_type"`
+	// the date which to start warning xeol scans
+	WarnDate string `json:"warn_date"`
+	// the date which to start failing xeol scans
+	DenyDate string `json:"deny_date"`
+	// the project name to match policy against. Valid when PolicyScope is 'project'
+	ProjectName string `json:"project_name"`
+	//
+	// the following fields are only used when PolicyScope is 'software'
+	//
+	// the product name to match policy against.
+	ProductName string `json:"product_name"`
+	// the cycle to match policy against.
+	Cycle string `json:"cycle"`
+	// the cycle operator to match policy against.
 	CycleOperator CycleOperator `json:"cycle_operator"`
 }
 
