@@ -1,6 +1,7 @@
 package policy
 
 import (
+	"sort"
 	"time"
 
 	"github.com/Masterminds/semver"
@@ -28,6 +29,25 @@ type EvaluationResult struct {
 	ProductName string
 	Cycle       string
 	FailDate    string
+}
+
+type ByPolicyScope []xeolio.Policy
+
+func (a ByPolicyScope) Len() int      { return len(a) }
+func (a ByPolicyScope) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a ByPolicyScope) Less(i, j int) bool {
+	// The priority will be: software > project > global
+	switch a[i].PolicyScope {
+	case xeolio.PolicyScopeSoftware:
+		return true
+	case xeolio.PolicyScopeProject:
+		return a[j].PolicyScope != xeolio.PolicyScopeSoftware
+	case xeolio.PolicyScopeGlobal:
+		return a[j].PolicyScope == xeolio.PolicyScopeGlobal
+	default:
+		// Handle unknown cases
+		return false
+	}
 }
 
 func cycleOperatorMatch(m match.Match, policy xeolio.Policy) bool {
@@ -84,30 +104,57 @@ func denyMatch(policy xeolio.Policy) bool {
 	return false
 }
 
-func evaluateMatches(policies []xeolio.Policy, matches match.Matches) []EvaluationResult {
+func createEvaluationResult(policy xeolio.Policy, match match.Match, policyType EvaluationType) EvaluationResult {
+	result := EvaluationResult{
+		Type:        policyType,
+		ProductName: match.Cycle.ProductName,
+		Cycle:       match.Cycle.ReleaseCycle,
+	}
+	if policyType == PolicyTypeWarn {
+		result.FailDate = policy.DenyDate
+	}
+	return result
+}
+
+func evaluateMatches(policies []xeolio.Policy, matches match.Matches, projectName string) []EvaluationResult {
 	var results []EvaluationResult
+
+	// keep track of which matches have been evaluated
+	// so we don't evaluate the same match twice
+	evaluatedMatches := make(map[string]bool)
+
+	// policies are first sorted by scope according to
+	// this order: software > project > global
+	// software policies are evaluated first, then project
+	// policies, then global policies
+	sort.Stable(ByPolicyScope(policies))
+
 	for _, policy := range policies {
 		for _, match := range matches.Sorted() {
-			if cycleOperatorMatch(match, policy) {
-				if denyMatch(policy) {
-					results = append(results, EvaluationResult{
-						Type:        PolicyTypeDeny,
-						ProductName: match.Cycle.ProductName,
-						Cycle:       match.Cycle.ReleaseCycle,
-					},
-					)
+			if evaluatedMatches[match.Cycle.ProductName] {
+				continue
+			}
+
+			switch policy.PolicyScope {
+			case xeolio.PolicyScopeSoftware:
+				if !cycleOperatorMatch(match, policy) {
 					continue
 				}
-				if warnMatch(policy) {
-					results = append(results, EvaluationResult{
-						Type:        PolicyTypeWarn,
-						ProductName: match.Cycle.ProductName,
-						Cycle:       match.Cycle.ReleaseCycle,
-						FailDate:    policy.DenyDate,
-					},
-					)
+			case xeolio.PolicyScopeProject:
+				if policy.ProjectName != projectName {
 					continue
 				}
+			}
+
+			// deny policy takes precedence over warn policy, so order is important here
+			if denyMatch(policy) {
+				results = append(results, createEvaluationResult(policy, match, PolicyTypeDeny))
+				evaluatedMatches[match.Cycle.ProductName] = true
+				continue
+			}
+			if warnMatch(policy) {
+				results = append(results, createEvaluationResult(policy, match, PolicyTypeWarn))
+				evaluatedMatches[match.Cycle.ProductName] = true
 			}
 		}
 	}
@@ -115,8 +162,8 @@ func evaluateMatches(policies []xeolio.Policy, matches match.Matches) []Evaluati
 }
 
 // Evaluate evaluates a set of policies against a set of matches.
-func Evaluate(policies []xeolio.Policy, matches match.Matches) bool {
-	policyMatches := evaluateMatches(policies, matches)
+func Evaluate(policies []xeolio.Policy, matches match.Matches, projectName string) bool {
+	policyMatches := evaluateMatches(policies, matches, projectName)
 	// whether we should fail the scan or not
 	failScan := false
 

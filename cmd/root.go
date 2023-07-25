@@ -347,7 +347,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 			}
 		}
 
-		failScan := policy.Evaluate(policies, allMatches)
+		failScan := policy.Evaluate(policies, allMatches, appConfig.ProjectName)
 
 		bus.Publish(partybus.Event{
 			Type:  event.EolScanningFinished,
