@@ -20,9 +20,13 @@ func handlePolicyEvaluationMessage(event partybus.Event, reportOutput io.Writer)
 
 	var message string
 	if pt.Type == policy.PolicyTypeDeny {
-		message = color.Red.Sprintf("[%s] Policy Violation: %s (v%s) needs to upgraded to a newer version. This scan will now exit non-zero.\n\n", pt.Type, pt.ProductName, pt.Cycle)
+		message = color.Red.Sprintf("[%s] Policy Violation: %s (v%s) needs to upgraded to a newer version. This scan will now exit non-zero.\n", pt.Type, pt.ProductName, pt.Cycle)
 	} else {
-		message = color.Yellow.Sprintf("[%s] Policy Violation: %s (v%s) needs to be upgraded to a newer version. This policy will fail builds starting on %s.\n\n", pt.Type, pt.ProductName, pt.Cycle, pt.FailDate)
+		if pt.FailDate != "" {
+			message = color.Yellow.Sprintf("[%s] Policy Violation: %s (v%s) needs to be upgraded to a newer version. This policy will fail builds starting on %s.\n", pt.Type, pt.ProductName, pt.Cycle, pt.FailDate)
+		} else {
+			message = color.Yellow.Sprintf("[%s] Policy Violation: %s (v%s) needs to be upgraded to a newer version.\n", pt.Type, pt.ProductName, pt.Cycle)
+		}
 	}
 	if _, err := reportOutput.Write([]byte(message)); err != nil {
 		return fmt.Errorf("unable to show policy evaluation message: %w", err)
