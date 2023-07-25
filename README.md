@@ -8,7 +8,7 @@
 [![Github All Releases](https://img.shields.io/github/downloads/xeol-io/xeol/total.svg)](https://img.shields.io/github/downloads/xeol-io/xeol/total.svg)
 [![](https://dcbadge.vercel.app/api/server/krXEm5Fp?style=flat)](https://discord.gg/krXEm5Fp)
 
-An End Of Life (EOL) package scannner for container images and filesystems.
+A package scanner for End of Life (EOL) packages in container images, filesystems, and SBOMs
 
 ![xeol-demo](https://user-images.githubusercontent.com/4740147/216162986-2c3add2b-af9f-4d9d-97eb-4c1617da3a71.gif)
 
