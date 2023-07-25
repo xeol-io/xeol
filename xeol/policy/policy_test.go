@@ -8,10 +8,10 @@ import (
 
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/google/uuid"
+
 	"github.com/xeol-io/xeol/internal/xeolio"
 	"github.com/xeol-io/xeol/xeol/eol"
 	"github.com/xeol-io/xeol/xeol/match"
-
 	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
