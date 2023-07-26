@@ -15,6 +15,10 @@ import (
 	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
+func Int(value int) *int {
+	return &value
+}
+
 func TestEvaluate(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -497,6 +501,105 @@ func TestEvaluate(t *testing.T) {
 					ProductName: "foo",
 					Cycle:       "1.3",
 					FailDate:    "2021-02-29",
+				},
+			},
+		},
+		{
+			name: "test sliding global policy [deny]",
+			policy: []xeolio.Policy{
+				{
+					PolicyScope: xeolio.PolicyScopeGlobal,
+					PolicyType:  xeolio.PolicyTypeEol,
+					WarnDays:    Int(60),
+					DenyDays:    Int(30),
+				},
+			},
+			matches: []match.Match{
+				{
+					Cycle: eol.Cycle{
+						ProductName:  "foo",
+						ReleaseCycle: "1.3",
+						Eol:          "2021-02-28",
+					},
+					Package: pkg.Package{
+						ID:      pkg.ID(uuid.NewString()),
+						Name:    "foo",
+						Version: "1.3.0",
+						Type:    syftPkg.RpmPkg,
+					},
+				},
+			},
+			want: []EvaluationResult{
+				{
+					Type:        PolicyTypeDeny,
+					ProductName: "foo",
+					Cycle:       "1.3",
+				},
+			},
+		},
+		{
+			name: "test sliding global policy [warn]",
+			policy: []xeolio.Policy{
+				{
+					PolicyScope: xeolio.PolicyScopeGlobal,
+					PolicyType:  xeolio.PolicyTypeEol,
+					WarnDays:    Int(60),
+					DenyDays:    Int(30),
+				},
+			},
+			matches: []match.Match{
+				{
+					Cycle: eol.Cycle{
+						ProductName:  "foo",
+						ReleaseCycle: "1.3",
+						Eol:          "2021-03-28",
+					},
+					Package: pkg.Package{
+						ID:      pkg.ID(uuid.NewString()),
+						Name:    "foo",
+						Version: "1.3.0",
+						Type:    syftPkg.RpmPkg,
+					},
+				},
+			},
+			want: []EvaluationResult{
+				{
+					Type:        PolicyTypeWarn,
+					ProductName: "foo",
+					Cycle:       "1.3",
+					FailDate:    "2021-02-26",
+				},
+			},
+		},
+		{
+			name: "test sliding global policy [deny, no warn]",
+			policy: []xeolio.Policy{
+				{
+					PolicyScope: xeolio.PolicyScopeGlobal,
+					PolicyType:  xeolio.PolicyTypeEol,
+					DenyDays:    Int(30),
+				},
+			},
+			matches: []match.Match{
+				{
+					Cycle: eol.Cycle{
+						ProductName:  "foo",
+						ReleaseCycle: "1.3",
+						Eol:          "2021-02-28",
+					},
+					Package: pkg.Package{
+						ID:      pkg.ID(uuid.NewString()),
+						Name:    "foo",
+						Version: "1.3.0",
+						Type:    syftPkg.RpmPkg,
+					},
+				},
+			},
+			want: []EvaluationResult{
+				{
+					Type:        PolicyTypeDeny,
+					ProductName: "foo",
+					Cycle:       "1.3",
 				},
 			},
 		},

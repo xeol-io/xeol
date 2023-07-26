@@ -42,9 +42,13 @@ type Policy struct {
 	// the type of policy [eol]
 	PolicyType PolicyType `json:"policy_type"`
 	// the date which to start warning xeol scans
-	WarnDate string `json:"warn_date"`
+	WarnDate string `json:"warn_date,omitempty"`
 	// the date which to start failing xeol scans
-	DenyDate string `json:"deny_date"`
+	DenyDate string `json:"deny_date,omitempty"`
+	// the days before eol to start warning xeol scans
+	WarnDays *int `json:"warn_days,omitempty"`
+	// the days before eol to start failing xeol scans
+	DenyDays *int `json:"deny_days,omitempty"`
 	// the project name to match policy against. Valid when PolicyScope is 'project'
 	ProjectName string `json:"project_name,omitempty"`
 	//
