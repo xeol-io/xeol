@@ -171,6 +171,7 @@ func evaluateMatches(policies []xeolio.Policy, matches match.Matches, projectNam
 	sort.Stable(ByPolicyScope(policies))
 
 	for _, policy := range policies {
+		policyCopy := policy
 		for _, match := range matches.Sorted() {
 			if evaluatedMatches[match.Cycle.ProductName] {
 				continue
@@ -188,13 +189,13 @@ func evaluateMatches(policies []xeolio.Policy, matches match.Matches, projectNam
 			}
 
 			// deny policy takes precedence over warn policy, so order is important here
-			if denyMatch(&policy, match) {
-				results = append(results, createEvaluationResult(policy, match, PolicyTypeDeny))
+			if denyMatch(&policyCopy, match) {
+				results = append(results, createEvaluationResult(policyCopy, match, PolicyTypeDeny))
 				evaluatedMatches[match.Cycle.ProductName] = true
 				continue
 			}
-			if warnMatch(&policy, match) {
-				results = append(results, createEvaluationResult(policy, match, PolicyTypeWarn))
+			if warnMatch(&policyCopy, match) {
+				results = append(results, createEvaluationResult(policyCopy, match, PolicyTypeWarn))
 				evaluatedMatches[match.Cycle.ProductName] = true
 			}
 		}
