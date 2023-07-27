@@ -1,6 +1,7 @@
 package policy
 
 import (
+	"math"
 	"sort"
 	"time"
 
@@ -18,6 +19,12 @@ const (
 	DateLayout                    = "2006-01-02"
 	PolicyTypeWarn EvaluationType = "WARN"
 	PolicyTypeDeny EvaluationType = "DENY"
+
+	// set a max days for deny/warn policies
+	// to avoid overflow/underflow errors when
+	// calculating dates. 10 years should be
+	// more than enough for most use cases
+	MaxNumDays = 10 * 365
 )
 
 var timeNow = time.Now
@@ -93,12 +100,17 @@ func warnMatch(policy *xeolio.Policy, match match.Match) bool {
 	}
 
 	if policy.WarnDays != nil {
+		warnDays := *policy.WarnDays * -1
+		if math.Abs(float64(warnDays)) > MaxNumDays {
+			log.Debugf("warn days (%d) is greater than max days, setting to max days (%d)", warnDays, MaxNumDays)
+			warnDays = MaxNumDays
+		}
 		eolDate, err := time.Parse(DateLayout, match.Cycle.Eol)
 		if err != nil {
 			log.Errorf("invalid eol date: %s, %s", match.Cycle.Eol, err)
 			return false
 		}
-		warnDate = eolDate.Add(time.Duration(*policy.WarnDays*-1) * time.Hour * 24)
+		warnDate = eolDate.Add(time.Duration(warnDays) * time.Hour * 24)
 	}
 
 	if warnDate.IsZero() {
@@ -125,12 +137,18 @@ func denyMatch(policy *xeolio.Policy, match match.Match) bool {
 	}
 
 	if policy.DenyDays != nil {
+		denyDays := *policy.DenyDays * -1
+		if math.Abs(float64(denyDays)) > MaxNumDays {
+			log.Debugf("deny days (%d) is greater than max days, setting to max days (%d)", denyDays, MaxNumDays)
+			denyDays = MaxNumDays
+		}
+
 		eolDate, err := time.Parse(DateLayout, match.Cycle.Eol)
 		if err != nil {
 			log.Errorf("invalid eol date: %s, %s", match.Cycle.Eol, err)
 			return false
 		}
-		denyDate = eolDate.Add(time.Duration(*policy.DenyDays*-1) * time.Hour * 24)
+		denyDate = eolDate.Add(time.Duration(denyDays) * time.Hour * 24)
 		policy.DenyDate = denyDate.Format(DateLayout)
 	}
 
