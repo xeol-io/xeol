@@ -80,27 +80,68 @@ func cycleOperatorMatch(m match.Match, policy xeolio.Policy) bool {
 	}
 }
 
-func warnMatch(policy xeolio.Policy) bool {
-	warnDate, err := time.Parse(DateLayout, policy.WarnDate)
-	if err != nil {
-		log.Debugf("Invalid policy warn date: %s", policy.WarnDate)
+func warnMatch(policy *xeolio.Policy, match match.Match) bool {
+	var warnDate time.Time
+
+	if policy.WarnDate != "" {
+		var err error
+		warnDate, err = time.Parse(DateLayout, policy.WarnDate)
+		if err != nil {
+			log.Errorf("invalid policy warn date: %s", policy.WarnDate)
+			return false
+		}
+	}
+
+	if policy.WarnDays != nil {
+		eolDate, err := time.Parse(DateLayout, match.Cycle.Eol)
+		if err != nil {
+			log.Errorf("invalid eol date: %s, %s", match.Cycle.Eol, err)
+			return false
+		}
+		warnDate = eolDate.Add(time.Duration(*policy.WarnDays*-1) * time.Hour * 24)
+	}
+
+	if warnDate.IsZero() {
 		return false
 	}
+
 	if timeNow().After(warnDate) {
 		return true
 	}
+
 	return false
 }
 
-func denyMatch(policy xeolio.Policy) bool {
-	denyDate, err := time.Parse(DateLayout, policy.DenyDate)
-	if err != nil {
-		log.Debugf("Invalid policy deny date: %s", policy.DenyDate)
+func denyMatch(policy *xeolio.Policy, match match.Match) bool {
+	var denyDate time.Time
+
+	if policy.DenyDate != "" {
+		var err error
+		denyDate, err = time.Parse(DateLayout, policy.DenyDate)
+		if err != nil {
+			log.Errorf("invalid policy deny date: %s", policy.DenyDate)
+			return false
+		}
+	}
+
+	if policy.DenyDays != nil {
+		eolDate, err := time.Parse(DateLayout, match.Cycle.Eol)
+		if err != nil {
+			log.Errorf("invalid eol date: %s, %s", match.Cycle.Eol, err)
+			return false
+		}
+		denyDate = eolDate.Add(time.Duration(*policy.DenyDays*-1) * time.Hour * 24)
+		policy.DenyDate = denyDate.Format(DateLayout)
+	}
+
+	if denyDate.IsZero() {
 		return false
 	}
+
 	if timeNow().After(denyDate) {
 		return true
 	}
+
 	return false
 }
 
@@ -130,6 +171,7 @@ func evaluateMatches(policies []xeolio.Policy, matches match.Matches, projectNam
 	sort.Stable(ByPolicyScope(policies))
 
 	for _, policy := range policies {
+		policyCopy := policy
 		for _, match := range matches.Sorted() {
 			if evaluatedMatches[match.Cycle.ProductName] {
 				continue
@@ -147,13 +189,13 @@ func evaluateMatches(policies []xeolio.Policy, matches match.Matches, projectNam
 			}
 
 			// deny policy takes precedence over warn policy, so order is important here
-			if denyMatch(policy) {
-				results = append(results, createEvaluationResult(policy, match, PolicyTypeDeny))
+			if denyMatch(&policyCopy, match) {
+				results = append(results, createEvaluationResult(policyCopy, match, PolicyTypeDeny))
 				evaluatedMatches[match.Cycle.ProductName] = true
 				continue
 			}
-			if warnMatch(policy) {
-				results = append(results, createEvaluationResult(policy, match, PolicyTypeWarn))
+			if warnMatch(&policyCopy, match) {
+				results = append(results, createEvaluationResult(policyCopy, match, PolicyTypeWarn))
 				evaluatedMatches[match.Cycle.ProductName] = true
 			}
 		}
