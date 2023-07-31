@@ -7,14 +7,16 @@ const (
 )
 
 type ProductModel struct {
-	ID   int    `gorm:"primary_key;column:id;"`
-	Name string `gorm:"column:name"`
+	ID        int    `gorm:"primary_key;column:id;"`
+	Name      string `gorm:"column:name"`
+	Permalink string `gorm:"column:permalink"`
 }
 
 func NewProductModel(product v1.Product) ProductModel {
 	return ProductModel{
-		ID:   product.ID,
-		Name: product.Name,
+		ID:        product.ID,
+		Name:      product.Name,
+		Permalink: product.Permalink,
 	}
 }
 
@@ -24,7 +26,8 @@ func (m ProductModel) TableName() string {
 
 func (m ProductModel) Inflate() (v1.Product, error) {
 	return v1.Product{
-		ID:   m.ID,
-		Name: m.Name,
+		ID:        m.ID,
+		Name:      m.Name,
+		Permalink: m.Permalink,
 	}, nil
 }

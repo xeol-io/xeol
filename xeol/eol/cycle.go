@@ -6,7 +6,9 @@ import (
 
 type Cycle struct {
 	ProductName       string
+	ProductPermalink  string
 	ReleaseCycle      string
+	LTS               string
 	Eol               string
 	EolBool           bool
 	LatestRelease     string
@@ -17,8 +19,10 @@ type Cycle struct {
 func NewCycle(cycle xeolDB.Cycle) (*Cycle, error) {
 	return &Cycle{
 		ProductName:       cycle.ProductName,
+		ProductPermalink:  cycle.ProductPermalink,
 		ReleaseCycle:      cycle.ReleaseCycle,
 		Eol:               cycle.Eol,
+		LTS:               cycle.LTS,
 		EolBool:           cycle.EolBool,
 		LatestRelease:     cycle.LatestRelease,
 		LatestReleaseDate: cycle.LatestReleaseDate,

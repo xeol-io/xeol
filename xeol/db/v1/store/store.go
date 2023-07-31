@@ -105,7 +105,7 @@ func (s *store) GetAllProducts() (*[]v1.Product, error) {
 func (s *store) GetCyclesByCpe(cpe string) ([]v1.Cycle, error) {
 	var models []model.CycleModel
 	if result := s.db.Table("cycles").
-		Select("cycles.*, products.name as product_name").
+		Select("cycles.*, products.name as product_name, products.permalink as product_permalink").
 		Joins("JOIN products ON cycles.product_id = products.id").
 		Joins("JOIN cpes ON products.id = cpes.product_id").
 		Where("cpes.cpe = ?", cpe).Find(&models); result.Error != nil {
@@ -126,7 +126,7 @@ func (s *store) GetCyclesByCpe(cpe string) ([]v1.Cycle, error) {
 func (s *store) GetCyclesByPurl(purl string) ([]v1.Cycle, error) {
 	var models []model.CycleModel
 	if result := s.db.Table("cycles").
-		Select("cycles.*, products.name as product_name").
+		Select("cycles.*, products.name as product_name, products.permalink as product_permalink").
 		Joins("JOIN products ON cycles.product_id = products.id").
 		Joins("JOIN purls ON products.id = purls.product_id").
 		Where("purls.purl = ?", purl).Find(&models); result.Error != nil {
