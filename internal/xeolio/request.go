@@ -147,6 +147,10 @@ func (x *XeolClient) FetchPolicies() ([]Policy, error) {
 }
 
 func (x *XeolClient) SendEvent(payload report.XeolEventPayload) error {
+	for _, p := range payload.Matches {
+		log.Debug("sendEvent", p.Cycle)
+	}
+
 	p, err := json.Marshal(payload)
 	if err != nil {
 		return fmt.Errorf("error marshalling xeol.io API request: %v", err)
