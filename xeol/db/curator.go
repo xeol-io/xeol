@@ -196,7 +196,6 @@ func (c *Curator) IsUpdateAvailable() (bool, *Metadata, *ListingEntry, error) {
 	if err != nil {
 		return false, nil, nil, fmt.Errorf("current metadata corrupt: %w", err)
 	}
-	log.Debugf("current database: %s", current)
 
 	if current.IsSupersededBy(updateEntry) {
 		log.Debugf("database update available: %s", updateEntry)
