@@ -65,7 +65,7 @@ nfpms:
   - license: "Apache 2.0"
     maintainer: "noqcks"
     homepage: &website "https://github.com/xeol-io/xeol"
-    description: &description "An EOL package scanner for container images, systems, and SBOMs"
+    description: &description "A scanner for end-of-life (EOL) software in container images, filesystems, and SBOMs"
     formats:
       - rpm
       - deb

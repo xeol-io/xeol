@@ -46,8 +46,9 @@ var persistentOpts = config.CliOnlyOptions{}
 
 var rootCmd = &cobra.Command{
 	Use:   fmt.Sprintf("%s [IMAGE]", internal.ApplicationName),
-	Short: "An EOL package scanner for container images, systems, and SBOMs",
-	Long: format.Tprintf(`An EOL package scanner for container images, systems, and SBOMs.
+	Short: "A scanner for end-of-life (EOL) software in container images, filesystems, and SBOMs",
+	Long: format.Tprintf(`A scanner for end-of-life (EOL) software in container images, filesystems, and SBOMs.
+
 
 Supports the following image sources:
 	 {{.appName}} yourrepo/yourimage:latest    defaults to using images from a Docker daemon
