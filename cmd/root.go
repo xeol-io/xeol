@@ -1,19 +1,16 @@
 package cmd
 
 import (
-	"bytes"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"os"
 	"sync"
 	"time"
 
-	"github.com/CycloneDX/cyclonedx-go"
 	"github.com/anchore/stereoscope"
-	"github.com/anchore/syft/syft/formats/common/cyclonedxhelpers"
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/anchore/syft/syft/source"
+	"github.com/notaryproject/notation-go/verifier/trustpolicy"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -26,7 +23,6 @@ import (
 	"github.com/xeol-io/xeol/internal/log"
 	"github.com/xeol-io/xeol/internal/ui"
 	"github.com/xeol-io/xeol/internal/version"
-	"github.com/xeol-io/xeol/internal/xeolio"
 	"github.com/xeol-io/xeol/xeol"
 	"github.com/xeol-io/xeol/xeol/db"
 	"github.com/xeol-io/xeol/xeol/event"
@@ -35,9 +31,10 @@ import (
 	pkgMatcher "github.com/xeol-io/xeol/xeol/matcher/packages"
 	"github.com/xeol-io/xeol/xeol/pkg"
 	"github.com/xeol-io/xeol/xeol/policy"
+	"github.com/xeol-io/xeol/xeol/policy/eol"
+	notary "github.com/xeol-io/xeol/xeol/policy/notary"
 	"github.com/xeol-io/xeol/xeol/presenter"
 	"github.com/xeol-io/xeol/xeol/presenter/models"
-	"github.com/xeol-io/xeol/xeol/report"
 	"github.com/xeol-io/xeol/xeol/store"
 	"github.com/xeol-io/xeol/xeol/xeolerr"
 )
@@ -236,7 +233,7 @@ func isVerbose() (result bool) {
 	return appConfig.CliOptions.Verbosity > 0 || isPipedInput
 }
 
-//nolint:funlen,gocognit
+//nolint:funlen
 func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) <-chan error {
 	errs := make(chan error)
 	go func() {
@@ -258,21 +255,80 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		var pkgContext pkg.Context
 		var wg = &sync.WaitGroup{}
 		var loadedDB, gatheredPackages bool
-		var policies []xeolio.Policy
-		x := xeolio.NewXeolClient(appConfig.APIKey)
+		var policies []policy.Policy
 
-		wg.Add(3)
-		go func() {
-			defer wg.Done()
-			log.Debug("Fetching organization policies")
-			if appConfig.APIKey != "" {
-				policies, err = x.FetchPolicies()
-				if err != nil {
-					errs <- fmt.Errorf("failed to fetch policy: %w", err)
-					return
-				}
-			}
-		}()
+		// x := xeolio.NewXeolClient(appConfig.APIKey)
+
+		notaryPolicy := &notary.PolicyType{
+			PolicyType: "NOTARY",
+			WarnDate:   "2021-07-24",
+			DenyDate:   "2021-07-24",
+			TrustPolicies: []trustpolicy.TrustPolicy{
+				{
+					Name: "wabbit-networks-images",
+					RegistryScopes: []string{
+						"*",
+					},
+					SignatureVerification: trustpolicy.SignatureVerification{
+						VerificationLevel: "strict",
+					},
+					TrustStores: []string{
+						"ca:wabbt-networks.io",
+					},
+					TrustedIdentities: []string{
+						"*",
+					},
+				},
+			},
+		}
+
+		policies = append(policies, notaryPolicy)
+
+		policies = append(policies, eol.PolicyType{
+			PolicyType: "EOL",
+			Policies: []eol.Policy{
+				{
+					ID:            "3e5e4133-6866-4fed-84f9-ce04488dcf3d",
+					PolicyScope:   "software",
+					ProductName:   "Ubuntu",
+					Cycle:         "16.04",
+					WarnDate:      "",
+					DenyDate:      "2021-07-24",
+					CycleOperator: "EQ",
+				},
+			},
+		})
+
+		// 		[
+		//     {
+		//         "id": "3e5e4133-6866-4fed-84f9-ce04488dcf3d",
+		//         "policy_scope": "software",
+		//         "policy_type": "EOL",
+		//         "warn_date": null,
+		//         "deny_date": "2023-07-24",
+		//         "warn_days": null,
+		//         "deny_days": null,
+		//         "product_name": "Ubuntu",
+		//         "project_name": null,
+		//         "cycle": "16.04",
+		//         "cycle_operator": "EQ",
+		//         "organization": "95645164-dc0f-4abd-bef6-92cbb10312d8"
+		//     }
+		// ]
+
+		wg.Add(2)
+		// wg.Add(3)
+		// go func() {
+		// 	defer wg.Done()
+		// 	log.Debug("Fetching organization policies")
+		// 	if appConfig.APIKey != "" {
+		// 		policies, err = x.FetchPolicies()
+		// 		if err != nil {
+		// 			errs <- fmt.Errorf("failed to fetch policy: %w", err)
+		// 			return
+		// 		}
+		// 	}
+		// }()
 
 		go func() {
 			defer wg.Done()
@@ -326,29 +382,38 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 			DBStatus:  status,
 		}
 
-		if appConfig.APIKey != "" {
-			buf := new(bytes.Buffer)
-			bom := cyclonedxhelpers.ToFormatModel(*sbom)
-			enc := cyclonedx.NewBOMEncoder(buf, cyclonedx.BOMFileFormatJSON)
-			if err := enc.Encode(bom); err != nil {
-				errs <- fmt.Errorf("failed to encode sbom: %w", err)
-				return
-			}
+		// if appConfig.APIKey != "" {
+		// 	buf := new(bytes.Buffer)
+		// 	bom := cyclonedxhelpers.ToFormatModel(*sbom)
+		// 	enc := cyclonedx.NewBOMEncoder(buf, cyclonedx.BOMFileFormatJSON)
+		// 	if err := enc.Encode(bom); err != nil {
+		// 		errs <- fmt.Errorf("failed to encode sbom: %w", err)
+		// 		return
+		// 	}
 
-			if err := x.SendEvent(report.XeolEventPayload{
-				Matches:   allMatches.Sorted(),
-				Packages:  packages,
-				Context:   pkgContext,
-				AppConfig: appConfig,
-				ImageName: sbom.Source.ImageMetadata.UserInput,
-				Sbom:      base64.StdEncoding.EncodeToString(buf.Bytes()),
-			}); err != nil {
-				errs <- fmt.Errorf("failed to send eol event: %w", err)
-				return
+		// 	if err := x.SendEvent(report.XeolEventPayload{
+		// 		Matches:   allMatches.Sorted(),
+		// 		Packages:  packages,
+		// 		Context:   pkgContext,
+		// 		AppConfig: appConfig,
+		// 		ImageName: sbom.Source.ImageMetadata.UserInput,
+		// 		Sbom:      base64.StdEncoding.EncodeToString(buf.Bytes()),
+		// 	}); err != nil {
+		// 		errs <- fmt.Errorf("failed to send eol event: %w", err)
+		// 		return
+		// 	}
+		// }
+
+		// image unsigned | image signed | image signed + verified
+
+		var failScan bool
+		for _, p := range policies {
+			log.Debugf("policy: %v", p)
+			shouldFailScan := p.Evaluate(allMatches, appConfig.ProjectName, userInput)
+			if shouldFailScan {
+				failScan = true
 			}
 		}
-
-		failScan := policy.Evaluate(policies, allMatches, appConfig.ProjectName)
 
 		bus.Publish(partybus.Event{
 			Type:  event.EolScanningFinished,

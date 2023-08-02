@@ -8,18 +8,41 @@ import (
 	"github.com/wagoodman/go-partybus"
 
 	xeolEventParsers "github.com/xeol-io/xeol/xeol/event/parsers"
-	"github.com/xeol-io/xeol/xeol/policy"
+	policyTypes "github.com/xeol-io/xeol/xeol/policy/types"
 )
 
-func handlePolicyEvaluationMessage(event partybus.Event, reportOutput io.Writer) error {
+func handleNotaryPolicyEvaluationMessage(event partybus.Event, reportOutput io.Writer) error {
 	// show the report to stdout
-	pt, err := xeolEventParsers.ParsePolicyEvaluationMessage(event)
+	nt, err := xeolEventParsers.ParseNotaryPolicyEvaluationMessage(event)
 	if err != nil {
 		return fmt.Errorf("bad %s event: %w", event.Type, err)
 	}
 
 	var message string
-	if pt.Type == policy.PolicyTypeDeny {
+	if nt.Type == policyTypes.PolicyTypeDeny {
+		message = color.Red.Sprintf("[%s] Policy Violation: %s is not signed by a trusted party. This scan will now exit non-zero.\n", nt.Type, nt.ImageReference)
+	} else {
+		if nt.FailDate != "" {
+			message = color.Yellow.Sprintf("[%s] Policy Violation: %s is not signed by a trusted party. This policy will fail builds starting on %s.\n", nt.Type, nt.ImageReference, nt.FailDate)
+		} else {
+			message = color.Yellow.Sprintf("[%s] Policy Violation: %s is not signed by a trusted party.\n", nt.Type, nt.ImageReference)
+		}
+	}
+	if _, err := reportOutput.Write([]byte(message)); err != nil {
+		return fmt.Errorf("unable to show policy evaluation message: %w", err)
+	}
+	return nil
+}
+
+func handleEolPolicyEvaluationMessage(event partybus.Event, reportOutput io.Writer) error {
+	// show the report to stdout
+	pt, err := xeolEventParsers.ParseEolPolicyEvaluationMessage(event)
+	if err != nil {
+		return fmt.Errorf("bad %s event: %w", event.Type, err)
+	}
+
+	var message string
+	if pt.Type == policyTypes.PolicyTypeDeny {
 		message = color.Red.Sprintf("[%s] Policy Violation: %s (v%s) needs to upgraded to a newer version. This scan will now exit non-zero.\n", pt.Type, pt.ProductName, pt.Cycle)
 	} else {
 		if pt.FailDate != "" {
