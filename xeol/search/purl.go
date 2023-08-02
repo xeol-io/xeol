@@ -1,6 +1,7 @@
 package search
 
 import (
+	"regexp"
 	"strings"
 	"time"
 
@@ -68,17 +69,25 @@ func ByDistroCpe(store eol.Provider, distro *linux.Release, eolMatchDate time.Ti
 	return match.Match{}, nil
 }
 
+// normalizeSemver returns the major.minor.patch portion of a semver string.
+// it turns versions like 2.7.8p225 into 2.7.8
+func normalizeSemver(version string) string {
+	re := regexp.MustCompile(`^(\d+\.\d+\.\d+).*`)
+	return re.ReplaceAllString(version, "$1")
+}
+
 // returnMatchingCycle returns the first cycle that matches the version string.
 // If no cycle matches, an empty cycle is returned.
 func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) {
-	v, err := semver.NewVersion(version)
+	normalizedVersion := normalizeSemver(version)
+	v, err := semver.NewVersion(normalizedVersion)
 	if err != nil {
 		return eol.Cycle{}, err
 	}
 
 	for _, c := range cycles {
 		// direct match, if it exists
-		if version == c.ReleaseCycle {
+		if normalizedVersion == c.ReleaseCycle {
 			return c, nil
 		}
 
