@@ -39,6 +39,24 @@ func addMongo32Matches(t *testing.T, theResult *match.Matches) {
 	})
 }
 
+func addRuby27Matches(t *testing.T, theResult *match.Matches) {
+	theResult.Add(match.Match{
+		Package: pkg.Package{
+			Name:     "ruby",
+			ID:       "2ba17cf1680ce4f2",
+			Version:  "2.7.8p225",
+			Type:     syftPkg.BinaryPkg,
+			Language: "",
+			PURL:     "pkg:generic/ruby@2.7.8p225",
+		},
+		Cycle: eol.Cycle{
+			ProductName:  "Ruby",
+			ReleaseCycle: "2.7",
+			Eol:          "2023-03-31",
+		},
+	})
+}
+
 func addPython34Matches(t *testing.T, theResult *match.Matches) {
 	theResult.Add(match.Match{
 		Package: pkg.Package{
@@ -255,6 +273,14 @@ func TestMatchByImage(t *testing.T) {
 			expectedFn: func() match.Matches {
 				expectedMatches := match.NewMatches()
 				addNodejs6Matches(t, &expectedMatches)
+				return expectedMatches
+			},
+		},
+		{
+			fixtureImage: "image-ruby-2.7",
+			expectedFn: func() match.Matches {
+				expectedMatches := match.NewMatches()
+				addRuby27Matches(t, &expectedMatches)
 				return expectedMatches
 			},
 		},

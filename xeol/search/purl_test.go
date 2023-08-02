@@ -9,6 +9,43 @@ import (
 	"github.com/xeol-io/xeol/xeol/eol"
 )
 
+func TestNormalizeSemver(t *testing.T) {
+	testCases := []struct {
+		version  string
+		expected string
+	}{
+		{
+			version:  "1.2.3",
+			expected: "1.2.3",
+		},
+		{
+			version:  "1.2.3-rc1",
+			expected: "1.2.3",
+		},
+		{
+			version:  "1.2.3-rc1+build1",
+			expected: "1.2.3",
+		},
+		{
+			version:  "1.2.3p288",
+			expected: "1.2.3",
+		},
+		{
+			version:  "1.2.3p288+1.3",
+			expected: "1.2.3",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.version, func(t *testing.T) {
+			actual := normalizeSemver(tc.version)
+			if actual != tc.expected {
+				t.Errorf("Expected %s, got %s", tc.expected, actual)
+			}
+		})
+	}
+}
+
 func TestReturnMatchingCycle(t *testing.T) {
 	testCases := []struct {
 		name     string
