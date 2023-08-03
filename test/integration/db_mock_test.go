@@ -144,11 +144,19 @@ func cycles(name string) []xeolDB.Cycle {
 				Eol:          "2019-11-26",
 			},
 		},
+		"ruby": {
+			{
+				ProductName:  "Ruby",
+				ReleaseCycle: "2.7",
+				Eol:          "2023-03-31",
+			},
+		},
 	}
 	return cycleDict[name]
 }
 
 func (d *mockStore) stub() {
+	d.backend["pkg:generic/ruby"] = cycles("ruby")
 	d.backend["cpe:/o:fedoraproject:fedora"] = cycles("fedora")
 	d.backend["pkg:generic/redis"] = cycles("redis")
 	d.backend["pkg:generic/node"] = cycles("node")
