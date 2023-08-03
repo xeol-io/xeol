@@ -332,7 +332,6 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		for _, p := range policies {
 			switch p.GetPolicyType() {
 			case types.PolicyTypeNotary:
-				log.Debugf("policy: %v", p)
 				shouldFailScan, res := p.Evaluate(allMatches, appConfig.ProjectName, userInput)
 				imageVerified = res.GetVerified()
 				if shouldFailScan {
