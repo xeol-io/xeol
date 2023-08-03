@@ -124,6 +124,7 @@ func (n PolicyWrapper) Evaluate(_ match.Matches, _ string, imageReference string
 			Type:           types.PolicyTypeNotary,
 			ImageReference: imageReference,
 			Verified:       false,
+			FailDate:       policy.DenyDate,
 		}
 		bus.Publish(partybus.Event{
 			Type:  event.NotaryPolicyEvaluationMessage,
