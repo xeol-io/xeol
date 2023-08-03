@@ -83,6 +83,7 @@ func TestEvaluate(t *testing.T) {
 			want: []types.EolEvaluationResult{
 				{
 					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.0",
 				},
@@ -117,6 +118,7 @@ func TestEvaluate(t *testing.T) {
 			want: []types.EolEvaluationResult{
 				{
 					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.0",
 					FailDate:    "2021-03-01",
@@ -152,6 +154,7 @@ func TestEvaluate(t *testing.T) {
 			want: []types.EolEvaluationResult{
 				{
 					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "0.9",
 					FailDate:    "2021-03-01",
@@ -187,6 +190,7 @@ func TestEvaluate(t *testing.T) {
 			want: []types.EolEvaluationResult{
 				{
 					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.0",
 					FailDate:    "2021-03-01",
@@ -242,11 +246,13 @@ func TestEvaluate(t *testing.T) {
 			want: []types.EolEvaluationResult{
 				{
 					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "bar",
 					Cycle:       "2.0",
 				},
 				{
 					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 					FailDate:    "2021-03-01",
@@ -376,11 +382,13 @@ func TestEvaluate(t *testing.T) {
 			want: []types.EolEvaluationResult{
 				{
 					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "bar",
 					Cycle:       "1.3",
 				},
 				{
 					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 				},
@@ -435,12 +443,14 @@ func TestEvaluate(t *testing.T) {
 			want: []types.EolEvaluationResult{
 				{
 					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 					FailDate:    "2021-02-29",
 				},
 				{
 					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "bar",
 					Cycle:       "1.3",
 				},
@@ -492,12 +502,14 @@ func TestEvaluate(t *testing.T) {
 			want: []types.EolEvaluationResult{
 				{
 					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "bar",
 					Cycle:       "1.3",
 					FailDate:    "2021-02-29",
 				},
 				{
 					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 					FailDate:    "2021-02-29",
@@ -532,6 +544,7 @@ func TestEvaluate(t *testing.T) {
 			want: []types.EolEvaluationResult{
 				{
 					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 				},
@@ -565,6 +578,7 @@ func TestEvaluate(t *testing.T) {
 			want: []types.EolEvaluationResult{
 				{
 					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 					FailDate:    "2021-02-26",
@@ -598,6 +612,7 @@ func TestEvaluate(t *testing.T) {
 			want: []types.EolEvaluationResult{
 				{
 					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 				},
