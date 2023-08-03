@@ -34,38 +34,38 @@ const (
 	MaxNumDays = 10 * 365
 )
 
-type PolicyType struct {
-	PolicyType types.PolicyType `json:"policy_type"`
-	Policies   []Policy         `json:"policies"`
+type PolicyWrapper struct {
+	PolicyType types.PolicyType `json:"PolicyType"`
+	Policies   []Policy         `json:"Policies"`
 }
 
 type Policy struct {
 	ID         string           `json:"ID"`
-	PolicyType types.PolicyType `json:"policy_type"`
+	PolicyType types.PolicyType `json:"PolicyType"`
 	// the policy scope can be one of: global, project, software
 	// global: the policy applies to all projects and software
 	// project: the policy applies to all software in a project
 	// software: the policy applies to a specific software
-	PolicyScope PolicyScope `json:"policy_scope"`
+	PolicyScope PolicyScope `json:"PolicyScope"`
 	// the date which to start warning xeol scans
-	WarnDate string `json:"warn_date,omitempty"`
+	WarnDate string `json:"WarnDate,omitempty"`
 	// the date which to start failing xeol scans
-	DenyDate string `json:"deny_date,omitempty"`
+	DenyDate string `json:"DenyDate,omitempty"`
 	// the days before eol to start warning xeol scans
-	WarnDays *int `json:"warn_days,omitempty"`
+	WarnDays *int `json:"WarnDays,omitempty"`
 	// the days before eol to start failing xeol scans
-	DenyDays *int `json:"deny_days,omitempty"`
+	DenyDays *int `json:"DenyDays,omitempty"`
 	// the project name to match policy against. Valid when PolicyScope is 'project'
-	ProjectName string `json:"project_name,omitempty"`
+	ProjectName string `json:"ProjectName,omitempty"`
 	//
 	// the following fields are only used when PolicyScope is 'software'
 	//
 	// the product name to match policy against.
-	ProductName string `json:"product_name,omitempty"`
+	ProductName string `json:"ProductName,omitempty"`
 	// the cycle to match policy against.
-	Cycle string `json:"cycle,omitempty"`
+	Cycle string `json:"Cycle,omitempty"`
 	// the cycle operator to match policy against.
-	CycleOperator CycleOperator `json:"cycle_operator,omitempty"`
+	CycleOperator CycleOperator `json:"CycleOperator,omitempty"`
 }
 
 type CycleOperator string
@@ -90,14 +90,18 @@ func (a ByPolicyScope) Less(i, j int) bool {
 	}
 }
 
-func (e PolicyType) Evaluate(matches match.Matches, projectName string, _ string) bool {
+func (e PolicyWrapper) GetPolicyType() types.PolicyType {
+	return e.PolicyType
+}
+
+func (e PolicyWrapper) Evaluate(matches match.Matches, projectName string, _ string) (bool, types.PolicyEvaluationResult) {
 	policyMatches := evaluateMatches(e.Policies, matches, projectName)
 
 	// whether we should fail the scan or not
 	failScan := false
 
 	for _, policyMatch := range policyMatches {
-		if policyMatch.Type == types.PolicyTypeDeny {
+		if policyMatch.Action == types.PolicyActionDeny {
 			failScan = true
 		}
 		bus.Publish(partybus.Event{
@@ -106,7 +110,7 @@ func (e PolicyType) Evaluate(matches match.Matches, projectName string, _ string
 		})
 	}
 
-	return failScan
+	return failScan, types.EolEvaluationResult{}
 }
 
 func evaluateMatches(policies []Policy, matches match.Matches, projectName string) []types.EolEvaluationResult {
@@ -142,12 +146,12 @@ func evaluateMatches(policies []Policy, matches match.Matches, projectName strin
 
 			// deny policy takes precedence over warn policy, so order is important here
 			if denyMatch(&policyCopy, match) {
-				results = append(results, createEolEvaluationResult(policyCopy, match, types.PolicyTypeDeny))
+				results = append(results, createEolEvaluationResult(policyCopy, match, types.PolicyActionDeny))
 				evaluatedMatches[match.Cycle.ProductName] = true
 				continue
 			}
 			if warnMatch(&policyCopy, match) {
-				results = append(results, createEolEvaluationResult(policyCopy, match, types.PolicyTypeWarn))
+				results = append(results, createEolEvaluationResult(policyCopy, match, types.PolicyActionWarn))
 				evaluatedMatches[match.Cycle.ProductName] = true
 			}
 		}
@@ -261,13 +265,14 @@ func denyMatch(policy *Policy, match match.Match) bool {
 	return false
 }
 
-func createEolEvaluationResult(policy Policy, match match.Match, policyType types.EvaluationType) types.EolEvaluationResult {
+func createEolEvaluationResult(policy Policy, match match.Match, policyAction types.PolicyAction) types.EolEvaluationResult {
 	result := types.EolEvaluationResult{
-		Type:        policyType,
+		Action:      policyAction,
+		Type:        types.PolicyTypeEol,
 		ProductName: match.Cycle.ProductName,
 		Cycle:       match.Cycle.ReleaseCycle,
 	}
-	if policyType == types.PolicyTypeWarn {
+	if policyAction == types.PolicyActionWarn {
 		result.FailDate = policy.DenyDate
 	}
 	return result

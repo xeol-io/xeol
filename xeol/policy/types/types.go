@@ -3,34 +3,48 @@ package types
 type PolicyType string
 
 const (
-	PolicyTypeWarn EvaluationType = "WARN"
-	PolicyTypeDeny EvaluationType = "DENY"
+	PolicyActionWarn  PolicyAction = "WARN"
+	PolicyActionDeny  PolicyAction = "DENY"
+	PolicyActionAllow PolicyAction = "ALLOW"
 
 	PolicyTypeEol    PolicyType = "EOL"
 	PolicyTypeNotary PolicyType = "NOTARY"
 )
 
-type EvaluationType string
+type PolicyAction string
 
 type EolEvaluationResult struct {
-	Type        EvaluationType
+	Type        PolicyType
+	Action      PolicyAction
 	ProductName string
 	Cycle       string
 	FailDate    string
 }
 
 type NotaryEvaluationResult struct {
-	Type           EvaluationType
+	Type           PolicyType
+	Action         PolicyAction
 	ImageReference string
+	Verified       bool
 	FailDate       string
 }
 
 type PolicyEvaluationResult interface {
-	GetType() EvaluationType
+	GetPolicyAction() PolicyAction
+	GetPolicyType() PolicyType
 	GetFailDate() string
+	GetVerified() bool
 }
 
-func (n NotaryEvaluationResult) GetType() EvaluationType {
+func (n NotaryEvaluationResult) GetVerified() bool {
+	return n.Verified
+}
+
+func (n NotaryEvaluationResult) GetPolicyAction() PolicyAction {
+	return n.Action
+}
+
+func (n NotaryEvaluationResult) GetPolicyType() PolicyType {
 	return n.Type
 }
 
@@ -38,7 +52,15 @@ func (n NotaryEvaluationResult) GetFailDate() string {
 	return n.FailDate
 }
 
-func (e EolEvaluationResult) GetType() EvaluationType {
+func (e EolEvaluationResult) GetVerified() bool {
+	return false
+}
+
+func (e EolEvaluationResult) GetPolicyAction() PolicyAction {
+	return e.Action
+}
+
+func (e EolEvaluationResult) GetPolicyType() PolicyType {
 	return e.Type
 }
 

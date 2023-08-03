@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/notaryproject/notation-go/verifier/trustpolicy"
+	"github.com/docker/distribution/reference"
 	"github.com/wagoodman/go-partybus"
 
 	"github.com/xeol-io/xeol/internal/bus"
@@ -21,16 +21,22 @@ const (
 	DateLayout = "2006-01-02"
 )
 
-type PolicyType struct {
-	PolicyType    types.PolicyType          `json:"policy_type"`
-	TrustPolicies []trustpolicy.TrustPolicy `json:"trust_policy"`
-	// the date which to warn on signature verification failures
-	WarnDate string `json:"warn_date,omitempty"`
-	// the date which to deny on signature verification failures
-	DenyDate string `json:"deny_date,omitempty"`
+type PolicyWrapper struct {
+	PolicyType types.PolicyType `json:"PolicyType"`
+	Policies   []Policy         `json:"Policies"`
 }
 
-func (n PolicyType) warnMatch() bool {
+type Policy struct {
+	WarnDate string `json:"WarnDate"`
+	DenyDate string `json:"DenyDate"`
+	Policy   string `json:"Policy"`
+}
+
+func (n PolicyWrapper) GetPolicyType() types.PolicyType {
+	return n.PolicyType
+}
+
+func (n Policy) warnMatch() bool {
 	if n.WarnDate != "" {
 		warnDate, err := time.Parse(DateLayout, n.WarnDate)
 		if err != nil {
@@ -49,7 +55,7 @@ func (n PolicyType) warnMatch() bool {
 	return false
 }
 
-func (n PolicyType) denyMatch() bool {
+func (n Policy) denyMatch() bool {
 	if n.DenyDate != "" {
 		denyDate, err := time.Parse(DateLayout, n.DenyDate)
 		if err != nil {
@@ -68,40 +74,63 @@ func (n PolicyType) denyMatch() bool {
 	return false
 }
 
-func (n PolicyType) Evaluate(_ match.Matches, _ string, imageReference string) (failBuild bool) {
-	failBuild = false
-	// image unsigned | image signed | image signed + verified
+func (n PolicyWrapper) Evaluate(_ match.Matches, _ string, imageReference string) (bool, types.PolicyEvaluationResult) {
+	if len(n.Policies) > 1 {
+		log.Errorf("invalid number of notary policies, there should only be one: %d", len(n.Policies))
+		return false, types.NotaryEvaluationResult{}
+	}
 
+	// validate this is a docker image reference
+	isValid := reference.ReferenceRegexp.MatchString(imageReference)
+	if !isValid {
+		log.Errorf("invalid Docker image reference: %s", imageReference)
+		return false, types.NotaryEvaluationResult{}
+	}
+
+	policy := n.Policies[0]
+
+	failBuild := false
 	ctx := context.Background()
-	err := sigverifier.Verify(ctx, imageReference)
+	err := sigverifier.Verify(ctx, imageReference, policy.Policy)
+	// if err is nil, then the image is verified
 	if err == nil {
-		return failBuild
+		return failBuild, types.NotaryEvaluationResult{
+			Action:         types.PolicyActionAllow,
+			Type:           types.PolicyTypeNotary,
+			ImageReference: imageReference,
+			Verified:       true,
+		}
 	}
 	log.Debugf("signature verification failed: %v", err)
 
-	if n.denyMatch() {
+	if policy.denyMatch() {
 		failBuild = true
+		result := types.NotaryEvaluationResult{
+			Action:         types.PolicyActionDeny,
+			Type:           types.PolicyTypeNotary,
+			ImageReference: imageReference,
+			Verified:       false,
+		}
 		bus.Publish(partybus.Event{
-			Type: event.NotaryPolicyEvaluationMessage,
-			Value: types.NotaryEvaluationResult{
-				Type:           types.PolicyTypeDeny,
-				ImageReference: imageReference,
-			},
+			Type:  event.NotaryPolicyEvaluationMessage,
+			Value: result,
 		})
-		return failBuild
+		return failBuild, result
 	}
 
-	if n.warnMatch() {
+	if policy.warnMatch() {
+		result := types.NotaryEvaluationResult{
+			Action:         types.PolicyActionWarn,
+			Type:           types.PolicyTypeNotary,
+			ImageReference: imageReference,
+			Verified:       false,
+		}
 		bus.Publish(partybus.Event{
-			Type: event.NotaryPolicyEvaluationMessage,
-			Value: types.NotaryEvaluationResult{
-				Type:           types.PolicyTypeWarn,
-				ImageReference: imageReference,
-				FailDate:       n.DenyDate,
-			},
+			Type:  event.NotaryPolicyEvaluationMessage,
+			Value: result,
 		})
-		return failBuild
+		return failBuild, result
 	}
 
-	return failBuild
+	return failBuild, types.NotaryEvaluationResult{}
 }

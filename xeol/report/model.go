@@ -6,10 +6,12 @@ import (
 )
 
 type XeolEventPayload struct {
-	Matches   []match.Match
-	Packages  []pkg.Package
-	Context   pkg.Context
-	AppConfig interface{}
-	ImageName string
-	Sbom      string
+	Matches       []match.Match
+	Packages      []pkg.Package
+	Context       pkg.Context
+	AppConfig     interface{}
+	ImageVerified bool
+	ImageName     string
+	ImageDigest   string
+	Sbom          string
 }

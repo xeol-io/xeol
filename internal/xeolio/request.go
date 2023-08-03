@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	XeolAPIURL    = "https://api.xeol.io"
-	XeolEngineURL = "https://engine.xeol.io"
+	XeolAPIURL    = "http://localhost:8080"
+	XeolEngineURL = "http://localhost:8080"
 )
 
 type XeolClient struct {
@@ -55,20 +55,20 @@ func (x *XeolClient) makeRequest(method, url, path string, body io.Reader, out i
 			return fmt.Errorf("xeol.io API response decode failed: %v", err)
 		}
 	} else {
-		log.Debug("sent event to xeol.io API at %s", req.URL.String())
+		log.Debugf("sent event to xeol.io API at %s", req.URL.String())
 	}
 
 	return nil
 }
 
 func (x *XeolClient) FetchPolicies() ([]policy.Policy, error) {
-	var policies []policy.Policy
-	err := x.makeRequest("GET", XeolAPIURL, "v1/policy", nil, &policies)
+	var raw json.RawMessage
+	err := x.makeRequest("GET", XeolAPIURL, "v2/policy", nil, &raw)
 	if err != nil {
 		return nil, err
 	}
 
-	return policies, nil
+	return policy.UnmarshalPolicies(raw)
 }
 
 func (x *XeolClient) SendEvent(payload report.XeolEventPayload) error {

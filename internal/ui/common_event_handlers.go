@@ -19,13 +19,13 @@ func handleNotaryPolicyEvaluationMessage(event partybus.Event, reportOutput io.W
 	}
 
 	var message string
-	if nt.Type == policyTypes.PolicyTypeDeny {
-		message = color.Red.Sprintf("[%s] Policy Violation: %s is not signed by a trusted party. This scan will now exit non-zero.\n", nt.Type, nt.ImageReference)
+	if nt.Action == policyTypes.PolicyActionDeny {
+		message = color.Red.Sprintf("[%s][%s] Policy Violation: image '%s' is not signed by a trusted party.\n", nt.Action, nt.Type, nt.ImageReference)
 	} else {
 		if nt.FailDate != "" {
-			message = color.Yellow.Sprintf("[%s] Policy Violation: %s is not signed by a trusted party. This policy will fail builds starting on %s.\n", nt.Type, nt.ImageReference, nt.FailDate)
+			message = color.Yellow.Sprintf("[%s][%s] Policy Violation: image '%s' is not signed by a trusted party. This policy will fail builds starting on %s.\n", nt.Action, nt.Type, nt.ImageReference, nt.FailDate)
 		} else {
-			message = color.Yellow.Sprintf("[%s] Policy Violation: %s is not signed by a trusted party.\n", nt.Type, nt.ImageReference)
+			message = color.Yellow.Sprintf("[%s][%s] Policy Violation: image '%s' is not signed by a trusted party.\n", nt.Action, nt.Type, nt.ImageReference)
 		}
 	}
 	if _, err := reportOutput.Write([]byte(message)); err != nil {
@@ -42,13 +42,13 @@ func handleEolPolicyEvaluationMessage(event partybus.Event, reportOutput io.Writ
 	}
 
 	var message string
-	if pt.Type == policyTypes.PolicyTypeDeny {
-		message = color.Red.Sprintf("[%s] Policy Violation: %s (v%s) needs to upgraded to a newer version. This scan will now exit non-zero.\n", pt.Type, pt.ProductName, pt.Cycle)
+	if pt.Action == policyTypes.PolicyActionDeny {
+		message = color.Red.Sprintf("[%s][%s] Policy Violation: %s (v%s) needs to be upgraded to a newer version.\n", pt.Action, pt.Type, pt.ProductName, pt.Cycle)
 	} else {
 		if pt.FailDate != "" {
-			message = color.Yellow.Sprintf("[%s] Policy Violation: %s (v%s) needs to be upgraded to a newer version. This policy will fail builds starting on %s.\n", pt.Type, pt.ProductName, pt.Cycle, pt.FailDate)
+			message = color.Yellow.Sprintf("[%s][%s] Policy Violation: %s (v%s) needs to be upgraded to a newer version. This policy will fail builds starting on %s.\n", pt.Action, pt.Type, pt.ProductName, pt.Cycle, pt.FailDate)
 		} else {
-			message = color.Yellow.Sprintf("[%s] Policy Violation: %s (v%s) needs to be upgraded to a newer version.\n", pt.Type, pt.ProductName, pt.Cycle)
+			message = color.Yellow.Sprintf("[%s][%s] Policy Violation: %s (v%s) needs to be upgraded to a newer version.\n", pt.Action, pt.Type, pt.ProductName, pt.Cycle)
 		}
 	}
 	if _, err := reportOutput.Write([]byte(message)); err != nil {

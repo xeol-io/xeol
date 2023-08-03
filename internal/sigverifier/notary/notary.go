@@ -2,25 +2,53 @@ package notary
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/notaryproject/notation-go"
+	"github.com/notaryproject/notation-go/dir"
+	"github.com/notaryproject/notation-go/plugin"
 	"github.com/notaryproject/notation-go/verifier"
+	"github.com/notaryproject/notation-go/verifier/trustpolicy"
+	"github.com/notaryproject/notation-go/verifier/truststore"
 )
 
 const (
 	DefaultRegistry = "docker.io"
 )
 
-func Verify(ctx context.Context, reference string) error {
-	// add default registry if not specified
+func decodeBase64NotaryJSON(encoded string) (trustpolicy.Document, error) {
+	decoded, err := base64.StdEncoding.DecodeString(encoded)
+	if err != nil {
+		return trustpolicy.Document{}, err
+	}
+
+	var policies trustpolicy.Document
+	err = json.Unmarshal(decoded, &policies)
+	if err != nil {
+		return trustpolicy.Document{}, err
+	}
+
+	return policies, nil
+}
+
+func Verify(ctx context.Context, reference string, policy string) error {
+	// add default docker registry if a registry is not specified
 	if !strings.Contains(reference, "/") {
 		reference = fmt.Sprintf("%s/%s", DefaultRegistry, reference)
 	}
 
-	sigVerifier, err := verifier.NewFromConfig()
+	trustpolicy, err := decodeBase64NotaryJSON(policy)
+	if err != nil {
+		return err
+	}
+	x509TrustStore := truststore.NewX509TrustStore(dir.ConfigFS())
+	plugins := plugin.NewCLIManager(dir.PluginFS())
+
+	sigVerifier, err := verifier.New(&trustpolicy, x509TrustStore, plugins)
 	if err != nil {
 		return err
 	}
@@ -45,12 +73,10 @@ func Verify(ctx context.Context, reference string) error {
 	if err != nil {
 		return err
 	}
-	// reportVerificationSuccess(outcomes, resolvedRef)
 	return nil
 }
 
 func checkVerificationFailure(outcomes []*notation.VerificationOutcome, printOut string, err error) error {
-	// write out on failure
 	if err != nil || len(outcomes) == 0 {
 		if err != nil {
 			var errorVerificationFailed notation.ErrorVerificationFailed
