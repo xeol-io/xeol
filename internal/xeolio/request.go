@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	XeolAPIURL    = "https://e885b265e7f6.ngrok.app"
-	XeolEngineURL = "https://e885b265e7f6.ngrok.app"
+	XeolAPIURL    = "https://api.xeol.io"
+	XeolEngineURL = "https://engine.xeol.io"
 )
 
 type XeolClient struct {
