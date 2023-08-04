@@ -75,6 +75,11 @@ func (n Policy) denyMatch() bool {
 }
 
 func (n PolicyWrapper) Evaluate(_ match.Matches, _ string, imageReference string) (bool, types.PolicyEvaluationResult) {
+	if len(n.Policies) == 0 {
+		log.Errorf("no notary policies provided")
+		return false, types.NotaryEvaluationResult{}
+	}
+
 	if len(n.Policies) > 1 {
 		log.Errorf("invalid number of notary policies, there should only be one: %d", len(n.Policies))
 		return false, types.NotaryEvaluationResult{}
