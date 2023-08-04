@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	XeolAPIURL    = "http://localhost:8080"
-	XeolEngineURL = "http://localhost:8080"
+	XeolAPIURL    = "https://api.xeol.io"
+	XeolEngineURL = "https://engine.xeol.io"
 )
 
 type XeolClient struct {
