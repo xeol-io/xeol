@@ -6,92 +6,17 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/xeol-io/xeol/internal/log"
+	"github.com/xeol-io/xeol/xeol/policy"
 	"github.com/xeol-io/xeol/xeol/report"
 )
-
-type PolicyType string
-type PolicyScope string
-type CycleOperator string
 
 const (
 	XeolAPIURL    = "https://api.xeol.io"
 	XeolEngineURL = "https://engine.xeol.io"
-
-	PolicyTypeEol PolicyType = "EOL"
-
-	PolicyScopeGlobal   PolicyScope = "global"
-	PolicyScopeProject  PolicyScope = "project"
-	PolicyScopeSoftware PolicyScope = "software"
-
-	CycleOperatorLessThan        CycleOperator = "LT"
-	CycleOperatorLessThanOrEqual CycleOperator = "LTE"
-	CycleOperatorEqual           CycleOperator = "EQ"
 )
-
-type Policy struct {
-	ID string `json:"id"`
-	// the policy scope can be one of: global, project, software
-	// global: the policy applies to all projects and software
-	// project: the policy applies to all software in a project
-	// software: the policy applies to a specific software
-	PolicyScope PolicyScope `json:"policy_scope"`
-	// the type of policy [eol]
-	PolicyType PolicyType `json:"policy_type"`
-	// the date which to start warning xeol scans
-	WarnDate string `json:"warn_date,omitempty"`
-	// the date which to start failing xeol scans
-	DenyDate string `json:"deny_date,omitempty"`
-	// the days before eol to start warning xeol scans
-	WarnDays *int `json:"warn_days,omitempty"`
-	// the days before eol to start failing xeol scans
-	DenyDays *int `json:"deny_days,omitempty"`
-	// the project name to match policy against. Valid when PolicyScope is 'project'
-	ProjectName string `json:"project_name,omitempty"`
-	//
-	// the following fields are only used when PolicyScope is 'software'
-	//
-	// the product name to match policy against.
-	ProductName string `json:"product_name,omitempty"`
-	// the cycle to match policy against.
-	Cycle string `json:"cycle,omitempty"`
-	// the cycle operator to match policy against.
-	CycleOperator CycleOperator `json:"cycle_operator,omitempty"`
-}
-
-func (ps *PolicyScope) UnmarshalJSON(b []byte) error {
-	str := strings.Trim(string(b), "\"")
-	switch str {
-	case string(PolicyScopeGlobal), string(PolicyScopeProject), string(PolicyScopeSoftware):
-		*ps = PolicyScope(str)
-	default:
-		return fmt.Errorf("invalid PolicyScope %s", str)
-	}
-	return nil
-}
-
-func (pt *PolicyType) UnmarshalJSON(b []byte) error {
-	str := strings.Trim(string(b), "\"")
-	if str != string(PolicyTypeEol) {
-		return fmt.Errorf("invalid PolicyType %s", str)
-	}
-	*pt = PolicyType(str)
-	return nil
-}
-
-func (co *CycleOperator) UnmarshalJSON(b []byte) error {
-	str := strings.Trim(string(b), "\"")
-	switch str {
-	case string(CycleOperatorLessThan), string(CycleOperatorLessThanOrEqual), string(CycleOperatorEqual):
-		*co = CycleOperator(str)
-	default:
-		return nil
-	}
-	return nil
-}
 
 type XeolClient struct {
 	APIKey string
@@ -130,20 +55,20 @@ func (x *XeolClient) makeRequest(method, url, path string, body io.Reader, out i
 			return fmt.Errorf("xeol.io API response decode failed: %v", err)
 		}
 	} else {
-		log.Debug("sent event to xeol.io API at %s", req.URL.String())
+		log.Debugf("sent event to xeol.io API at %s", req.URL.String())
 	}
 
 	return nil
 }
 
-func (x *XeolClient) FetchPolicies() ([]Policy, error) {
-	var policies []Policy
-	err := x.makeRequest("GET", XeolAPIURL, "v1/policy", nil, &policies)
+func (x *XeolClient) FetchPolicies() ([]policy.Policy, error) {
+	var raw json.RawMessage
+	err := x.makeRequest("GET", XeolAPIURL, "v2/policy", nil, &raw)
 	if err != nil {
 		return nil, err
 	}
 
-	return policies, nil
+	return policy.UnmarshalPolicies(raw)
 }
 
 func (x *XeolClient) SendEvent(payload report.XeolEventPayload) error {

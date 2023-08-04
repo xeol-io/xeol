@@ -8,7 +8,7 @@ import (
 
 	"github.com/xeol-io/xeol/xeol/event"
 	"github.com/xeol-io/xeol/xeol/matcher"
-	"github.com/xeol-io/xeol/xeol/policy"
+	policyTypes "github.com/xeol-io/xeol/xeol/policy/types"
 	"github.com/xeol-io/xeol/xeol/presenter"
 )
 
@@ -37,12 +37,24 @@ func checkEventType(actual, expected partybus.EventType) error {
 	return nil
 }
 
-func ParsePolicyEvaluationMessage(e partybus.Event) (*policy.EvaluationResult, error) {
-	if err := checkEventType(e.Type, event.PolicyEvaluationMessage); err != nil {
+func ParseNotaryPolicyEvaluationMessage(e partybus.Event) (*policyTypes.NotaryEvaluationResult, error) {
+	if err := checkEventType(e.Type, event.NotaryPolicyEvaluationMessage); err != nil {
 		return nil, err
 	}
 
-	pt, ok := e.Value.(policy.EvaluationResult)
+	pt, ok := e.Value.(policyTypes.NotaryEvaluationResult)
+	if !ok {
+		return nil, newPayloadErr(e.Type, "Value", e.Value)
+	}
+	return &pt, nil
+}
+
+func ParseEolPolicyEvaluationMessage(e partybus.Event) (*policyTypes.EolEvaluationResult, error) {
+	if err := checkEventType(e.Type, event.EolPolicyEvaluationMessage); err != nil {
+		return nil, err
+	}
+
+	pt, ok := e.Value.(policyTypes.EolEvaluationResult)
 	if !ok {
 		return nil, newPayloadErr(e.Type, "Value", e.Value)
 	}

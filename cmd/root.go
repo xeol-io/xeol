@@ -35,6 +35,7 @@ import (
 	pkgMatcher "github.com/xeol-io/xeol/xeol/matcher/packages"
 	"github.com/xeol-io/xeol/xeol/pkg"
 	"github.com/xeol-io/xeol/xeol/policy"
+	"github.com/xeol-io/xeol/xeol/policy/types"
 	"github.com/xeol-io/xeol/xeol/presenter"
 	"github.com/xeol-io/xeol/xeol/presenter/models"
 	"github.com/xeol-io/xeol/xeol/report"
@@ -258,7 +259,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		var pkgContext pkg.Context
 		var wg = &sync.WaitGroup{}
 		var loadedDB, gatheredPackages bool
-		var policies []xeolio.Policy
+		var policies []policy.Policy
 		x := xeolio.NewXeolClient(appConfig.APIKey)
 
 		wg.Add(3)
@@ -326,6 +327,24 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 			DBStatus:  status,
 		}
 
+		var failScan bool
+		var imageVerified bool
+		for _, p := range policies {
+			switch p.GetPolicyType() {
+			case types.PolicyTypeNotary:
+				shouldFailScan, res := p.Evaluate(allMatches, appConfig.ProjectName, userInput)
+				imageVerified = res.GetVerified()
+				if shouldFailScan {
+					failScan = true
+				}
+			case types.PolicyTypeEol:
+				shouldFailScan, _ := p.Evaluate(allMatches, appConfig.ProjectName, userInput)
+				if shouldFailScan {
+					failScan = true
+				}
+			}
+		}
+
 		if appConfig.APIKey != "" {
 			buf := new(bytes.Buffer)
 			bom := cyclonedxhelpers.ToFormatModel(*sbom)
@@ -336,19 +355,19 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 			}
 
 			if err := x.SendEvent(report.XeolEventPayload{
-				Matches:   allMatches.Sorted(),
-				Packages:  packages,
-				Context:   pkgContext,
-				AppConfig: appConfig,
-				ImageName: sbom.Source.ImageMetadata.UserInput,
-				Sbom:      base64.StdEncoding.EncodeToString(buf.Bytes()),
+				Matches:       allMatches.Sorted(),
+				Packages:      packages,
+				Context:       pkgContext,
+				AppConfig:     appConfig,
+				ImageName:     sbom.Source.ImageMetadata.UserInput,
+				ImageDigest:   sbom.Source.ImageMetadata.ManifestDigest,
+				ImageVerified: imageVerified,
+				Sbom:          base64.StdEncoding.EncodeToString(buf.Bytes()),
 			}); err != nil {
 				errs <- fmt.Errorf("failed to send eol event: %w", err)
 				return
 			}
 		}
-
-		failScan := policy.Evaluate(policies, allMatches, appConfig.ProjectName)
 
 		bus.Publish(partybus.Event{
 			Type:  event.EolScanningFinished,

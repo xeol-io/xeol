@@ -1,4 +1,4 @@
-package policy
+package eol
 
 import (
 	"reflect"
@@ -9,10 +9,10 @@ import (
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/google/uuid"
 
-	"github.com/xeol-io/xeol/internal/xeolio"
 	"github.com/xeol-io/xeol/xeol/eol"
 	"github.com/xeol-io/xeol/xeol/match"
 	"github.com/xeol-io/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/policy/types"
 )
 
 func Int(value int) *int {
@@ -22,18 +22,18 @@ func Int(value int) *int {
 func TestEvaluate(t *testing.T) {
 	tests := []struct {
 		name    string
-		policy  []xeolio.Policy
+		policy  []Policy
 		matches []match.Match
-		want    []EvaluationResult
+		want    []types.EolEvaluationResult
 	}{
 		{
 			name: "policy with no matches",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
 					ProductName:   "foo",
 					Cycle:         "1.0.0",
-					PolicyScope:   xeolio.PolicyScopeSoftware,
-					CycleOperator: xeolio.CycleOperatorLessThan,
+					PolicyScope:   PolicyScopeSoftware,
+					CycleOperator: CycleOperatorLessThan,
 					WarnDate:      "2021-01-01",
 					DenyDate:      "2021-01-01",
 				},
@@ -56,12 +56,12 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "policy with deny match",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
 					ProductName:   "foo",
 					Cycle:         "1.0",
-					PolicyScope:   xeolio.PolicyScopeSoftware,
-					CycleOperator: xeolio.CycleOperatorLessThanOrEqual,
+					PolicyScope:   PolicyScopeSoftware,
+					CycleOperator: CycleOperatorLessThanOrEqual,
 					WarnDate:      "2021-01-01",
 					DenyDate:      "2021-01-29",
 				},
@@ -80,9 +80,10 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []EvaluationResult{
+			want: []types.EolEvaluationResult{
 				{
-					Type:        PolicyTypeDeny,
+					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.0",
 				},
@@ -90,12 +91,12 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "policy with warn match, version less than equal",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
 					ProductName:   "foo",
 					Cycle:         "1.0",
-					PolicyScope:   xeolio.PolicyScopeSoftware,
-					CycleOperator: xeolio.CycleOperatorLessThanOrEqual,
+					PolicyScope:   PolicyScopeSoftware,
+					CycleOperator: CycleOperatorLessThanOrEqual,
 					WarnDate:      "2021-01-01",
 					DenyDate:      "2021-03-01",
 				},
@@ -114,9 +115,10 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []EvaluationResult{
+			want: []types.EolEvaluationResult{
 				{
-					Type:        PolicyTypeWarn,
+					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.0",
 					FailDate:    "2021-03-01",
@@ -125,12 +127,12 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "policy with warn match, version less than",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
 					ProductName:   "foo",
 					Cycle:         "1.0",
-					PolicyScope:   xeolio.PolicyScopeSoftware,
-					CycleOperator: xeolio.CycleOperatorLessThan,
+					PolicyScope:   PolicyScopeSoftware,
+					CycleOperator: CycleOperatorLessThan,
 					WarnDate:      "2021-01-01",
 					DenyDate:      "2021-03-01",
 				},
@@ -149,9 +151,10 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []EvaluationResult{
+			want: []types.EolEvaluationResult{
 				{
-					Type:        PolicyTypeWarn,
+					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "0.9",
 					FailDate:    "2021-03-01",
@@ -160,12 +163,12 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "policy with warn match, version equal",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
 					ProductName:   "foo",
 					Cycle:         "1.0",
-					PolicyScope:   xeolio.PolicyScopeSoftware,
-					CycleOperator: xeolio.CycleOperatorEqual,
+					PolicyScope:   PolicyScopeSoftware,
+					CycleOperator: CycleOperatorEqual,
 					WarnDate:      "2021-01-01",
 					DenyDate:      "2021-03-01",
 				},
@@ -184,9 +187,10 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []EvaluationResult{
+			want: []types.EolEvaluationResult{
 				{
-					Type:        PolicyTypeWarn,
+					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.0",
 					FailDate:    "2021-03-01",
@@ -195,20 +199,20 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "test multiple policy matches",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
 					ProductName:   "foo",
 					Cycle:         "1.3",
-					PolicyScope:   xeolio.PolicyScopeSoftware,
-					CycleOperator: xeolio.CycleOperatorEqual,
+					PolicyScope:   PolicyScopeSoftware,
+					CycleOperator: CycleOperatorEqual,
 					WarnDate:      "2021-01-01",
 					DenyDate:      "2021-03-01",
 				},
 				{
 					ProductName:   "bar",
 					Cycle:         "2.1",
-					PolicyScope:   xeolio.PolicyScopeSoftware,
-					CycleOperator: xeolio.CycleOperatorLessThanOrEqual,
+					PolicyScope:   PolicyScopeSoftware,
+					CycleOperator: CycleOperatorLessThanOrEqual,
 					WarnDate:      "2021-01-01",
 					DenyDate:      "2021-01-29",
 				},
@@ -239,14 +243,16 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []EvaluationResult{
+			want: []types.EolEvaluationResult{
 				{
-					Type:        PolicyTypeDeny,
+					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "bar",
 					Cycle:       "2.0",
 				},
 				{
-					Type:        PolicyTypeWarn,
+					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 					FailDate:    "2021-03-01",
@@ -255,12 +261,12 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "test bad dates",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
 					ProductName:   "foo",
 					Cycle:         "1.3",
-					PolicyScope:   xeolio.PolicyScopeSoftware,
-					CycleOperator: xeolio.CycleOperatorEqual,
+					PolicyScope:   PolicyScopeSoftware,
+					CycleOperator: CycleOperatorEqual,
 					WarnDate:      "2021/01/01",
 					DenyDate:      "2021/03/01",
 				},
@@ -283,12 +289,12 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "test bad cycles",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
 					ProductName:   "foo",
 					Cycle:         "1.4",
-					PolicyScope:   xeolio.PolicyScopeSoftware,
-					CycleOperator: xeolio.CycleOperatorEqual,
+					PolicyScope:   PolicyScopeSoftware,
+					CycleOperator: CycleOperatorEqual,
 					WarnDate:      "2021/01/01",
 					DenyDate:      "2021/03/01",
 				},
@@ -311,12 +317,12 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "test future dates",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
 					ProductName:   "foo",
 					Cycle:         "1.3",
-					PolicyScope:   xeolio.PolicyScopeSoftware,
-					CycleOperator: xeolio.CycleOperatorEqual,
+					PolicyScope:   PolicyScopeSoftware,
+					CycleOperator: CycleOperatorEqual,
 					WarnDate:      "2021-04-01",
 					DenyDate:      "2021-05-01",
 				},
@@ -339,10 +345,10 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "test global policy",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
-					PolicyScope: xeolio.PolicyScopeGlobal,
-					PolicyType:  xeolio.PolicyTypeEol,
+					PolicyScope: PolicyScopeGlobal,
+					PolicyType:  types.PolicyTypeEol,
 					WarnDate:    "2021-01-01",
 					DenyDate:    "2021-01-29",
 				},
@@ -373,14 +379,16 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []EvaluationResult{
+			want: []types.EolEvaluationResult{
 				{
-					Type:        PolicyTypeDeny,
+					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "bar",
 					Cycle:       "1.3",
 				},
 				{
-					Type:        PolicyTypeDeny,
+					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 				},
@@ -388,22 +396,22 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "test project and software precedence",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
-					PolicyScope: xeolio.PolicyScopeProject,
-					PolicyType:  xeolio.PolicyTypeEol,
+					PolicyScope: PolicyScopeProject,
+					PolicyType:  types.PolicyTypeEol,
 					WarnDate:    "2021-01-17",
 					DenyDate:    "2021-01-18",
 					ProjectName: "github//foo/bar",
 				},
 				{
-					PolicyScope:   xeolio.PolicyScopeSoftware,
-					PolicyType:    xeolio.PolicyTypeEol,
+					PolicyScope:   PolicyScopeSoftware,
+					PolicyType:    types.PolicyTypeEol,
 					WarnDate:      "2021-01-29",
 					DenyDate:      "2021-02-29",
 					ProductName:   "foo",
 					Cycle:         "1.3",
-					CycleOperator: xeolio.CycleOperatorEqual,
+					CycleOperator: CycleOperatorEqual,
 				},
 			},
 			matches: []match.Match{
@@ -432,15 +440,17 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []EvaluationResult{
+			want: []types.EolEvaluationResult{
 				{
-					Type:        PolicyTypeWarn,
+					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 					FailDate:    "2021-02-29",
 				},
 				{
-					Type:        PolicyTypeDeny,
+					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "bar",
 					Cycle:       "1.3",
 				},
@@ -448,16 +458,16 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "test project and global precedence",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
-					PolicyScope: xeolio.PolicyScopeGlobal,
-					PolicyType:  xeolio.PolicyTypeEol,
+					PolicyScope: PolicyScopeGlobal,
+					PolicyType:  types.PolicyTypeEol,
 					WarnDate:    "2021-01-15",
 					DenyDate:    "2021-01-16",
 				},
 				{
-					PolicyScope: xeolio.PolicyScopeProject,
-					PolicyType:  xeolio.PolicyTypeEol,
+					PolicyScope: PolicyScopeProject,
+					PolicyType:  types.PolicyTypeEol,
 					WarnDate:    "2021-01-29",
 					DenyDate:    "2021-02-29",
 					ProjectName: "github//foo/bar",
@@ -489,15 +499,17 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []EvaluationResult{
+			want: []types.EolEvaluationResult{
 				{
-					Type:        PolicyTypeWarn,
+					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "bar",
 					Cycle:       "1.3",
 					FailDate:    "2021-02-29",
 				},
 				{
-					Type:        PolicyTypeWarn,
+					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 					FailDate:    "2021-02-29",
@@ -506,10 +518,10 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "test sliding global policy [deny]",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
-					PolicyScope: xeolio.PolicyScopeGlobal,
-					PolicyType:  xeolio.PolicyTypeEol,
+					PolicyScope: PolicyScopeGlobal,
+					PolicyType:  types.PolicyTypeEol,
 					WarnDays:    Int(60),
 					DenyDays:    Int(30),
 				},
@@ -529,9 +541,10 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []EvaluationResult{
+			want: []types.EolEvaluationResult{
 				{
-					Type:        PolicyTypeDeny,
+					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 				},
@@ -539,10 +552,10 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "test sliding global policy [warn]",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
-					PolicyScope: xeolio.PolicyScopeGlobal,
-					PolicyType:  xeolio.PolicyTypeEol,
+					PolicyScope: PolicyScopeGlobal,
+					PolicyType:  types.PolicyTypeEol,
 					WarnDays:    Int(60),
 					DenyDays:    Int(30),
 				},
@@ -562,9 +575,10 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []EvaluationResult{
+			want: []types.EolEvaluationResult{
 				{
-					Type:        PolicyTypeWarn,
+					Action:      types.PolicyActionWarn,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 					FailDate:    "2021-02-26",
@@ -573,10 +587,10 @@ func TestEvaluate(t *testing.T) {
 		},
 		{
 			name: "test sliding global policy [deny, no warn]",
-			policy: []xeolio.Policy{
+			policy: []Policy{
 				{
-					PolicyScope: xeolio.PolicyScopeGlobal,
-					PolicyType:  xeolio.PolicyTypeEol,
+					PolicyScope: PolicyScopeGlobal,
+					PolicyType:  types.PolicyTypeEol,
 					DenyDays:    Int(30),
 				},
 			},
@@ -595,9 +609,10 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			want: []EvaluationResult{
+			want: []types.EolEvaluationResult{
 				{
-					Type:        PolicyTypeDeny,
+					Action:      types.PolicyActionDeny,
+					Type:        types.PolicyTypeEol,
 					ProductName: "foo",
 					Cycle:       "1.3",
 				},
@@ -624,24 +639,24 @@ func TestEvaluate(t *testing.T) {
 }
 
 func TestByPolicyScope(t *testing.T) {
-	policies := []xeolio.Policy{
-		{ID: "1", PolicyScope: xeolio.PolicyScopeGlobal},
-		{ID: "2", PolicyScope: xeolio.PolicyScopeSoftware},
-		{ID: "3", PolicyScope: xeolio.PolicyScopeProject},
-		{ID: "4", PolicyScope: xeolio.PolicyScopeSoftware},
-		{ID: "5", PolicyScope: xeolio.PolicyScopeGlobal},
-		{ID: "6", PolicyScope: xeolio.PolicyScopeProject},
+	policies := []Policy{
+		{ID: "1", PolicyScope: PolicyScopeGlobal},
+		{ID: "2", PolicyScope: PolicyScopeSoftware},
+		{ID: "3", PolicyScope: PolicyScopeProject},
+		{ID: "4", PolicyScope: PolicyScopeSoftware},
+		{ID: "5", PolicyScope: PolicyScopeGlobal},
+		{ID: "6", PolicyScope: PolicyScopeProject},
 	}
 
 	sort.Stable(ByPolicyScope(policies))
 
-	expected := []xeolio.Policy{
-		{ID: "4", PolicyScope: xeolio.PolicyScopeSoftware},
-		{ID: "2", PolicyScope: xeolio.PolicyScopeSoftware},
-		{ID: "6", PolicyScope: xeolio.PolicyScopeProject},
-		{ID: "3", PolicyScope: xeolio.PolicyScopeProject},
-		{ID: "5", PolicyScope: xeolio.PolicyScopeGlobal},
-		{ID: "1", PolicyScope: xeolio.PolicyScopeGlobal},
+	expected := []Policy{
+		{ID: "4", PolicyScope: PolicyScopeSoftware},
+		{ID: "2", PolicyScope: PolicyScopeSoftware},
+		{ID: "6", PolicyScope: PolicyScopeProject},
+		{ID: "3", PolicyScope: PolicyScopeProject},
+		{ID: "5", PolicyScope: PolicyScopeGlobal},
+		{ID: "1", PolicyScope: PolicyScopeGlobal},
 	}
 
 	if !reflect.DeepEqual(policies, expected) {
