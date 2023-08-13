@@ -1,1 +1,1 @@
-FROM docker.io/redis:5.0.4@sha256:fc5ecd863862f89f04334b7cbb57e93c9790478ea8188a49f6e57b0967d38c75
+FROM docker.io/redis:7.0.12@sha256:b0bdc1a83caf43f9eb74afca0fcfd6f09bea38bb87f6add4a858f06ef4617538
