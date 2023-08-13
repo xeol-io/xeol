@@ -1,1 +1,1 @@
-FROM docker.io/ruby:2.7.8@sha256:9fcde368ee5ae444a3d3345fe4549d937ea68c52bb55c681ceb340f548a7b24e
+FROM docker.io/ruby:3.2.2@sha256:6a31af10aa94d7e5f6a4e2e45e8d96e070040a36e4f2cb9527c0f874b4ce2c97
