@@ -1,0 +1,96 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: daily
+
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/cli/test-fixtures/image-bare
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/cli/test-fixtures/image-java-subprocess
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/cli/test-fixtures/image-node-subprocess
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/integration/test-fixtures/image-elasticsearch-6
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/integration/test-fixtures/image-fedora-29
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/integration/test-fixtures/image-golang-1.15
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/integration/test-fixtures/image-mongo-3.2
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/integration/test-fixtures/image-nodejs-6.13.1
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/integration/test-fixtures/image-postgres-9
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/integration/test-fixtures/image-python-3.4
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/integration/test-fixtures/image-redis-5
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/integration/test-fixtures/image-ruby-2.7
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /xeol/pkg/test-fixtures/image-simple
+    schedule:
+      interval: daily
+
+  - package-ecosystem: npm
+    directory: /xeol/pkg/test-fixtures/image-simple
+    schedule:
+      interval: daily
+
+  - package-ecosystem: npm
+    directory: /xeol/pkg/test-fixtures/image-simple/target/nested
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /xeol/presenter/json/test-fixtures/image-simple
+    schedule:
+      interval: daily
