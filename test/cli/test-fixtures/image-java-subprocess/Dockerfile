@@ -1,4 +1,4 @@
-FROM openjdk:15-slim-buster
+FROM openjdk:18-slim-buster
 COPY app.java /
 ENV PATH="/app/bin:${PATH}"
 WORKDIR /
