@@ -1,1 +1,1 @@
-FROM docker.io/node:6.13.1-alpine@sha256:90ab70c875be439778a6e644b972d0b99a1cbebc42b74cb65c998e02004131f8
+FROM docker.io/node:20.5.1-alpine@sha256:5fd1bdbbb0d96d68c65a5c18a70ff9819ff1dc2889ac4c390bad4f79834c7bb3
