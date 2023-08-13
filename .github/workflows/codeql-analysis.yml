@@ -63,7 +63,7 @@ jobs:
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@c3b6fce4ee2ca25bc1066aa3bf73962fda0e8898 # v2.1.31
+      uses: github/codeql-action/init@5b6282e01c62d02e720b81eb8a51204f527c3624 # v2.1.31
       with:
         languages: ${{ matrix.language }}
         # If you wish to specify custom queries, you can do so here or in a config file.
@@ -85,4 +85,4 @@ jobs:
       run: make xeol
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@c3b6fce4ee2ca25bc1066aa3bf73962fda0e8898 # v2.1.31
+      uses: github/codeql-action/analyze@5b6282e01c62d02e720b81eb8a51204f527c3624 # v2.1.31
