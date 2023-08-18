@@ -3,6 +3,7 @@
   {
    "Cycle": {
     "ProductName": "MongoDB Server",
+    "ProductPermalink": "",
     "ReleaseCycle": "2.8",
     "Eol": "true",
     "LatestRelease": "",
@@ -45,6 +46,7 @@
   {
    "Cycle": {
     "ProductName": "MongoDB Server",
+    "ProductPermalink": "",
     "ReleaseCycle": "3.2",
     "Eol": "2018-07-31",
     "LatestRelease": "",
@@ -94,6 +96,7 @@
   {
    "Cycle": {
     "ProductName": "Ubuntu",
+    "ProductPermalink": "",
     "ReleaseCycle": "16.04",
     "Eol": "2021-04-02",
     "LatestRelease": "",

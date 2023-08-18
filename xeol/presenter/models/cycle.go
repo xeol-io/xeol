@@ -8,6 +8,7 @@ import (
 
 type Cycle struct {
 	ProductName       string
+	ProductPermalink  string
 	ReleaseCycle      string
 	Eol               string
 	LatestRelease     string
@@ -25,6 +26,7 @@ func NewCycle(c eol.Cycle) Cycle {
 
 	return Cycle{
 		ProductName:       c.ProductName,
+		ProductPermalink:  c.ProductPermalink,
 		ReleaseCycle:      c.ReleaseCycle,
 		Eol:               eol,
 		LatestRelease:     c.LatestRelease,
