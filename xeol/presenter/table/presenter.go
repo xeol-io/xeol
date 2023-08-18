@@ -86,9 +86,10 @@ func (pres *Presenter) Present(output io.Writer) error {
 }
 
 func createRow(m match.Match) ([]string, error) {
+	var daysEol string
 	daysEol, err := calculateDaysEol(m)
 	if err != nil {
-		return nil, err
+		daysEol = "-"
 	}
 
 	if m.Cycle.EolBool {
