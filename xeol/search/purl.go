@@ -69,11 +69,25 @@ func ByDistroCpe(store eol.Provider, distro *linux.Release, eolMatchDate time.Ti
 	return match.Match{}, nil
 }
 
-// normalizeSemver returns the major.minor.patch portion of a semver string.
-// it turns versions like 2.7.8p225 into 2.7.8
+// normalizeSemver returns the major.minor.patch portion of a semver string
+// that may have other characters appended to it. We should be very careful
+// here to create matches for patterns we KNOW, because otherwise we could
+// introduce false positives.
 func normalizeSemver(version string) string {
-	re := regexp.MustCompile(`^(\d+\.\d+\.\d+).*`)
+	// For Ruby versions. Example: 2.5.3p105 -> 2.5.3
+	re := regexp.MustCompile(`^(\d+\.\d+\.\d+)p\d+`)
 	return re.ReplaceAllString(version, "$1")
+}
+
+func versionLength(version string) int {
+	parts := strings.SplitN(version, "-", 2)
+	regularVersionParts := strings.Split(parts[0], ".")
+	length := len(regularVersionParts)
+	// increment if there's a pre-release part
+	if len(parts) > 1 && parts[1] != "" {
+		length++
+	}
+	return length
 }
 
 // returnMatchingCycle returns the first cycle that matches the version string.
@@ -92,11 +106,12 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 		}
 
 		// match on major, minor, or patch
-		versionLength := len(strings.Split(c.ReleaseCycle, "."))
+		versionLength := versionLength(c.ReleaseCycle)
 		cv, err := semver.NewVersion(c.ReleaseCycle)
 		if err != nil {
 			return eol.Cycle{}, err
 		}
+
 		switch versionLength {
 		case 1:
 			if v.Major() == cv.Major() {
@@ -108,6 +123,10 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 			}
 		case 3:
 			if v.Major() == cv.Major() && v.Minor() == cv.Minor() && v.Patch() == cv.Patch() {
+				return c, nil
+			}
+		case 4:
+			if v.Major() == cv.Major() && v.Minor() == cv.Minor() && v.Patch() == cv.Patch() && v.Prerelease() == cv.Prerelease() {
 				return c, nil
 			}
 		}
