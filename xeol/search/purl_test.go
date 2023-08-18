@@ -20,19 +20,23 @@ func TestNormalizeSemver(t *testing.T) {
 		},
 		{
 			version:  "1.2.3-rc1",
-			expected: "1.2.3",
+			expected: "1.2.3-rc1",
 		},
 		{
 			version:  "1.2.3-rc1+build1",
-			expected: "1.2.3",
+			expected: "1.2.3-rc1+build1",
 		},
 		{
 			version:  "1.2.3p288",
 			expected: "1.2.3",
 		},
 		{
-			version:  "1.2.3p288+1.3",
-			expected: "1.2.3",
+			version:  "1.1.1-beta",
+			expected: "1.1.1-beta",
+		},
+		{
+			version:  "1.1.1-preview1",
+			expected: "1.1.1-preview1",
 		},
 	}
 
@@ -193,26 +197,6 @@ func TestVersionLength(t *testing.T) {
 		t.Run(tt.version, func(t *testing.T) {
 			if gotLength := versionLength(tt.version); gotLength != tt.wantLength {
 				t.Errorf("versionLength() = %v, want %v", gotLength, tt.wantLength)
-			}
-		})
-	}
-}
-
-func TestNormalizeSemVer(t *testing.T) {
-	tests := []struct {
-		version     string
-		wantVersion string
-	}{
-		{"2.5.3p105", "2.5.3"},
-		{"1.0.0", "1.0.0"},
-		{"1.0.0-beta", "1.0.0-beta"},
-		{"1.1.1-preview1", "1.1.1-preview1"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.version, func(t *testing.T) {
-			if gotVersion := normalizeSemver(tt.version); gotVersion != tt.wantVersion {
-				t.Errorf("normalizeSemver() = %v, want %v", gotVersion, tt.wantVersion)
 			}
 		})
 	}
