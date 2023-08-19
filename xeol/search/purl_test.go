@@ -20,19 +20,23 @@ func TestNormalizeSemver(t *testing.T) {
 		},
 		{
 			version:  "1.2.3-rc1",
-			expected: "1.2.3",
+			expected: "1.2.3-rc1",
 		},
 		{
 			version:  "1.2.3-rc1+build1",
-			expected: "1.2.3",
+			expected: "1.2.3-rc1+build1",
 		},
 		{
 			version:  "1.2.3p288",
 			expected: "1.2.3",
 		},
 		{
-			version:  "1.2.3p288+1.3",
-			expected: "1.2.3",
+			version:  "1.1.1-beta",
+			expected: "1.1.1-beta",
+		},
+		{
+			version:  "1.1.1-preview1",
+			expected: "1.1.1-preview1",
 		},
 	}
 
@@ -169,6 +173,30 @@ func TestReturnMatchingCycle(t *testing.T) {
 			}
 			if !reflect.DeepEqual(actual, tc.expected) {
 				t.Errorf("Expected %v, got %v", tc.expected, actual)
+			}
+		})
+	}
+}
+
+func TestVersionLength(t *testing.T) {
+	testCases := []struct {
+		version    string
+		wantLength int
+	}{
+		{"1.0.0", 3},
+		{"1.0.0-beta", 4},
+		{"1.0.0-beta.1", 4},
+		{"2.3", 2},
+		{"2", 1},
+		{"1.1.1-preview1", 4},
+		{"0.0.0", 3},
+		{"0.0.0-alpha", 4},
+	}
+
+	for _, tt := range testCases {
+		t.Run(tt.version, func(t *testing.T) {
+			if gotLength := versionLength(tt.version); gotLength != tt.wantLength {
+				t.Errorf("versionLength() = %v, want %v", gotLength, tt.wantLength)
 			}
 		})
 	}
