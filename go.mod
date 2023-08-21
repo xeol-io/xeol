@@ -54,7 +54,7 @@ require (
 	github.com/wagoodman/jotframe v0.0.0-20211129225309-56b0d0a4aebb
 	golang.org/x/term v0.11.0
 	gopkg.in/yaml.v2 v2.4.0
-	gorm.io/gorm v1.23.5
+	gorm.io/gorm v1.25.4
 	oras.land/oras-go/v2 v2.2.1
 )
 
@@ -120,7 +120,7 @@ require (
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/jinzhu/copier v0.3.5 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/jinzhu/now v1.1.4 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
