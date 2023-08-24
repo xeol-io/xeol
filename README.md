@@ -308,5 +308,4 @@ The main differences only exist in the matching logic. The main changes are in `
 
 ## Help
 
-Join our discord for help or feedback! [![](https://dcbadge.vercel.app/api/server/krXEm5Fp?style=flat)](https://discord.gg/krXEm5Fp)
-
+Join our discord for help or feedback! [![](https://dcbadge.vercel.app/api/server/23ucxwsb?style=flat)](https://discord.gg/23ucxwsb)
