@@ -4,18 +4,19 @@ import (
 	"fmt"
 
 	"github.com/mitchellh/hashstructure/v2"
-
-	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
 type Fingerprint struct {
 	releaseCycle string
 	releaseDate  string
-	packageID    pkg.ID // note: this encodes package name, version, type, location
+	productName  string
+	eolDate      string
+	eolBool      bool
+	lts          string
 }
 
 func (m Fingerprint) String() string {
-	return fmt.Sprintf("Fingerprint(releasecycle=%q releasedate=%q package=%q)", m.releaseCycle, m.releaseDate, m.packageID)
+	return fmt.Sprintf("Fingerprint(releasecycle=%q releasedate=%q productname=%q eoldate=%q eolbool=%t lts=%q)", m.releaseCycle, m.releaseDate, m.productName, m.eolDate, m.eolBool, m.lts)
 }
 
 func (m Fingerprint) ID() string {
