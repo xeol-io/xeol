@@ -27,6 +27,43 @@ func TestEvaluate(t *testing.T) {
 		want    []types.EolEvaluationResult
 	}{
 		{
+			name: "policy with eol bool match",
+			policy: []Policy{
+				{
+					ProductName:   "foo",
+					Cycle:         "1.0.0",
+					PolicyScope:   PolicyScopeSoftware,
+					CycleOperator: CycleOperatorLessThan,
+					WarnDate:      "2021-01-01",
+					DenyDate:      "2021-01-01",
+				},
+			},
+			matches: []match.Match{
+				{
+					Cycle: eol.Cycle{
+						ProductName:  "foo",
+						ReleaseCycle: "1.0.0",
+						EolBool:      true,
+					},
+					Package: pkg.Package{
+						ID:      pkg.ID(uuid.NewString()),
+						Name:    "package-e",
+						Version: "2.0.0",
+						Type:    syftPkg.RpmPkg,
+					},
+				},
+			},
+			want: []types.EolEvaluationResult{
+				{
+					Action:      types.PolicyActionWarn, // eol bool is always a warn
+					Type:        types.PolicyTypeEol,
+					ProductName: "foo",
+					Cycle:       "1.0.0",
+					// fail date should be empty for eol bool
+				},
+			},
+		},
+		{
 			name: "policy with no matches",
 			policy: []Policy{
 				{

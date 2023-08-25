@@ -129,6 +129,15 @@ func evaluateMatches(policies []Policy, matches match.Matches, projectName strin
 	for _, policy := range policies {
 		policyCopy := policy
 		for _, match := range matches.Sorted() {
+			// skip matches eol bool set to true. Unfortunately, setting
+			// a policy around a software that has EOL true does not give operators
+			// enough time to respond so we will skip for now
+			if match.Cycle.EolBool {
+				results = append(results, createEolEvaluationResult(Policy{}, match, types.PolicyActionWarn))
+				evaluatedMatches[match.Cycle.ProductName] = true
+				continue
+			}
+
 			if evaluatedMatches[match.Cycle.ProductName] {
 				continue
 			}
@@ -153,6 +162,7 @@ func evaluateMatches(policies []Policy, matches match.Matches, projectName strin
 			if warnMatch(&policyCopy, match) {
 				results = append(results, createEolEvaluationResult(policyCopy, match, types.PolicyActionWarn))
 				evaluatedMatches[match.Cycle.ProductName] = true
+				continue
 			}
 		}
 	}
@@ -272,8 +282,10 @@ func createEolEvaluationResult(policy Policy, match match.Match, policyAction ty
 		ProductName: match.Cycle.ProductName,
 		Cycle:       match.Cycle.ReleaseCycle,
 	}
-	if policyAction == types.PolicyActionWarn {
-		result.FailDate = policy.DenyDate
+	if policy != (Policy{}) {
+		if policyAction == types.PolicyActionWarn {
+			result.FailDate = policy.DenyDate
+		}
 	}
 	return result
 }
