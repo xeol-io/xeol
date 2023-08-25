@@ -28,7 +28,10 @@ func (m Match) Fingerprint() Fingerprint {
 	return Fingerprint{
 		releaseCycle: m.Cycle.ReleaseCycle,
 		releaseDate:  m.Cycle.ReleaseDate,
-		packageID:    m.Package.ID,
+		productName:  m.Cycle.ProductName,
+		eolDate:      m.Cycle.Eol,
+		eolBool:      m.Cycle.EolBool,
+		lts:          m.Cycle.LTS,
 	}
 }
 

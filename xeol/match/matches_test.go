@@ -62,9 +62,9 @@ func TestMatchesSortByPackage(t *testing.T) {
 	second := Match{
 		Cycle: eol.Cycle{
 			ProductName:  "product-a",
-			Eol:          "2020-01-01",
+			Eol:          "2021-01-01",
 			ReleaseCycle: "1",
-			ReleaseDate:  "2020-01-01",
+			ReleaseDate:  "2021-01-01",
 		},
 		Package: pkg.Package{
 			ID:      pkg.ID(uuid.NewString()),
