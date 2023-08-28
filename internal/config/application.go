@@ -47,6 +47,7 @@ type Application struct {
 	FailOnEolFound         bool           `yaml:"fail-on-eol-found" json:"fail-on-eol-found" mapstructure:"fail-on-eol-found"` // whether to exit with a non-zero exit code if any EOLs are found
 	APIKey                 string         `yaml:"api-key" json:"api-key" mapstructure:"api-key"`
 	ProjectName            string         `yaml:"project-name" json:"project-name" mapstructure:"project-name"`
+	CommitHash             string         `yaml:"commit-hash" json:"commit-hash" mapstructure:"commit-hash"`
 	ImagePath              string         `yaml:"image-path" json:"image-path" mapstructure:"image-path"`
 	Registry               registry       `yaml:"registry" json:"registry" mapstructure:"registry"`
 	Platform               string         `yaml:"platform" json:"platform" mapstructure:"platform"` // --platform, override the target platform for a container image
@@ -89,7 +90,9 @@ func (cfg Application) loadDefaultValues(v *viper.Viper) {
 	// set the default values for primitive fields in this struct
 	v.SetDefault("check-for-app-update", true)
 	v.SetDefault("fail-on-eol-found", false)
-	v.SetDefault("project-name", getDefaultProjectName())
+	project, commit := getDefaultProjectNameAndCommit()
+	v.SetDefault("project-name", project)
+	v.SetDefault("commit-hash", commit)
 	v.SetDefault("image-path", "Dockerfile")
 	v.SetDefault("default-image-pull-source", "")
 
@@ -104,14 +107,19 @@ func (cfg Application) loadDefaultValues(v *viper.Viper) {
 	}
 }
 
-func getDefaultProjectName() string {
+func getDefaultProjectNameAndCommit() (string, string) {
 	repo, err := git.PlainOpen(".")
 	if err != nil {
-		return ""
+		return "", ""
+	}
+
+	h, err := repo.Head()
+	if err != nil {
+		return "", ""
 	}
 
 	p := NewProject(repo)
-	return p.Name
+	return p.Name, h.Hash().String()
 }
 
 // readConfig attempts to read the given config path from disk or discover an alternate store location
