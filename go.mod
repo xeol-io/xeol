@@ -55,7 +55,7 @@ require (
 	golang.org/x/term v0.11.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/gorm v1.23.5
-	oras.land/oras-go/v2 v2.2.1
+	oras.land/oras-go/v2 v2.3.0
 )
 
 require (
