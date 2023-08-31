@@ -1,0 +1,17 @@
+name: Xeol
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Pull and Run xeol command
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/xeol-io/xeol/main/install.sh | sh -s -- -b /usr/local/bin
+          xeol . --api-key=${{ secrets.XEOL_API_KEY }}
+        shell: bash
