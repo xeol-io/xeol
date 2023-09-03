@@ -92,6 +92,8 @@ func versionLength(version string) int {
 
 // returnMatchingCycle returns the first cycle that matches the version string.
 // If no cycle matches, an empty cycle is returned.
+//
+//nolint:gocognit
 func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) {
 	normalizedVersion := normalizeSemver(version)
 	v, err := semver.NewVersion(normalizedVersion)

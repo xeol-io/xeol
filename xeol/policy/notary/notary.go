@@ -74,6 +74,7 @@ func (n Policy) denyMatch() bool {
 	return false
 }
 
+//nolint:funlen
 func (n PolicyWrapper) Evaluate(_ match.Matches, _ string, imageReference string, certsPEM string) (bool, types.PolicyEvaluationResult) {
 	ctx := context.Background()
 
