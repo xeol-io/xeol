@@ -22,7 +22,7 @@ func NewTrustStore(name string, certs []*x509.Certificate) truststore.X509TrustS
 	}
 }
 
-func (ts *simpleTrustStore) GetCertificates(ctx context.Context, storeType truststore.Type, name string) ([]*x509.Certificate, error) {
+func (ts *simpleTrustStore) GetCertificates(_ context.Context, storeType truststore.Type, name string) ([]*x509.Certificate, error) {
 	if storeType != ts.storeType {
 		return nil, errors.Errorf("invalid truststore type")
 	}
