@@ -74,8 +74,13 @@ func (n Policy) denyMatch() bool {
 	return false
 }
 
-func (n PolicyWrapper) Evaluate(_ match.Matches, _ string, imageReference string) (bool, types.PolicyEvaluationResult) {
+func (n PolicyWrapper) Evaluate(_ match.Matches, _ string, imageReference string, certsPEM string) (bool, types.PolicyEvaluationResult) {
 	ctx := context.Background()
+
+	if certsPEM == "" {
+		log.Debugf("no notary certificates set, skipping notary evaluation")
+		return false, types.NotaryEvaluationResult{}
+	}
 
 	if len(n.Policies) == 0 {
 		log.Errorf("no notary policies provided")

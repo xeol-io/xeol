@@ -260,6 +260,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		var wg = &sync.WaitGroup{}
 		var loadedDB, gatheredPackages bool
 		var policies []policy.Policy
+		var certificates string
 		x := xeolio.NewXeolClient(appConfig.APIKey)
 
 		wg.Add(3)
@@ -270,6 +271,11 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 				policies, err = x.FetchPolicies()
 				if err != nil {
 					errs <- fmt.Errorf("failed to fetch policy: %w", err)
+					return
+				}
+				certificates, err = x.FetchCertificates()
+				if err != nil {
+					errs <- fmt.Errorf("failed to fetch certificate: %w", err)
 					return
 				}
 			}
@@ -332,13 +338,13 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		for _, p := range policies {
 			switch p.GetPolicyType() {
 			case types.PolicyTypeNotary:
-				shouldFailScan, res := p.Evaluate(allMatches, appConfig.ProjectName, userInput)
+				shouldFailScan, res := p.Evaluate(allMatches, appConfig.ProjectName, userInput, certificates)
 				imageVerified = res.GetVerified()
 				if shouldFailScan {
 					failScan = true
 				}
 			case types.PolicyTypeEol:
-				shouldFailScan, _ := p.Evaluate(allMatches, appConfig.ProjectName, userInput)
+				shouldFailScan, _ := p.Evaluate(allMatches, appConfig.ProjectName, "", "")
 				if shouldFailScan {
 					failScan = true
 				}
