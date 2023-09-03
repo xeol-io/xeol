@@ -13,7 +13,7 @@ func ShortPurl(pkg pkg.Package) (string, error) {
 	}
 	shortPurl := strings.Split(pkg.PURL, "@")
 	if len(shortPurl) < 2 {
-		return "", fmt.Errorf("invalid purl")
+		return "", fmt.Errorf("invalid purl format %s", pkg.PURL)
 	}
 	return shortPurl[0], nil
 }
