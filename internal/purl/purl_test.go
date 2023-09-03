@@ -33,7 +33,7 @@ func TestShortPurl(t *testing.T) {
 			input: pkg.Package{
 				PURL: "invalid",
 			},
-			expectedErr: fmt.Errorf("invalid purl"),
+			expectedErr: fmt.Errorf("invalid purl format invalid"),
 		},
 		{
 			name: "Empty PURL",
