@@ -75,6 +75,8 @@ func (n Policy) denyMatch() bool {
 }
 
 func (n PolicyWrapper) Evaluate(_ match.Matches, _ string, imageReference string) (bool, types.PolicyEvaluationResult) {
+	ctx := context.Background()
+
 	if len(n.Policies) == 0 {
 		log.Errorf("no notary policies provided")
 		return false, types.NotaryEvaluationResult{}
@@ -93,10 +95,8 @@ func (n PolicyWrapper) Evaluate(_ match.Matches, _ string, imageReference string
 	}
 
 	policy := n.Policies[0]
-
 	failBuild := false
-	ctx := context.Background()
-	err := sigverifier.Verify(ctx, imageReference, policy.Policy)
+	err := sigverifier.Verify(ctx, imageReference, policy.Policy, certsPEM)
 	// if err is nil, then the image is verified
 	if err == nil {
 		return failBuild, types.NotaryEvaluationResult{

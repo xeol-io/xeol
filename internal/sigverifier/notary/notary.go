@@ -1,19 +1,21 @@
 package notary
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/pkg/errors"
 
 	"github.com/notaryproject/notation-go"
 	"github.com/notaryproject/notation-go/dir"
 	"github.com/notaryproject/notation-go/plugin"
 	"github.com/notaryproject/notation-go/verifier"
 	"github.com/notaryproject/notation-go/verifier/trustpolicy"
-	"github.com/notaryproject/notation-go/verifier/truststore"
+	"github.com/sigstore/sigstore/pkg/cryptoutils"
 )
 
 const (
@@ -35,33 +37,38 @@ func decodeBase64NotaryJSON(encoded string) (trustpolicy.Document, error) {
 	return policies, nil
 }
 
-func Verify(ctx context.Context, reference string, policy string) error {
+func Verify(ctx context.Context, reference string, policy string, certsPEM string) error {
 	// add default docker registry if a registry is not specified
 	if !strings.Contains(reference, "/") {
 		reference = fmt.Sprintf("%s/%s", DefaultRegistry, reference)
 	}
 
+	certs, err := cryptoutils.LoadCertificatesFromPEM(bytes.NewReader([]byte(certsPEM)))
+	if err != nil {
+		return errors.Wrapf(err, "failed to parse certificates")
+	}
+	trustStore := NewTrustStore("xeol.io", certs)
+
 	trustpolicy, err := decodeBase64NotaryJSON(policy)
 	if err != nil {
-		return err
+		return errors.Wrapf(err, "failed to decode policy")
 	}
-	x509TrustStore := truststore.NewX509TrustStore(dir.ConfigFS())
 	plugins := plugin.NewCLIManager(dir.PluginFS())
 
-	sigVerifier, err := verifier.New(&trustpolicy, x509TrustStore, plugins)
+	sigVerifier, err := verifier.New(&trustpolicy, trustStore, plugins)
 	if err != nil {
-		return err
+		return errors.Wrapf(err, "failed to create signature verifier")
 	}
 
 	secureFlagOpts := &SecureFlagOpts{}
 	inputType := inputTypeRegistry // remote registry by default
 	sigRepo, err := getRepository(ctx, inputType, reference, secureFlagOpts, false)
 	if err != nil {
-		return err
+		return errors.Wrapf(err, "failed to get repository %s", reference)
 	}
 	_, resolvedRef, err := resolveReferenceWithWarning(ctx, inputType, reference, sigRepo, "inspect")
 	if err != nil {
-		return err
+		return errors.Wrapf(err, "failed to resolve reference %s", reference)
 	}
 
 	verifyOpts := notation.VerifyOptions{
@@ -71,7 +78,7 @@ func Verify(ctx context.Context, reference string, policy string) error {
 	_, outcomes, err := notation.Verify(ctx, sigVerifier, sigRepo, verifyOpts)
 	err = checkVerificationFailure(outcomes, resolvedRef, err)
 	if err != nil {
-		return err
+		return errors.Wrapf(err, "failed to verify signature for %s", resolvedRef)
 	}
 	return nil
 }
