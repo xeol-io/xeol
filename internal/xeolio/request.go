@@ -60,6 +60,25 @@ func (x *XeolClient) makeRequest(method, url, path string, body io.Reader, out i
 	return nil
 }
 
+func (x *XeolClient) FetchCertificates() (string, error) {
+	type CertificateResponse struct {
+		Certificate string `json:"certificate"`
+	}
+
+	var raw json.RawMessage
+	err := x.makeRequest("GET", XeolAPIURL, "certificate", nil, &raw)
+	if err != nil {
+		return "", err
+	}
+
+	var resp CertificateResponse
+	if err := json.Unmarshal(raw, &resp); err != nil {
+		return "", err
+	}
+
+	return resp.Certificate, nil
+}
+
 func (x *XeolClient) FetchPolicies() ([]policy.Policy, error) {
 	var raw json.RawMessage
 	err := x.makeRequest("GET", XeolAPIURL, "v2/policy", nil, &raw)

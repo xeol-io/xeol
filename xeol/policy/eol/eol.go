@@ -94,7 +94,7 @@ func (e PolicyWrapper) GetPolicyType() types.PolicyType {
 	return e.PolicyType
 }
 
-func (e PolicyWrapper) Evaluate(matches match.Matches, projectName string, _ string) (bool, types.PolicyEvaluationResult) {
+func (e PolicyWrapper) Evaluate(matches match.Matches, projectName string, _ string, _ string) (bool, types.PolicyEvaluationResult) {
 	policyMatches := evaluateMatches(e.Policies, matches, projectName)
 
 	// whether we should fail the scan or not

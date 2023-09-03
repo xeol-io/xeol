@@ -11,7 +11,7 @@ import (
 )
 
 type Policy interface {
-	Evaluate(match.Matches, string, string) (bool, types.PolicyEvaluationResult)
+	Evaluate(match.Matches, string, string, string) (bool, types.PolicyEvaluationResult)
 	GetPolicyType() types.PolicyType
 }
 
