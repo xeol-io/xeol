@@ -11,7 +11,6 @@ type XeolEventPayload struct {
 	Context       pkg.Context
 	AppConfig     interface{}
 	ImageVerified bool
-	ImageName     string
-	ImageDigest   string
+	EventSource   map[string]interface{}
 	Sbom          string
 }
