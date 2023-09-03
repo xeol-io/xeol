@@ -27,10 +27,10 @@ func NewXeolClient(apiKey string) *XeolClient {
 	}
 }
 
-func (x *XeolClient) makeRequest(method, url, path string, body io.Reader, out interface{}) error {
+func (x *XeolClient) makeRequest(method, url, path string, body io.Reader, out interface{}) (int, error) {
 	req, err := http.NewRequest(method, fmt.Sprintf("%s/%s", url, path), body)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -41,23 +41,19 @@ func (x *XeolClient) makeRequest(method, url, path string, body io.Reader, out i
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("xeol.io API request failed: %v", err)
+		return 0, fmt.Errorf("xeol.io API request failed: %v", err)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("xeol.io API unexpected status code %d", resp.StatusCode)
-	}
-
 	if out != nil {
 		if err := json.NewDecoder(resp.Body).Decode(out); err != nil {
-			return fmt.Errorf("xeol.io API response decode failed: %v", err)
+			return resp.StatusCode, fmt.Errorf("xeol.io API response decode failed: %v", err)
 		}
 	} else {
 		log.Debugf("sent event to xeol.io API at %s", req.URL.String())
 	}
 
-	return nil
+	return resp.StatusCode, nil
 }
 
 func (x *XeolClient) FetchCertificates() (string, error) {
@@ -66,9 +62,14 @@ func (x *XeolClient) FetchCertificates() (string, error) {
 	}
 
 	var raw json.RawMessage
-	err := x.makeRequest("GET", XeolAPIURL, "certificate", nil, &raw)
+	statusCode, err := x.makeRequest("GET", XeolAPIURL, "certificate", nil, &raw)
 	if err != nil {
 		return "", err
+	}
+
+	if statusCode == http.StatusNotFound {
+		log.Debugf("no certificates found in xeol.io API response")
+		return "", nil
 	}
 
 	var resp CertificateResponse
@@ -81,9 +82,14 @@ func (x *XeolClient) FetchCertificates() (string, error) {
 
 func (x *XeolClient) FetchPolicies() ([]policy.Policy, error) {
 	var raw json.RawMessage
-	err := x.makeRequest("GET", XeolAPIURL, "v2/policy", nil, &raw)
+	statusCode, err := x.makeRequest("GET", XeolAPIURL, "v2/policy", nil, &raw)
 	if err != nil {
 		return nil, err
+	}
+
+	if statusCode == http.StatusNotFound {
+		log.Debugf("no policies found in xeol.io API response")
+		return nil, nil
 	}
 
 	return policy.UnmarshalPolicies(raw)
@@ -95,5 +101,6 @@ func (x *XeolClient) SendEvent(payload report.XeolEventPayload) error {
 		return fmt.Errorf("error marshalling xeol.io API request: %v", err)
 	}
 
-	return x.makeRequest("PUT", XeolAPIURL, "v2/scan", bytes.NewBuffer(p), nil)
+	_, err = x.makeRequest("PUT", XeolAPIURL, "v2/scan", bytes.NewBuffer(p), nil)
+	return err
 }
