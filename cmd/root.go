@@ -261,6 +261,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		var loadedDB, gatheredPackages bool
 		var policies []policy.Policy
 		var certificates string
+		var eventSourceScheme source.Scheme
 		x := xeolio.NewXeolClient(appConfig.APIKey)
 
 		wg.Add(3)
@@ -300,6 +301,7 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 				errs <- fmt.Errorf("failed to catalog: %w", err)
 				return
 			}
+			eventSourceScheme = xeolio.EventSourceScheme(sbom.Source)
 			gatheredPackages = true
 		}()
 		wg.Wait()
@@ -338,11 +340,16 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 		for _, p := range policies {
 			switch p.GetPolicyType() {
 			case types.PolicyTypeNotary:
+				// Notary policy is only applicable to images
+				if eventSourceScheme != source.ImageScheme {
+					continue
+				}
 				shouldFailScan, res := p.Evaluate(allMatches, appConfig.ProjectName, userInput, certificates)
 				imageVerified = res.GetVerified()
 				if shouldFailScan {
 					failScan = true
 				}
+
 			case types.PolicyTypeEol:
 				shouldFailScan, _ := p.Evaluate(allMatches, appConfig.ProjectName, "", "")
 				if shouldFailScan {
@@ -360,13 +367,18 @@ func startWorker(userInput string, failOnEolFound bool, eolMatchDate time.Time) 
 				return
 			}
 
+			eventSource, err := xeolio.NewEventSource(sbom.Source)
+			if err != nil {
+				errs <- fmt.Errorf("failed to create event source: %w", err)
+				return
+			}
+
 			if err := x.SendEvent(report.XeolEventPayload{
 				Matches:       allMatches.Sorted(),
 				Packages:      packages,
 				Context:       pkgContext,
 				AppConfig:     appConfig,
-				ImageName:     sbom.Source.ImageMetadata.UserInput,
-				ImageDigest:   sbom.Source.ImageMetadata.ManifestDigest,
+				EventSource:   eventSource,
 				ImageVerified: imageVerified,
 				Sbom:          base64.StdEncoding.EncodeToString(buf.Bytes()),
 			}); err != nil {

@@ -14,8 +14,7 @@ import (
 )
 
 const (
-	XeolAPIURL    = "https://api.xeol.io"
-	XeolEngineURL = "https://engine.xeol.io"
+	XeolAPIURL = "https://api.xeol.io"
 )
 
 type XeolClient struct {
@@ -96,5 +95,5 @@ func (x *XeolClient) SendEvent(payload report.XeolEventPayload) error {
 		return fmt.Errorf("error marshalling xeol.io API request: %v", err)
 	}
 
-	return x.makeRequest("PUT", XeolEngineURL, "v1/scan", bytes.NewBuffer(p), nil)
+	return x.makeRequest("PUT", XeolAPIURL, "v2/scan", bytes.NewBuffer(p), nil)
 }
