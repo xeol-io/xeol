@@ -16,7 +16,7 @@ require (
 	github.com/anchore/syft v0.83.1
 	github.com/bmatcuk/doublestar/v2 v2.0.4
 	github.com/docker/distribution v2.8.2+incompatible
-	github.com/docker/docker v24.0.5+incompatible
+	github.com/docker/docker v24.0.6+incompatible
 	github.com/dustin/go-humanize v1.0.1
 	github.com/facebookincubator/nvdtools v0.1.5
 	github.com/gabriel-vasile/mimetype v1.4.2
