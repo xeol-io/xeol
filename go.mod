@@ -54,7 +54,7 @@ require (
 	github.com/wagoodman/go-partybus v0.0.0-20210627031916-db1f5573bbc5
 	github.com/wagoodman/go-progress v0.0.0-20230301185719-21920a456ad5
 	github.com/wagoodman/jotframe v0.0.0-20211129225309-56b0d0a4aebb
-	golang.org/x/term v0.11.0
+	golang.org/x/term v0.12.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/gorm v1.23.5
 	oras.land/oras-go/v2 v2.2.1
@@ -180,7 +180,7 @@ require (
 	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/oauth2 v0.11.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
-	golang.org/x/sys v0.11.0 // indirect
+	golang.org/x/sys v0.12.0 // indirect
 	golang.org/x/text v0.12.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.9.1 // indirect
