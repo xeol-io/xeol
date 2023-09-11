@@ -300,12 +300,6 @@ Configuration search paths:
 
 Xeol is pronounced "zee-oh-el", like EOL but with a Z in front :-)
 
-## Grype - xeol
-
-A lot of the xeol codebase was taken from [grype](https://github.com/anchore/grype).
-
-The main differences only exist in the matching logic. The main changes are in `xeol` -> [`store`, `search`, `db`, `match`, `matcher`]. Most things inside internal, cmd, and ui remain the same.
-
 ## Help
 
 Join our discord for help or feedback! [![](https://dcbadge.vercel.app/api/server/23ucxwsb?style=flat)](https://discord.gg/23ucxwsb)
