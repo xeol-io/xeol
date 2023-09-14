@@ -1,16 +1,20 @@
-# xeol
+<h1 align="center">Xeol</h1>
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/xeol-io/xeol)](https://goreportcard.com/report/github.com/xeol-io/xeol)
-[![GitHub release](https://img.shields.io/github/release/xeol-io/xeol.svg)](https://github.com/xeol-io/xeol/releases/latest)
-[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/xeol-io/xeol.svg)](https://github.com/xeol-io/xeol)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/xeol-io/xeol/blob/main/LICENSE)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol/badge)](https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol)
-[![Github All Releases](https://img.shields.io/github/downloads/xeol-io/xeol/total.svg)](https://img.shields.io/github/downloads/xeol-io/xeol/total.svg)
-[![](https://dcbadge.vercel.app/api/server/23ucxwsb?style=flat)](https://discord.gg/23ucxwsb)
+<div align="center">
+  <img src="https://s3.amazonaws.com/static.xeol.io/xeol-logo/logo-white-bg.png" width="100px" />
 
-A scanner for End of Life (EOL) packages in container images, filesystems, and SBOMs
+  **A scanner for end-of-life (EOL) packages in container images, filesystems, and SBOMs**
 
-![xeol-demo](https://user-images.githubusercontent.com/4740147/216162986-2c3add2b-af9f-4d9d-97eb-4c1617da3a71.gif)
+  <a href="https://goreportcard.com/report/github.com/xeol-io/xeol"><img src="https://goreportcard.com/badge/github.com/xeol-io/xeol" alt="Go Report Card"/></a>
+  <a href="https://github.com/xeol-io/xeol/releases/latest"><img src="https://img.shields.io/github/release/xeol-io/xeol.svg" alt="GitHub release"/></a>
+  <a href="https://github.com/xeol-io/xeol"><img src="https://img.shields.io/github/go-mod/go-version/xeol-io/xeol.svg" alt="GitHub go.mod Go version"/></a>
+  <a href="https://github.com/xeol-io/xeol/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License: Apache-2.0"/></a>
+  <a href="https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol"><img src="https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol/badge" alt="OpenSSF Scorecard"/></a>
+  <a href="https://img.shields.io/github/downloads/xeol-io/xeol/total.svg"><img src="https://img.shields.io/github/downloads/xeol-io/xeol/total.svg" alt="Github All Releases"/></a>
+  <a href="https://discord.gg/23ucxwsb"><img src="https://dcbadge.vercel.app/api/server/23ucxwsb?style=flat" alt="Discord"/></a>
+
+  <img src="https://user-images.githubusercontent.com/4740147/216162986-2c3add2b-af9f-4d9d-97eb-4c1617da3a71.gif" width="800px" />
+</div>
 
 ## Installation
 
