@@ -1,15 +1,20 @@
 package commands
 
 import (
+	"bytes"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"strings"
 	"sync"
 
+	"github.com/CycloneDX/cyclonedx-go"
 	"github.com/anchore/clio"
+	"github.com/anchore/syft/syft/formats/common/cyclonedxhelpers"
 	"github.com/anchore/syft/syft/linux"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/sbom"
+	"github.com/anchore/syft/syft/source"
 	"github.com/hashicorp/go-multierror"
 	"github.com/spf13/cobra"
 	"github.com/wagoodman/go-partybus"
@@ -20,6 +25,7 @@ import (
 	"github.com/xeol-io/xeol/internal/format"
 	"github.com/xeol-io/xeol/internal/log"
 	"github.com/xeol-io/xeol/internal/stringutil"
+	"github.com/xeol-io/xeol/internal/xeolio"
 	"github.com/xeol-io/xeol/xeol"
 	"github.com/xeol-io/xeol/xeol/db"
 	"github.com/xeol-io/xeol/xeol/event"
@@ -28,7 +34,10 @@ import (
 	distroMatcher "github.com/xeol-io/xeol/xeol/matcher/distro"
 	pkgMatcher "github.com/xeol-io/xeol/xeol/matcher/packages"
 	"github.com/xeol-io/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/policy"
+	"github.com/xeol-io/xeol/xeol/policy/types"
 	"github.com/xeol-io/xeol/xeol/presenter/models"
+	"github.com/xeol-io/xeol/xeol/report"
 	"github.com/xeol-io/xeol/xeol/store"
 	"github.com/xeol-io/xeol/xeol/xeolerr"
 )
@@ -100,8 +109,27 @@ func runXeol(app clio.Application, opts *options.Xeol, userInput string) error {
 		var pkgContext pkg.Context
 		var wg = &sync.WaitGroup{}
 		var loadedDB, gatheredPackages bool
+		var policies []policy.Policy
+		var certificates string
+		x := xeolio.NewXeolClient(opts.APIKey)
 
-		wg.Add(2)
+		wg.Add(3)
+		go func() {
+			defer wg.Done()
+			log.Debug("Fetching organization policies")
+			if opts.APIKey != "" {
+				policies, err = x.FetchPolicies()
+				if err != nil {
+					errs <- fmt.Errorf("failed to fetch policy: %w", err)
+					return
+				}
+				certificates, err = x.FetchCertificates()
+				if err != nil {
+					errs <- fmt.Errorf("failed to fetch certificate: %w", err)
+					return
+				}
+			}
+		}()
 
 		go func() {
 			defer wg.Done()
@@ -156,6 +184,64 @@ func runXeol(app clio.Application, opts *options.Xeol, userInput string) error {
 			}
 		}
 
+		var failScan bool
+		var imageVerified bool
+		var sourceIsImageType bool
+		switch s.Source.Metadata.(type) {
+		case source.StereoscopeImageSourceMetadata:
+			sourceIsImageType = true
+		}
+
+		for _, p := range policies {
+			switch p.GetPolicyType() {
+			case types.PolicyTypeNotary:
+				// Notary policy is only applicable to images
+				if !sourceIsImageType {
+					continue
+				}
+				shouldFailScan, res := p.Evaluate(allMatches, opts.ProjectName, userInput, certificates)
+				imageVerified = res.GetVerified()
+				if shouldFailScan {
+					failScan = true
+				}
+
+			case types.PolicyTypeEol:
+				shouldFailScan, _ := p.Evaluate(allMatches, opts.ProjectName, "", "")
+				if shouldFailScan {
+					failScan = true
+				}
+			}
+		}
+
+		if opts.APIKey != "" {
+			buf := new(bytes.Buffer)
+			bom := cyclonedxhelpers.ToFormatModel(*s)
+			enc := cyclonedx.NewBOMEncoder(buf, cyclonedx.BOMFileFormatJSON)
+			if err := enc.Encode(bom); err != nil {
+				errs <- fmt.Errorf("failed to encode sbom: %w", err)
+				return
+			}
+
+			eventSource, err := xeolio.NewEventSource(s.Source)
+			if err != nil {
+				errs <- fmt.Errorf("failed to create event source: %w", err)
+				return
+			}
+
+			if err := x.SendEvent(report.XeolEventPayload{
+				Matches:       allMatches.Sorted(),
+				Packages:      packages,
+				Context:       pkgContext,
+				AppConfig:     opts,
+				EventSource:   eventSource,
+				ImageVerified: imageVerified,
+				Sbom:          base64.StdEncoding.EncodeToString(buf.Bytes()),
+			}); err != nil {
+				errs <- fmt.Errorf("failed to send eol event: %w", err)
+				return
+			}
+		}
+
 		if err := writer.Write(models.PresenterConfig{
 			Matches:   allMatches,
 			Packages:  packages,
@@ -165,6 +251,11 @@ func runXeol(app clio.Application, opts *options.Xeol, userInput string) error {
 			DBStatus:  status,
 		}); err != nil {
 			errs <- err
+		}
+
+		if failScan {
+			errs <- xeolerr.ErrPolicyViolation
+			return
 		}
 	}()
 

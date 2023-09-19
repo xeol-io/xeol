@@ -12,6 +12,14 @@ import (
 	"github.com/xeol-io/xeol/internal/log"
 	"github.com/xeol-io/xeol/xeol/event"
 	"github.com/xeol-io/xeol/xeol/event/parsers"
+
+	xeolEventParsers "github.com/xeol-io/xeol/xeol/event/parsers"
+	policyTypes "github.com/xeol-io/xeol/xeol/policy/types"
+)
+
+var (
+	terminalRed    = lipgloss.Color("196")
+	terminalYellow = lipgloss.Color("214")
 )
 
 type postUIEventWriter struct {
@@ -30,6 +38,18 @@ type eventWriter func(io.Writer, ...partybus.Event) error
 func newPostUIEventWriter(stdout, stderr io.Writer) *postUIEventWriter {
 	return &postUIEventWriter{
 		handles: []postUIHandle{
+			{
+				event:        event.EolPolicyEvaluationMessage,
+				respectQuiet: false,
+				writer:       stdout,
+				dispatch:     writeEolPolicyEvaluationMessage,
+			},
+			{
+				event:        event.NotaryPolicyEvaluationMessage,
+				respectQuiet: false,
+				writer:       stdout,
+				dispatch:     writeNotaryPolicyEvaluationMessage,
+			},
 			{
 				event:        event.CLIReport,
 				respectQuiet: false,
@@ -108,6 +128,61 @@ func writeNotifications(writer io.Writer, events ...partybus.Event) error {
 		if _, err := fmt.Fprintln(writer, style.Render(notification)); err != nil {
 			// don't let this be fatal
 			log.WithFields("error", err).Warn("failed to write final notifications")
+		}
+	}
+	return nil
+}
+
+func writeNotaryPolicyEvaluationMessage(writer io.Writer, events ...partybus.Event) error {
+	for _, e := range events {
+		// show the report to stdout
+		nt, err := xeolEventParsers.ParseNotaryPolicyEvaluationMessage(e)
+		if err != nil {
+			return fmt.Errorf("bad %s event: %w", e.Type, err)
+		}
+
+		var notice string
+		if nt.Action == policyTypes.PolicyActionDeny {
+			notice = lipgloss.NewStyle().Foreground(terminalRed).Italic(true).Render(fmt.Sprintf("[%s][%s] Policy Violation: image '%s' is not signed by a trusted party.\n",
+				nt.Action, nt.Type, nt.ImageReference))
+		} else {
+			if nt.FailDate != "" {
+				notice = lipgloss.NewStyle().Foreground(terminalYellow).Italic(true).Render(fmt.Sprintf("[%s][%s] Policy Violation: image '%s' is not signed by a trusted party. This policy will fail builds starting on %s.\n",
+					nt.Action, nt.Type, nt.ImageReference, nt.FailDate))
+			} else {
+				notice = lipgloss.NewStyle().Foreground(terminalYellow).Italic(true).Render(fmt.Sprintf("[%s][%s] Policy Violation: image '%s' is not signed by a trusted party.\n",
+					nt.Action, nt.Type, nt.ImageReference))
+			}
+		}
+		if _, err := fmt.Fprintln(writer, notice); err != nil {
+			// don't let this be fatal
+			log.WithFields("error", err).Warn("failed to write app update notification")
+		}
+	}
+	return nil
+}
+
+func writeEolPolicyEvaluationMessage(writer io.Writer, events ...partybus.Event) error {
+	for _, e := range events {
+		// show the report to stdout
+		pt, err := xeolEventParsers.ParseEolPolicyEvaluationMessage(e)
+		if err != nil {
+			return fmt.Errorf("bad %s event: %w", e.Type, err)
+		}
+
+		var notice string
+		if pt.Action == policyTypes.PolicyActionDeny {
+			notice = lipgloss.NewStyle().Foreground(terminalRed).Italic(true).Render(fmt.Sprintf("[%s][%s] Policy Violation: %s (v%s) needs to be upgraded to a newer version.\n", pt.Action, pt.Type, pt.ProductName, pt.Cycle))
+		} else {
+			if pt.FailDate != "" {
+				notice = lipgloss.NewStyle().Foreground(terminalYellow).Italic(true).Render(fmt.Sprintf("[%s][%s] Policy Violation: %s (v%s) needs to be upgraded to a newer version. This policy will fail builds starting on %s.\n", pt.Action, pt.Type, pt.ProductName, pt.Cycle, pt.FailDate))
+			} else {
+				notice = lipgloss.NewStyle().Foreground(terminalYellow).Italic(true).Render(fmt.Sprintf("[%s][%s] Policy Violation: %s (v%s) needs to be upgraded to a newer version.\n", pt.Action, pt.Type, pt.ProductName, pt.Cycle))
+			}
+		}
+		if _, err := fmt.Fprintln(writer, notice); err != nil {
+			// don't let this be fatal
+			log.WithFields("error", err).Warn("failed to write app update notification")
 		}
 	}
 	return nil

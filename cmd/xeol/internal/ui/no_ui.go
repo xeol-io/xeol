@@ -30,7 +30,7 @@ func (n *NoUI) Setup(subscription partybus.Unsubscribable) error {
 
 func (n *NoUI) Handle(e partybus.Event) error {
 	switch e.Type {
-	case event.CLIReport, event.CLINotification:
+	case event.CLIReport, event.CLINotification, event.EolPolicyEvaluationMessage, event.NotaryPolicyEvaluationMessage:
 		// keep these for when the UI is terminated to show to the screen (or perform other events)
 		n.finalizeEvents = append(n.finalizeEvents, e)
 	case event.CLIExit:

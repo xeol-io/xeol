@@ -135,7 +135,7 @@ func (m *UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		log.WithFields("component", "ui").Tracef("event: %q", msg.Type)
 
 		switch msg.Type {
-		case event.CLIReport, event.CLINotification, event.CLIExit, event.CLIAppUpdateAvailable:
+		case event.CLIReport, event.CLINotification, event.CLIExit, event.CLIAppUpdateAvailable, event.EolPolicyEvaluationMessage, event.NotaryPolicyEvaluationMessage:
 			// keep these for when the UI is terminated to show to the screen (or perform other events)
 			m.finalizeEvents = append(m.finalizeEvents, msg)
 
