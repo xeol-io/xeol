@@ -8,7 +8,6 @@ import (
 	"github.com/anchore/syft/syft/artifact"
 	"github.com/anchore/syft/syft/cpe"
 	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/linux"
 	"github.com/anchore/syft/syft/pkg"
 	cpes "github.com/anchore/syft/syft/pkg/cataloger/common/cpe"
 
@@ -98,7 +97,7 @@ func (p Package) String() string {
 	return fmt.Sprintf("Pkg(type=%s, name=%s, version=%s, upstreams=%d)", p.Type, p.Name, p.Version, len(p.Upstreams))
 }
 
-func removePackagesByOverlap(catalog *pkg.Collection, relationships []artifact.Relationship, distro *linux.Release) *pkg.Collection {
+func removePackagesByOverlap(catalog *pkg.Collection, relationships []artifact.Relationship) *pkg.Collection {
 	byOverlap := map[artifact.ID]artifact.Relationship{}
 	for _, r := range relationships {
 		if r.Type == artifact.OwnershipByFileOverlapRelationship {
