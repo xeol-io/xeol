@@ -25,7 +25,6 @@ builds:
       -s
       -extldflags '-static'
       -X github.com/xeol-io/xeol/internal/version.version={{.Version}}
-      -X github.com/xeol-io/xeol/internal/version.syftVersion={{.Env.SYFT_VERSION}}
       -X github.com/xeol-io/xeol/internal/version.gitCommit={{.Commit}}
       -X github.com/xeol-io/xeol/internal/version.buildDate={{.Date}}
       -X github.com/xeol-io/xeol/internal/version.gitDescription={{.Summary}}
