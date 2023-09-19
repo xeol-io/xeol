@@ -12,7 +12,6 @@ import (
 	"github.com/xeol-io/xeol/internal/log"
 	"github.com/xeol-io/xeol/xeol/event"
 	"github.com/xeol-io/xeol/xeol/event/parsers"
-
 	policyTypes "github.com/xeol-io/xeol/xeol/policy/types"
 )
 
