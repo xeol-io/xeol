@@ -270,11 +270,11 @@ $(SNAPSHOTDIR):  ## Build snapshot release binaries and packages
 	$(call title,Building snapshot artifacts)
 
 	# create a config with the dist dir overridden
-	echo "dist: $(SNAPSHOTDIR)" > $(TEMP_DIR)/goreleaser.yaml
-	cat .goreleaser.yaml >> $(TEMP_DIR)/goreleaser.yaml
+	echo "dist: $(SNAPSHOTDIR)" > $(TEMPDIR)/goreleaser.yaml
+	cat .goreleaser.yaml >> $(TEMPDIR)/goreleaser.yaml
 
 	# build release snapshots
-	$(SNAPSHOT_CMD) --config $(TEMP_DIR)/goreleaser.yaml
+	$(SNAPSHOT_CMD) --config $(TEMPDIR)/goreleaser.yaml
 
 .PHONY: changelog
 changelog: clean-changelog  $(CHANGELOG) ## Generate and show the changelog for the current unreleased version
