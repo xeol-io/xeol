@@ -21,7 +21,6 @@ type Xeol struct {
 	CheckForAppUpdate      bool        `yaml:"check-for-app-update" json:"check-for-app-update" mapstructure:"check-for-app-update"` // whether to check for an application update on start up or not
 	Platform               string      `yaml:"platform" json:"platform" mapstructure:"platform"`                                     // --platform, override the target platform for a container image
 	Search                 search      `yaml:"search" json:"search" mapstructure:"search"`
-	Exclusions             []string    `yaml:"exclude" json:"exclude" mapstructure:"exclude"`
 	DB                     Database    `yaml:"db" json:"db" mapstructure:"db"`
 	Lookahead              string      `yaml:"lookahead" json:"lookahead" mapstructure:"lookahead"`
 	EolMatchDate           time.Time   `yaml:"-" json:"-"`
@@ -88,14 +87,29 @@ func (o *Xeol) AddFlags(flags clio.FlagSet) {
 		"set the name of the target being analyzed",
 	)
 
+	flags.StringVarP(&o.ProjectName,
+		"project-name", "",
+		"manually set the name of the project being analyzed for xeol.io. If you are running xeol inside a git repository, this will be automatically detected.",
+	)
+
+	flags.StringVarP(&o.APIKey,
+		"api-key", "",
+		"set the API key for xeol.io. When this is set, scans will be uploaded to xeol.io.",
+	)
+
+	flags.BoolVarP(&o.FailOnEolFound,
+		"fail-on-eol-found", "f",
+		"set the return code to 1 if an EOL package is found",
+	)
+
+	flags.StringVarP(&o.Lookahead,
+		"lookahead", "l",
+		"an optional lookahead specifier when matching EOL dates (e.g. 'none', '1d', '1w', '1m', '1y'). Packages are matched when their EOL date < today+lookahead",
+	)
+
 	flags.StringVarP(&o.Distro,
 		"distro", "",
 		"distro to match against in the format: <distro>:<version>",
-	)
-
-	flags.StringArrayVarP(&o.Exclusions,
-		"exclude", "",
-		"exclude paths from being scanned using a glob expression",
 	)
 
 	flags.StringVarP(&o.Platform,
@@ -131,6 +145,7 @@ func (o *Xeol) parseLookaheadOption() (err error) {
 func (o *Xeol) loadDefaltValues() {
 	project, commit := getDefaultProjectNameAndCommit()
 	o.FailOnEolFound = false
+	o.Lookahead = "30d"
 	o.ProjectName = project
 	o.CommitHash = commit
 	o.ImagePath = "Dockerfile"

@@ -247,22 +247,6 @@ fingerprints:
 	cd test/cli/test-fixtures && \
 		make cache.fingerprint
 
-install-test: $(SNAPSHOT_DIR)
-	cd test/install && \
-		make
-
-install-test-cache-save: $(SNAPSHOT_DIR)
-	cd test/install && \
-		make save
-
-install-test-cache-load: $(SNAPSHOT_DIR)
-	cd test/install && \
-		make load
-
-install-test-ci-mac: $(SNAPSHOT_DIR)
-	cd test/install && \
-		make ci-test-mac
-
 .PHONY: build
 build: $(SNAPSHOTDIR) ## Build release snapshot binaries and packages
 

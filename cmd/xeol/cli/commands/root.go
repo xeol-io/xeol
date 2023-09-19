@@ -260,7 +260,6 @@ func getProviderConfig(opts *options.Xeol) pkg.ProviderConfig {
 	return pkg.ProviderConfig{
 		SyftProviderConfig: pkg.SyftProviderConfig{
 			RegistryOptions:        opts.Registry.ToOptions(),
-			Exclusions:             opts.Exclusions,
 			CatalogingOptions:      opts.Search.ToConfig(),
 			Platform:               opts.Platform,
 			Name:                   opts.Name,
