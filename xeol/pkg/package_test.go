@@ -1,17 +1,12 @@
 package pkg
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
-	"github.com/anchore/syft/syft/artifact"
 	"github.com/anchore/syft/syft/cpe"
 	"github.com/anchore/syft/syft/file"
 	syftFile "github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/linux"
 	syftPkg "github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/sbom"
 	"github.com/scylladb/go-set"
 	"github.com/scylladb/go-set/strset"
 	"github.com/stretchr/testify/assert"
@@ -655,158 +650,4 @@ func Test_getNameAndELVersion(t *testing.T) {
 
 func intRef(i int) *int {
 	return &i
-}
-
-func Test_RemovePackagesByOverlap(t *testing.T) {
-	tests := []struct {
-		name             string
-		sbom             *sbom.SBOM
-		expectedPackages []string
-	}{
-		{
-			name: "includes all packages without overlap",
-			sbom: catalogWithOverlaps(
-				[]string{":go@1.18", "apk:node@19.2-r1", "binary:python@3.9"},
-				[]string{}),
-			expectedPackages: []string{":go@1.18", "apk:node@19.2-r1", "binary:python@3.9"},
-		},
-		{
-			name: "excludes single package by overlap",
-			sbom: catalogWithOverlaps(
-				[]string{"apk:go@1.18", "apk:node@19.2-r1", "binary:node@19.2"},
-				[]string{"apk:node@19.2-r1 -> binary:node@19.2"}),
-			expectedPackages: []string{"apk:go@1.18", "apk:node@19.2-r1"},
-		},
-		{
-			name: "does not exclude if OS package owns OS package",
-			sbom: catalogWithOverlaps(
-				[]string{"rpm:perl@5.3-r1", "rpm:libperl@5.3"},
-				[]string{"rpm:perl@5.3-r1 -> rpm:libperl@5.3"}),
-			expectedPackages: []string{"rpm:libperl@5.3", "rpm:perl@5.3-r1"},
-		},
-		{
-			name: "does not exclude if owning package is non-OS",
-			sbom: catalogWithOverlaps(
-				[]string{"python:urllib3@1.2.3", "python:otherlib@1.2.3"},
-				[]string{"python:urllib3@1.2.3 -> python:otherlib@1.2.3"}),
-			expectedPackages: []string{"python:otherlib@1.2.3", "python:urllib3@1.2.3"},
-		},
-		{
-			name: "excludes multiple package by overlap",
-			sbom: catalogWithOverlaps(
-				[]string{"apk:go@1.18", "apk:node@19.2-r1", "binary:node@19.2", "apk:python@3.9-r9", "binary:python@3.9"},
-				[]string{"apk:node@19.2-r1 -> binary:node@19.2", "apk:python@3.9-r9 -> binary:python@3.9"}),
-			expectedPackages: []string{"apk:go@1.18", "apk:node@19.2-r1", "apk:python@3.9-r9"},
-		},
-		{
-			name: "does not exclude with different types",
-			sbom: catalogWithOverlaps(
-				[]string{"rpm:node@19.2-r1", "apk:node@19.2"},
-				[]string{"rpm:node@19.2-r1 -> apk:node@19.2"}),
-			expectedPackages: []string{"apk:node@19.2", "rpm:node@19.2-r1"},
-		},
-		{
-			name: "does not exclude if OS package owns OS package",
-			sbom: catalogWithOverlaps(
-				[]string{"rpm:perl@5.3-r1", "rpm:libperl@5.3"},
-				[]string{"rpm:perl@5.3-r1 -> rpm:libperl@5.3"}),
-			expectedPackages: []string{"rpm:libperl@5.3", "rpm:perl@5.3-r1"},
-		},
-		{
-			name: "does not exclude if owning package is non-OS",
-			sbom: catalogWithOverlaps(
-				[]string{"python:urllib3@1.2.3", "python:otherlib@1.2.3"},
-				[]string{"python:urllib3@1.2.3 -> python:otherlib@1.2.3"}),
-			expectedPackages: []string{"python:otherlib@1.2.3", "python:urllib3@1.2.3"},
-		},
-		{
-			name: "python bindings for system RPM install",
-			sbom: withDistro(catalogWithOverlaps(
-				[]string{"rpm:python3-rpm@4.14.3-26.el8", "python:rpm@4.14.3"},
-				[]string{"rpm:python3-rpm@4.14.3-26.el8 -> python:rpm@4.14.3"}), "rhel"),
-			expectedPackages: []string{"rpm:python3-rpm@4.14.3-26.el8"},
-		},
-		{
-			name: "amzn linux doesn't remove packages in this way",
-			sbom: withDistro(catalogWithOverlaps(
-				[]string{"rpm:python3-rpm@4.14.3-26.el8", "python:rpm@4.14.3"},
-				[]string{"rpm:python3-rpm@4.14.3-26.el8 -> python:rpm@4.14.3"}), "amzn"),
-			expectedPackages: []string{"rpm:python3-rpm@4.14.3-26.el8", "python:rpm@4.14.3"},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			catalog := removePackagesByOverlap(test.sbom.Artifacts.Packages, test.sbom.Relationships)
-			pkgs := FromCollection(catalog, SynthesisConfig{})
-			var pkgNames []string
-			for _, p := range pkgs {
-				pkgNames = append(pkgNames, fmt.Sprintf("%s:%s@%s", p.Type, p.Name, p.Version))
-			}
-			assert.EqualValues(t, test.expectedPackages, pkgNames)
-		})
-	}
-}
-
-func catalogWithOverlaps(packages []string, overlaps []string) *sbom.SBOM {
-	var pkgs []syftPkg.Package
-	var relationships []artifact.Relationship
-
-	toPkg := func(str string) syftPkg.Package {
-		var typ, name, version string
-		s := strings.Split(strings.TrimSpace(str), ":")
-		if len(s) > 1 {
-			typ = s[0]
-			str = s[1]
-		}
-		s = strings.Split(str, "@")
-		name = s[0]
-		if len(s) > 1 {
-			version = s[1]
-		}
-
-		p := syftPkg.Package{
-			Type:    syftPkg.Type(typ),
-			Name:    name,
-			Version: version,
-		}
-		p.SetID()
-
-		return p
-	}
-
-	for _, pkg := range packages {
-		p := toPkg(pkg)
-		pkgs = append(pkgs, p)
-	}
-
-	for _, overlap := range overlaps {
-		parts := strings.Split(overlap, "->")
-		if len(parts) < 2 {
-			panic("invalid overlap, use -> to specify, e.g.: pkg1->pkg2")
-		}
-		from := toPkg(parts[0])
-		to := toPkg(parts[1])
-
-		relationships = append(relationships, artifact.Relationship{
-			From: from,
-			To:   to,
-			Type: artifact.OwnershipByFileOverlapRelationship,
-		})
-	}
-
-	catalog := syftPkg.NewCollection(pkgs...)
-
-	return &sbom.SBOM{
-		Artifacts: sbom.Artifacts{
-			Packages: catalog,
-		},
-		Relationships: relationships,
-	}
-}
-
-func withDistro(s *sbom.SBOM, id string) *sbom.SBOM {
-	s.Artifacts.LinuxDistribution = &linux.Release{
-		ID: id,
-	}
-	return s
 }
