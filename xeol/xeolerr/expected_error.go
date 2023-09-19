@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// ExpectedErr represents a class of expected errors that grype may produce.
+// ExpectedErr represents a class of expected errors that xeol may produce.
 type ExpectedErr struct {
 	Err error
 }

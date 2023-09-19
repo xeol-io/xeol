@@ -12,16 +12,16 @@ import (
 )
 
 type Matcher struct {
-	UsePurls bool
+	UsePURLs bool
 }
 
 type MatcherConfig struct {
-	UsePurls bool
+	UsePURLs bool
 }
 
 func NewPackageMatcher(cfg MatcherConfig) *Matcher {
 	return &Matcher{
-		UsePurls: cfg.UsePurls,
+		UsePURLs: cfg.UsePURLs,
 	}
 }
 

@@ -30,8 +30,7 @@ func syftSBOMProvider(userInput string, config ProviderConfig) ([]Package, Conte
 		return nil, Context{}, nil, err
 	}
 
-	catalog := s.Artifacts.Packages
-	catalog = removePackagesByOverlap(catalog, s.Relationships)
+	catalog := removePackagesByOverlap(s.Artifacts.Packages, s.Relationships, s.Artifacts.LinuxDistribution)
 
 	return FromCollection(catalog, config.SynthesisConfig), Context{
 		Source: &s.Source,
@@ -142,13 +141,13 @@ func fileHasContent(f *os.File) bool {
 }
 
 func stdinReader() io.Reader {
-	isPipedInput, err := internal.IsPipedInput()
+	isStdinPipeOrRedirect, err := internal.IsStdinPipeOrRedirect()
 	if err != nil {
 		log.Warnf("unable to determine if there is piped input: %+v", err)
 		return nil
 	}
 
-	if !isPipedInput {
+	if !isStdinPipeOrRedirect {
 		return nil
 	}
 

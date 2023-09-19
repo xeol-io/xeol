@@ -2,24 +2,19 @@ package table
 
 import (
 	"bytes"
-	"flag"
-	"strings"
 	"testing"
 	"time"
 
-	"github.com/anchore/go-testutils"
 	syftPkg "github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/source"
-	"github.com/sergi/go-diff/diffmatchpatch"
+	"github.com/gkampitakis/go-snaps/snaps"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/xeol-io/xeol/xeol/eol"
 	"github.com/xeol-io/xeol/xeol/match"
 	"github.com/xeol-io/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/presenter/internal"
 	"github.com/xeol-io/xeol/xeol/presenter/models"
 )
-
-var update = flag.Bool("update", false, "update the *.golden files for table presenters")
 
 func TestCreateRow(t *testing.T) {
 	pkg := pkg.Package{
@@ -83,9 +78,8 @@ func TestCreateRow(t *testing.T) {
 }
 
 func TestTablePresenter(t *testing.T) {
-
 	var buffer bytes.Buffer
-	matches, packages, _, _, _ := models.GenerateAnalysis(t, source.ImageScheme)
+	matches, packages, _, _, _ := internal.GenerateAnalysis(t, internal.ImageSource)
 
 	pb := models.PresenterConfig{
 		Matches:  matches,
@@ -100,18 +94,8 @@ func TestTablePresenter(t *testing.T) {
 		t.Fatal(err)
 	}
 	actual := buffer.Bytes()
-	if *update {
-		testutils.UpdateGoldenFileContents(t, actual)
-	}
 
-	var expected = testutils.GetGoldenFileContents(t)
-
-	if !bytes.Equal(expected, actual) {
-		dmp := diffmatchpatch.New()
-		diffs := dmp.DiffMain(strings.TrimSuffix(strings.TrimSpace(string(expected)), "\n"), strings.TrimSuffix(strings.TrimSpace(string(actual)), "\n"), true)
-		t.Errorf("mismatched output:\n%s", dmp.DiffPrettyText(diffs))
-	}
-
+	snaps.MatchSnapshot(t, actual)
 	// TODO: add me back in when there is a JSON schema
 	// validateAgainstDbSchema(t, string(actual))
 }
@@ -136,16 +120,5 @@ func TestEmptyTablePresenter(t *testing.T) {
 		t.Fatal(err)
 	}
 	actual := buffer.Bytes()
-	if *update {
-		testutils.UpdateGoldenFileContents(t, actual)
-	}
-
-	var expected = testutils.GetGoldenFileContents(t)
-
-	if !bytes.Equal(expected, actual) {
-		dmp := diffmatchpatch.New()
-		diffs := dmp.DiffMain(string(expected), string(actual), true)
-		t.Errorf("mismatched output:\n%s", dmp.DiffPrettyText(diffs))
-	}
-
+	snaps.MatchSnapshot(t, actual)
 }

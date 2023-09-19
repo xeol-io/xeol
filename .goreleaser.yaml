@@ -4,6 +4,7 @@ release:
 
 builds:
   - id: linux-build
+    dir: ./cmd/xeol
     binary: xeol
     goos:
       - linux
@@ -27,6 +28,7 @@ builds:
       -X github.com/xeol-io/xeol/internal/version.gitDescription={{.Summary}}
 
   - id: darwin-build
+    dir: ./cmd/xeol
     binary: xeol
     goos:
       - darwin

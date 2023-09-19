@@ -29,17 +29,17 @@ func newMatch(m match.Match, p pkg.Package) *Match {
 	}
 }
 
-var _ sort.Interface = (*ByName)(nil)
+var _ sort.Interface = (*MatchSort)(nil)
 
-type ByName []Match
+type MatchSort []Match
 
 // Len is the number of elements in the collection.
-func (m ByName) Len() int {
+func (m MatchSort) Len() int {
 	return len(m)
 }
 
 // Less reports whether the element with index i should sort before the element with index j.
-func (m ByName) Less(i, j int) bool {
+func (m MatchSort) Less(i, j int) bool {
 	if m[i].Artifact.Name == m[j].Artifact.Name {
 		if m[i].Cycle.ReleaseCycle == m[j].Cycle.ReleaseCycle {
 			if m[i].Cycle.ProductName == m[j].Cycle.ProductName {
@@ -56,6 +56,6 @@ func (m ByName) Less(i, j int) bool {
 }
 
 // Swap swaps the elements with indexes i and j.
-func (m ByName) Swap(i, j int) {
+func (m MatchSort) Swap(i, j int) {
 	m[i], m[j] = m[j], m[i]
 }
