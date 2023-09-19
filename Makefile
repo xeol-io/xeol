@@ -24,7 +24,7 @@ TITLE := $(BOLD)$(PURPLE)
 SUCCESS := $(BOLD)$(GREEN)
 
 # the quality gate lower threshold for unit test total % coverage (by function statements)
-COVERAGE_THRESHOLD := 32
+COVERAGE_THRESHOLD := 40
 
 ## Build variables
 DISTDIR=./dist
@@ -89,6 +89,13 @@ $(RESULTSDIR):
 $(TEMPDIR):
 	mkdir -p $(TEMPDIR)
 
+.PHONY: format
+format: ## Auto-format all source code
+	$(call title,Running formatters)
+	gofmt -w -s .
+	$(GOIMPORTS_CMD) -w .
+	go mod tidy
+
 .PHONY: bootstrap-tools
 bootstrap-tools: $(TEMPDIR)
 	GO111MODULE=off GOBIN=$(realpath $(TEMPDIR)) go get -u golang.org/x/perf/cmd/benchstat
@@ -148,13 +155,11 @@ validate-xeol-db-schema:
 	python3 test/validate-xeol-db-schema.py
 
 .PHONY: unit
-unit: ## Run unit tests (with coverage)
+unit: $(TEMPDIR) ## Run unit tests (with coverage)
 	$(call title,Running unit tests)
-	mkdir -p $(RESULTSDIR)
-	go test -coverprofile $(COVER_REPORT) $(shell go list ./... | grep -v xeol-io/xeol/test)
-	@go tool cover -func $(COVER_REPORT) | grep total |  awk '{print substr($$3, 1, length($$3)-1)}' > $(COVER_TOTAL)
-	@echo "Coverage: $$(cat $(COVER_TOTAL))"
-	@if [ $$(echo "$$(cat $(COVER_TOTAL)) >= $(COVERAGE_THRESHOLD)" | bc -l) -ne 1 ]; then echo "$(RED)$(BOLD)Failed coverage quality gate (> $(COVERAGE_THRESHOLD)%)$(RESET)" && false; fi
+	go test -race -coverprofile $(TEMPDIR)/unit-coverage-details.txt $(shell go list ./... | grep -v anchore/grype/test)
+	@.github/scripts/coverage.py $(COVERAGE_THRESHOLD) $(TEMPDIR)/unit-coverage-details.txt
+
 
 .PHONY: ci-release
 ci-release: ci-check clean-dist $(CHANGELOG)
@@ -221,24 +226,22 @@ cli-fingerprint:
 .PHONY: cli
 cli: $(SNAPSHOTDIR) ## Run CLI tests
 	chmod 755 "$(SNAPSHOT_BIN)"
+	$(SNAPSHOT_BIN) version
 	XEOL_BINARY_LOCATION='$(SNAPSHOT_BIN)' \
 		go test -count=1 -v ./test/cli
 
 .PHONY: build
 build: $(SNAPSHOTDIR) ## Build release snapshot binaries and packages
 
-$(SNAPSHOTDIR): ## Build snapshot release binaries and packages
+$(SNAPSHOTDIR):  ## Build snapshot release binaries and packages
 	$(call title,Building snapshot artifacts)
 
 	# create a config with the dist dir overridden
-	echo "dist: $(SNAPSHOTDIR)" > $(TEMPDIR)/goreleaser.yaml
-	cat .goreleaser.yaml >> $(TEMPDIR)/goreleaser.yaml
+	echo "dist: $(SNAPSHOTDIR)" > $(TEMP_DIR)/goreleaser.yaml
+	cat .goreleaser.yaml >> $(TEMP_DIR)/goreleaser.yaml
 
 	# build release snapshots
-	bash -c "\
-		SKIP_SIGNING=true \
-		SYFT_VERSION=$(SYFT_VERSION)\
-			$(SNAPSHOT_CMD) --skip-sign --config $(TEMPDIR)/goreleaser.yaml"
+	$(SNAPSHOT_CMD) --config $(TEMP_DIR)/goreleaser.yaml
 
 .PHONY: changelog
 changelog: clean-changelog  $(CHANGELOG) ## Generate and show the changelog for the current unreleased version
