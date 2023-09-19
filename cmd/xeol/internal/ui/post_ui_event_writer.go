@@ -13,7 +13,6 @@ import (
 	"github.com/xeol-io/xeol/xeol/event"
 	"github.com/xeol-io/xeol/xeol/event/parsers"
 
-	xeolEventParsers "github.com/xeol-io/xeol/xeol/event/parsers"
 	policyTypes "github.com/xeol-io/xeol/xeol/policy/types"
 )
 
@@ -136,7 +135,7 @@ func writeNotifications(writer io.Writer, events ...partybus.Event) error {
 func writeNotaryPolicyEvaluationMessage(writer io.Writer, events ...partybus.Event) error {
 	for _, e := range events {
 		// show the report to stdout
-		nt, err := xeolEventParsers.ParseNotaryPolicyEvaluationMessage(e)
+		nt, err := parsers.ParseNotaryPolicyEvaluationMessage(e)
 		if err != nil {
 			return fmt.Errorf("bad %s event: %w", e.Type, err)
 		}
@@ -165,7 +164,7 @@ func writeNotaryPolicyEvaluationMessage(writer io.Writer, events ...partybus.Eve
 func writeEolPolicyEvaluationMessage(writer io.Writer, events ...partybus.Event) error {
 	for _, e := range events {
 		// show the report to stdout
-		pt, err := xeolEventParsers.ParseEolPolicyEvaluationMessage(e)
+		pt, err := parsers.ParseEolPolicyEvaluationMessage(e)
 		if err != nil {
 			return fmt.Errorf("bad %s event: %w", e.Type, err)
 		}

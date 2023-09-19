@@ -86,7 +86,7 @@ You can also pipe in Syft JSON directly:
 	}, opts)
 }
 
-//nolint:funlen
+//nolint:funlen,gocognit
 func runXeol(app clio.Application, opts *options.Xeol, userInput string) error {
 	errs := make(chan error)
 	go func() {
@@ -187,8 +187,7 @@ func runXeol(app clio.Application, opts *options.Xeol, userInput string) error {
 		var failScan bool
 		var imageVerified bool
 		var sourceIsImageType bool
-		switch s.Source.Metadata.(type) {
-		case source.StereoscopeImageSourceMetadata:
+		if _, ok := s.Source.Metadata.(source.StereoscopeImageSourceMetadata); ok {
 			sourceIsImageType = true
 		}
 
