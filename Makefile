@@ -230,6 +230,39 @@ cli: $(SNAPSHOTDIR) ## Run CLI tests
 	XEOL_BINARY_LOCATION='$(SNAPSHOT_BIN)' \
 		go test -count=1 -v ./test/cli
 
+# note: this is used by CI to determine if various test fixture cache should be restored or recreated
+# TODO (cphillips) check for all fixtures and individual makefile
+fingerprints:
+	$(call title,Creating all test cache input fingerprints)
+
+	# for IMAGE integration test fixtures
+	cd test/integration/test-fixtures && \
+		make cache.fingerprint
+
+	# for INSTALL integration test fixtures
+	cd test/install && \
+		make cache.fingerprint
+
+	# for CLI test fixtures
+	cd test/cli/test-fixtures && \
+		make cache.fingerprint
+
+install-test: $(SNAPSHOT_DIR)
+	cd test/install && \
+		make
+
+install-test-cache-save: $(SNAPSHOT_DIR)
+	cd test/install && \
+		make save
+
+install-test-cache-load: $(SNAPSHOT_DIR)
+	cd test/install && \
+		make load
+
+install-test-ci-mac: $(SNAPSHOT_DIR)
+	cd test/install && \
+		make ci-test-mac
+
 .PHONY: build
 build: $(SNAPSHOTDIR) ## Build release snapshot binaries and packages
 
