@@ -62,15 +62,15 @@ func addPython34Matches(t *testing.T, theResult *match.Matches) {
 		Package: pkg.Package{
 			Name:     "python",
 			ID:       "10ab199091f52dbc",
-			Version:  "3.5.3",
+			Version:  "3.4",
 			Type:     syftPkg.BinaryPkg,
 			Language: "",
-			PURL:     "pkg:generic/python@3.5.3",
+			PURL:     "pkg:generic/python@3.4.10",
 		},
 		Cycle: eol.Cycle{
 			ProductName:  "Python",
-			ReleaseCycle: "3.5",
-			Eol:          "2020-09-13",
+			ReleaseCycle: "3.4",
+			Eol:          "2019-03-18",
 		},
 	})
 	// TODO: tracking issue https://github.com/anchore/syft/issues/2153
