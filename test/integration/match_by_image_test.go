@@ -62,7 +62,7 @@ func addPython34Matches(t *testing.T, theResult *match.Matches) {
 		Package: pkg.Package{
 			Name:     "python",
 			ID:       "10ab199091f52dbc",
-			Version:  "3.4",
+			Version:  "3.4.10",
 			Type:     syftPkg.BinaryPkg,
 			Language: "",
 			PURL:     "pkg:generic/python@3.4.10",
