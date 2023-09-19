@@ -1,6 +1,6 @@
 FROM docker@sha256:020562d22f11c27997e00da910ed6b580d93094bc25841cb87aacab4ced4a882
 
-ENV GO_VERSION=1.20.7
+ENV GO_VERSION=1.21.1
 ENV PATH=$PATH:/usr/local/go/bin:/usr/bin/env:/root/go/bin
 
 WORKDIR /xeol
