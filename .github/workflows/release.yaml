@@ -1,19 +1,16 @@
 name: "Release"
 on:
-  push:
-    # take no actions on push to any branch...
-    branches-ignore:
-      - "**"
-    # ... only act on release tags
-    tags:
-      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: tag the latest commit on main with the given version (prefixed with v)
+        required: true
 
 env:
-  GO_VERSION: "1.20.x"
+  GO_VERSION: "1.21.x"
 
 permissions:
   contents: read
-  packages: read
 
 jobs:
   quality-gate:
@@ -22,12 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v2.5.0
 
-      # we don't want to release commits that have been pushed and tagged, but not necessarily merged onto main
-      - name: Ensure tagged commit is on main
+      - name: Check if tag already exists
+        # note: this will fail if the tag already exists
         run: |
-          echo "Tag: ${GITHUB_REF##*/}"
-          git fetch origin main
-          git merge-base --is-ancestor ${GITHUB_REF##*/} origin/main && echo "${GITHUB_REF##*/} is a commit on main!"
+          [[ "${{ github.event.inputs.version }}" == v* ]] || (echo "version '${{ github.event.inputs.version }}' does not have a 'v' prefix" && exit 1)
+          git tag ${{ github.event.inputs.version }}
 
       - name: Check static analysis results
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
@@ -95,62 +91,20 @@ jobs:
 
   release:
     needs: [quality-gate]
-    # due to our code signing process, it's vital that we run our release steps on macOS
-    runs-on: macos-latest
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: write
+      packages: write
     steps:
-      - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe # v4.1.0
-        with:
-          go-version: ${{ env.GO_VERSION }}
-
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v2.5.0
         with:
           fetch-depth: 0
 
-      - name: Restore tool cache
-        id: tool-cache
-        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
+      - name: Bootstrap environment
+        uses: ./.github/actions/bootstrap
         with:
-          path: ${{ github.workspace }}/.tmp
-          key: ${{ runner.os }}-tool-${{ hashFiles('Makefile') }}
-
-      - name: Restore go cache
-        id: go-cache
-        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-${{ env.GO_VERSION }}-
-
-      - name: (cache-miss) Bootstrap all project dependencies
-        if: steps.tool-cache.outputs.cache-hit != 'true' || steps.go-cache.outputs.cache-hit != 'true'
-        run: make bootstrap
-
-      - name: Build & publish release artifacts
-        run: make release
-        env:
-          GITHUB_TOKEN: ${{ secrets.XEOL_GITHUB_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.DATA_XEOL_IO_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DATA_XEOL_IO_AWS_SECRET_ACCESS_KEY }}
-
-      - uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
-        with:
-          name: artifacts
-          path: dist/**/*
-
-  release-docker-assets:
-    needs: [release]
-    # code signing requires we run on mac-os runners. docker does not come installed on the mac-os runner
-    # a previous release process installed and configured docker on the mac-os runner which lead to blocked releases
-    # the anchore tools team opted to break this step out to a separate process to remove this work constraint
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-    steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v2.5.0
-      - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe # v4.1.0
-        with:
-          go-version: ${{ env.GO_VERSION }}
+          # use the same cache we used for building snapshots
+          build-cache-key-prefix: "snapshot"
 
       - name: Login to Docker Hub
         uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
@@ -165,18 +119,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.XEOL_GITHUB_TOKEN }}
 
-      - name: Restore go cache
-        id: go-cache
-        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
+      - name: Tag release
+        run: |
+          git tag ${{ github.event.inputs.version }}
+          git push origin --tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & publish release artifacts
+        run: make ci-release
+        env:
+          # for creating the release (requires write access to packages and content)
+          GITHUB_TOKEN: ${{ secrets.XEOL_GITHUB_TOKEN }}
+          # for updating the VERSION file in S3...
+          AWS_ACCESS_KEY_ID: ${{ secrets.DATA_XEOL_IO_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DATA_XEOL_IO_AWS_SECRET_ACCESS_KEY }}
+
+      - uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
         with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-${{ env.GO_VERSION }}-
-
-      - name: (cache-miss) Bootstrap all project dependencies
-        if: steps.tool-cache.outputs.cache-hit != 'true' || steps.go-cache.outputs.cache-hit != 'true'
-        run: make bootstrap
-
-      - name: Build & Publish docker images
-        run: make release-docker-assets
+          name: artifacts
+          path: dist/**/*

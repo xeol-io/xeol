@@ -9,6 +9,9 @@ GOIMPORTS_CMD = $(TEMPDIR)/gosimports -local github.com/xeol-io
 RELEASE_CMD=$(TEMPDIR)/goreleaser release --clean
 SNAPSHOT_CMD=$(RELEASE_CMD) --skip-publish --snapshot
 VERSION=$(shell git describe --dirty --always --tags)
+CHANGELOG := CHANGELOG.md
+CHRONICLE_CMD = $(TEMPDIR)/chronicle
+
 
 # formatting variables
 BOLD := $(shell tput -T linux bold)
@@ -153,6 +156,27 @@ unit: ## Run unit tests (with coverage)
 	@echo "Coverage: $$(cat $(COVER_TOTAL))"
 	@if [ $$(echo "$$(cat $(COVER_TOTAL)) >= $(COVERAGE_THRESHOLD)" | bc -l) -ne 1 ]; then echo "$(RED)$(BOLD)Failed coverage quality gate (> $(COVERAGE_THRESHOLD)%)$(RESET)" && false; fi
 
+.PHONY: ci-release
+ci-release: ci-check clean-dist $(CHANGELOG)
+	$(call title,Publishing release artifacts)
+
+	# create a config with the dist dir overridden
+	echo "dist: $(DISTDIR)" > $(TEMPDIR)/goreleaser.yaml
+	cat .goreleaser.yaml >> $(TEMPDIR)/goreleaser.yaml
+
+	bash -c "\
+		$(RELEASE_CMD) \
+			--config $(TEMPDIR)/goreleaser.yaml \
+			--release-notes <(cat $(CHANGELOG)) \
+				 || (cat /tmp/quill-*.log && false)"
+
+	# upload the version file that supports the application version update check (excluding pre-releases)
+	.github/scripts/update-version-file.sh "$(DISTDIR)" "$(VERSION)"
+
+.PHONY: ci-check
+ci-check:
+	@.github/scripts/ci-check.sh
+
 .PHONY: quality
 quality: ## Run quality tests
 	$(call title,Running quality tests)
@@ -217,65 +241,20 @@ $(SNAPSHOTDIR): ## Build snapshot release binaries and packages
 			$(SNAPSHOT_CMD) --skip-sign --config $(TEMPDIR)/goreleaser.yaml"
 
 .PHONY: changelog
-changelog: clean-changelog CHANGELOG.md
-	@docker run -it --rm \
-		-v $(shell pwd)/CHANGELOG.md:/CHANGELOG.md \
-		rawkode/mdv \
-			-t 748.5989 \
-			/CHANGELOG.md
+changelog: clean-changelog  $(CHANGELOG) ## Generate and show the changelog for the current unreleased version
+	$(CHRONICLE_CMD) -vv -n --version-file VERSION > $(CHANGELOG)
+	@$(GLOW_CMD) $(CHANGELOG)
 
-CHANGELOG.md:
-	$(TEMPDIR)/chronicle -vv > CHANGELOG.md
+$(CHANGELOG):
+	$(CHRONICLE_CMD) -vvv > $(CHANGELOG)
 
 .PHONY: validate-syft-release-version
 validate-syft-release-version:
 	@./.github/scripts/syft-released-version-check.sh
 
 .PHONY: release
-release: clean-dist # CHANGELOG.md ## Build and publish final binaries and packages. Intended to be run only on macOS.
-	$(call title,Publishing release artifacts)
-
-	# create a config with the dist dir overridden
-	echo "dist: $(DISTDIR)" > $(TEMPDIR)/goreleaser.yaml
-	cat .goreleaser.yaml >> $(TEMPDIR)/goreleaser.yaml
-
-	bash -c "\
-		SYFT_VERSION=$(SYFT_VERSION)\
-			$(RELEASE_CMD) \
-				--config $(TEMPDIR)/goreleaser.yaml \
-				--skip-sign \
-				# --release-notes <(cat CHANGELOG.md)\
-					 || false"
-
-	# TODO: turn this into a post-release hook
-	# upload the version file that supports the application version update check (excluding pre-releases)
-	.github/scripts/update-version-file.sh "$(DISTDIR)" "$(VERSION)"
-
-.PHONY: release-docker-assets
-release-docker-assets:
-	$(call title,Publishing docker release assets)
-
-	# create a config with the dist dir overridden
-	echo "dist: $(DISTDIR)" > $(TEMPDIR)/goreleaser.yaml
-	cat .goreleaser_docker.yaml >> $(TEMPDIR)/goreleaser.yaml
-
-	bash -c "\
-		SYFT_VERSION=$(SYFT_VERSION)\
-		$(RELEASE_CMD) \
-			--config $(TEMPDIR)/goreleaser.yaml \
-			--parallelism 1"
-
-snapshot-docker-assets: # Build snapshot images of docker images that will be published on release
-	$(call title,Building snapshot docker release assets)
-
-	# create a config with the dist dir overridden
-	echo "dist: $(DISTDIR)" > $(TEMPDIR)/goreleaser.yaml
-	cat .goreleaser_docker.yaml >> $(TEMPDIR)/goreleaser.yaml
-
-	bash -c "\
-		SYFT_VERSION=$(SYFT_VERSION)\
-		$(SNAPSHOT_CMD) \
-			--config $(TEMPDIR)/goreleaser.yaml"
+release:
+	@.github/scripts/trigger-release.sh
 
 .PHONY: clean
 clean: clean-dist clean-snapshot  ## Remove previous builds and result reports
