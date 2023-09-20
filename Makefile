@@ -39,6 +39,8 @@ CHRONICLE_VERSION = v0.7.0
 GOSIMPORTS_VERSION = v0.3.8
 YAJSV_VERSION = v1.4.1
 GORELEASER_VERSION = v1.20.0
+GLOW_VERSION := v1.5.1
+SKOPEO_VERSION := v1.12.0
 
 ifndef TEMPDIR
 	$(error TEMPDIR is not set)
@@ -79,10 +81,6 @@ test: unit cli ## Run all tests (unit, and CLI tests)
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(BOLD)$(CYAN)%-25s$(RESET)%s\n", $$1, $$2}'
 
-.PHONY: ci-bootstrap
-ci-bootstrap:
-	DEBIAN_FRONTEND=noninteractive sudo apt update && sudo -E apt install -y bc jq libxml2-utils
-
 $(RESULTSDIR):
 	mkdir -p $(RESULTSDIR)
 
@@ -106,6 +104,9 @@ bootstrap-tools: $(TEMPDIR)
 	# the only difference between goimports and gosimports is that gosimports removes extra whitespace between import blocks (see https://github.com/golang/go/issues/20818)
 	GOBIN="$(realpath $(TEMPDIR))" go install github.com/rinchsan/gosimports/cmd/gosimports@$(GOSIMPORTS_VERSION)
 	GOBIN="$(realpath $(TEMPDIR))" go install github.com/neilpa/yajsv@$(YAJSV_VERSION)
+	GOBIN="$(realpath $(TEMPDIR))" go install github.com/charmbracelet/glow@$(GLOW_VERSION)
+	GOBIN="$(realpath $(TEMPDIR))" CGO_ENABLED=0 GO_DYN_FLAGS="" go install -tags "containers_image_openpgp" github.com/containers/skopeo/cmd/skopeo@$(SKOPEO_VERSION)
+
 
 .PHONY: bootstrap-go
 bootstrap-go:
