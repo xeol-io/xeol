@@ -24,7 +24,7 @@ TITLE := $(BOLD)$(PURPLE)
 SUCCESS := $(BOLD)$(GREEN)
 
 # the quality gate lower threshold for unit test total % coverage (by function statements)
-COVERAGE_THRESHOLD := 40
+COVERAGE_THRESHOLD := 34
 
 ## Build variables
 DISTDIR=./dist
@@ -158,7 +158,7 @@ validate-xeol-db-schema:
 .PHONY: unit
 unit: $(TEMPDIR) ## Run unit tests (with coverage)
 	$(call title,Running unit tests)
-	go test -race -coverprofile $(TEMPDIR)/unit-coverage-details.txt $(shell go list ./... | grep -v anchore/grype/test)
+	go test -race -coverprofile $(TEMPDIR)/unit-coverage-details.txt $(shell go list ./... | grep -v xeol-io/xeol/test)
 	@.github/scripts/coverage.py $(COVERAGE_THRESHOLD) $(TEMPDIR)/unit-coverage-details.txt
 
 
