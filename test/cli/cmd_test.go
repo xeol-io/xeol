@@ -16,8 +16,8 @@ func TestCmd(t *testing.T) {
 			name: "no-args-shows-help",
 			args: []string{},
 			assertions: []traitAssertion{
-				assertInOutput("an image/directory argument is required"),                                              // specific error that should be shown
-				assertInOutput("A scanner for end-of-life (EOL) software in container images, filesystems, and SBOMs"), // excerpt from help description
+				assertInOutput("an image/directory argument is required"),                                               // specific error that should be shown
+				assertInOutput("A scanner for end-of-life (EOL) software in container images, filesystems, and SBOMs."), // excerpt from help description
 				assertFailingReturnCode,
 			},
 		},
@@ -39,7 +39,7 @@ func TestCmd(t *testing.T) {
 		},
 		{
 			name: "responds-to-search-options",
-			args: []string{"-vv"},
+			args: []string{"--help"},
 			env: map[string]string{
 				"XEOL_SEARCH_UNINDEXED_ARCHIVES": "true",
 				"XEOL_SEARCH_INDEXED_ARCHIVES":   "false",
@@ -51,7 +51,7 @@ func TestCmd(t *testing.T) {
 				// package-cataloger-level options.
 				assertInOutput("unindexed-archives: true"),
 				assertInOutput("indexed-archives: false"),
-				assertInOutput("scope: all-layers"),
+				assertInOutput("scope: 'all-layers'"),
 			},
 		},
 	}

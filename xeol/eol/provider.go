@@ -16,5 +16,5 @@ type ProviderByPackagePurl interface {
 }
 
 type ProviderByDistroCpe interface {
-	GetByDistroCpe(distro *linux.Release) (string, []Cycle, error)
+	GetByDistroCpe(distro *linux.Release) (string, []Cycle, string, error)
 }

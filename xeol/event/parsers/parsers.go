@@ -7,7 +7,7 @@ import (
 	"github.com/wagoodman/go-progress"
 
 	"github.com/xeol-io/xeol/xeol/event"
-	"github.com/xeol-io/xeol/xeol/matcher"
+	"github.com/xeol-io/xeol/xeol/event/monitor"
 	policyTypes "github.com/xeol-io/xeol/xeol/policy/types"
 	"github.com/xeol-io/xeol/xeol/presenter"
 )
@@ -20,6 +20,24 @@ type ErrBadPayload struct {
 
 func (e *ErrBadPayload) Error() string {
 	return fmt.Sprintf("event='%s' has bad event payload field='%v': '%+v'", string(e.Type), e.Field, e.Value)
+}
+
+type UpdateCheck struct {
+	New     string
+	Current string
+}
+
+func ParseCLIAppUpdateAvailable(e partybus.Event) (*UpdateCheck, error) {
+	if err := checkEventType(e.Type, event.CLIAppUpdateAvailable); err != nil {
+		return nil, err
+	}
+
+	updateCheck, ok := e.Value.(UpdateCheck)
+	if !ok {
+		return nil, newPayloadErr(e.Type, "Value", e.Value)
+	}
+
+	return &updateCheck, nil
 }
 
 func newPayloadErr(t partybus.EventType, field string, value interface{}) error {
@@ -60,31 +78,36 @@ func ParseEolPolicyEvaluationMessage(e partybus.Event) (*policyTypes.EolEvaluati
 	}
 	return &pt, nil
 }
-
-func ParseAppUpdateAvailable(e partybus.Event) (string, error) {
-	if err := checkEventType(e.Type, event.AppUpdateAvailable); err != nil {
-		return "", err
-	}
-
-	newVersion, ok := e.Value.(string)
-	if !ok {
-		return "", newPayloadErr(e.Type, "Value", e.Value)
-	}
-
-	return newVersion, nil
-}
-
-func ParseEolScanningStarted(e partybus.Event) (*matcher.Monitor, error) {
+func ParseEolScanningStarted(e partybus.Event) (*monitor.Matching, error) {
 	if err := checkEventType(e.Type, event.EolScanningStarted); err != nil {
 		return nil, err
 	}
 
-	monitor, ok := e.Value.(matcher.Monitor)
+	monitor, ok := e.Value.(monitor.Matching)
 	if !ok {
 		return nil, newPayloadErr(e.Type, "Value", e.Value)
 	}
 
 	return &monitor, nil
+}
+
+func ParseCLIReport(e partybus.Event) (string, string, error) {
+	if err := checkEventType(e.Type, event.CLIReport); err != nil {
+		return "", "", err
+	}
+
+	context, ok := e.Source.(string)
+	if !ok {
+		// this is optional
+		context = ""
+	}
+
+	report, ok := e.Value.(string)
+	if !ok {
+		return "", "", newPayloadErr(e.Type, "Value", e.Value)
+	}
+
+	return context, report, nil
 }
 
 func ParseEolScanningFinished(e partybus.Event) (presenter.Presenter, error) {
@@ -100,17 +123,23 @@ func ParseEolScanningFinished(e partybus.Event) (presenter.Presenter, error) {
 	return pres, nil
 }
 
-func ParseNonRootCommandFinished(e partybus.Event) (*string, error) {
-	if err := checkEventType(e.Type, event.NonRootCommandFinished); err != nil {
-		return nil, err
+func ParseCLINotification(e partybus.Event) (string, string, error) {
+	if err := checkEventType(e.Type, event.CLINotification); err != nil {
+		return "", "", err
 	}
 
-	result, ok := e.Value.(string)
+	context, ok := e.Source.(string)
 	if !ok {
-		return nil, newPayloadErr(e.Type, "Value", e.Value)
+		// this is optional
+		context = ""
 	}
 
-	return &result, nil
+	notification, ok := e.Value.(string)
+	if !ok {
+		return "", "", newPayloadErr(e.Type, "Value", e.Value)
+	}
+
+	return context, notification, nil
 }
 
 func ParseUpdateEolDatabase(e partybus.Event) (progress.StagedProgressable, error) {

@@ -1,0 +1,16 @@
+
+[TestHandler_handleEolScanningStarted/eol_scanning_in_progress/task_line - 1]
+ ⠋ Scanning for EOL                [40 eol matches]  
+---
+
+[TestHandler_handleEolScanningStarted/eol_scanning_in_progress/tree - 1]
+
+---
+
+[TestHandler_handleEolScanningStarted/eol_scanning_complete/task_line - 1]
+ ✔ Scanned for EOL                 [45 eol matches]  
+---
+
+[TestHandler_handleEolScanningStarted/eol_scanning_complete/tree - 1]
+
+---

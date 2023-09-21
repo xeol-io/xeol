@@ -9,6 +9,9 @@ GOIMPORTS_CMD = $(TEMPDIR)/gosimports -local github.com/xeol-io
 RELEASE_CMD=$(TEMPDIR)/goreleaser release --clean
 SNAPSHOT_CMD=$(RELEASE_CMD) --skip-publish --snapshot
 VERSION=$(shell git describe --dirty --always --tags)
+CHANGELOG := CHANGELOG.md
+CHRONICLE_CMD = $(TEMPDIR)/chronicle
+
 
 # formatting variables
 BOLD := $(shell tput -T linux bold)
@@ -21,7 +24,7 @@ TITLE := $(BOLD)$(PURPLE)
 SUCCESS := $(BOLD)$(GREEN)
 
 # the quality gate lower threshold for unit test total % coverage (by function statements)
-COVERAGE_THRESHOLD := 32
+COVERAGE_THRESHOLD := 34
 
 ## Build variables
 DISTDIR=./dist
@@ -36,6 +39,8 @@ CHRONICLE_VERSION = v0.7.0
 GOSIMPORTS_VERSION = v0.3.8
 YAJSV_VERSION = v1.4.1
 GORELEASER_VERSION = v1.20.0
+GLOW_VERSION := v1.5.1
+SKOPEO_VERSION := v1.12.0
 
 ifndef TEMPDIR
 	$(error TEMPDIR is not set)
@@ -76,36 +81,43 @@ test: unit cli ## Run all tests (unit, and CLI tests)
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(BOLD)$(CYAN)%-25s$(RESET)%s\n", $$1, $$2}'
 
-.PHONY: ci-bootstrap
-ci-bootstrap:
-	DEBIAN_FRONTEND=noninteractive sudo apt update && sudo -E apt install -y bc jq libxml2-utils
-
 $(RESULTSDIR):
 	mkdir -p $(RESULTSDIR)
 
 $(TEMPDIR):
 	mkdir -p $(TEMPDIR)
 
+.PHONY: format
+format: ## Auto-format all source code
+	$(call title,Running formatters)
+	gofmt -w -s .
+	$(GOIMPORTS_CMD) -w .
+	go mod tidy
+
 .PHONY: bootstrap-tools
 bootstrap-tools: $(TEMPDIR)
+	GO111MODULE=off GOBIN=$(realpath $(TEMPDIR)) go get -u golang.org/x/perf/cmd/benchstat
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(TEMPDIR)/ $(GOLANGCILINT_VERSION)
 	curl -sSfL https://raw.githubusercontent.com/wagoodman/go-bouncer/master/bouncer.sh | sh -s -- -b $(TEMPDIR)/ $(BOUNCER_VERSION)
 	curl -sSfL https://raw.githubusercontent.com/anchore/chronicle/main/install.sh | sh -s -- -b $(TEMPDIR)/ $(CHRONICLE_VERSION)
+	.github/scripts/goreleaser-install.sh -d -b $(TEMPDIR)/ $(GORELEASER_VERSION)
 	# the only difference between goimports and gosimports is that gosimports removes extra whitespace between import blocks (see https://github.com/golang/go/issues/20818)
-	GOBIN="$(shell realpath $(TEMPDIR))" go install github.com/rinchsan/gosimports/cmd/gosimports@$(GOSIMPORTS_VERSION)
-	GOBIN="$(shell realpath $(TEMPDIR))" go install github.com/neilpa/yajsv@$(YAJSV_VERSION)
-	.github/scripts/goreleaser-install.sh -b $(TEMPDIR)/ $(GORELEASER_VERSION)
+	GOBIN="$(realpath $(TEMPDIR))" go install github.com/rinchsan/gosimports/cmd/gosimports@$(GOSIMPORTS_VERSION)
+	GOBIN="$(realpath $(TEMPDIR))" go install github.com/neilpa/yajsv@$(YAJSV_VERSION)
+	GOBIN="$(realpath $(TEMPDIR))" go install github.com/charmbracelet/glow@$(GLOW_VERSION)
+	GOBIN="$(realpath $(TEMPDIR))" CGO_ENABLED=0 GO_DYN_FLAGS="" go install -tags "containers_image_openpgp" github.com/containers/skopeo/cmd/skopeo@$(SKOPEO_VERSION)
+
 
 .PHONY: bootstrap-go
 bootstrap-go:
 	go mod download
 
 .PHONY: bootstrap
-bootstrap: $(RESULTSDIR) bootstrap-go bootstrap-tools ## Download and install all go dependencies (+ prep tooling in the ./tmp dir)
+bootstrap: $(TEMPDIR) bootstrap-go bootstrap-tools ## Download and install all go dependencies (+ prep tooling in the ./tmp dir)
 	$(call title,Bootstrapping dependencies)
 
 .PHONY: static-analysis
-static-analysis: lint check-go-mod-tidy check-licenses
+static-analysis: check-go-mod-tidy lint check-licenses
 
 .PHONY: lint
 lint: ## Run gofmt + golangci lint checks
@@ -132,7 +144,8 @@ lint-fix: ## Auto-format all source code + run golangci lint fixers
 
 .PHONY: check-licenses
 check-licenses:
-	$(TEMPDIR)/bouncer check
+	$(call title,Checking for license compliance)
+	$(TEMPDIR)/bouncer check ./...
 
 check-go-mod-tidy:
 	@ .github/scripts/go-mod-tidy-check.sh && echo "go.mod and go.sum are tidy!"
@@ -143,13 +156,32 @@ validate-xeol-db-schema:
 	python3 test/validate-xeol-db-schema.py
 
 .PHONY: unit
-unit: ## Run unit tests (with coverage)
+unit: $(TEMPDIR) ## Run unit tests (with coverage)
 	$(call title,Running unit tests)
-	mkdir -p $(RESULTSDIR)
-	go test -coverprofile $(COVER_REPORT) $(shell go list ./... | grep -v xeol-io/xeol/test)
-	@go tool cover -func $(COVER_REPORT) | grep total |  awk '{print substr($$3, 1, length($$3)-1)}' > $(COVER_TOTAL)
-	@echo "Coverage: $$(cat $(COVER_TOTAL))"
-	@if [ $$(echo "$$(cat $(COVER_TOTAL)) >= $(COVERAGE_THRESHOLD)" | bc -l) -ne 1 ]; then echo "$(RED)$(BOLD)Failed coverage quality gate (> $(COVERAGE_THRESHOLD)%)$(RESET)" && false; fi
+	go test -race -coverprofile $(TEMPDIR)/unit-coverage-details.txt $(shell go list ./... | grep -v xeol-io/xeol/test)
+	@.github/scripts/coverage.py $(COVERAGE_THRESHOLD) $(TEMPDIR)/unit-coverage-details.txt
+
+
+.PHONY: ci-release
+ci-release: ci-check clean-dist $(CHANGELOG)
+	$(call title,Publishing release artifacts)
+
+	# create a config with the dist dir overridden
+	echo "dist: $(DISTDIR)" > $(TEMPDIR)/goreleaser.yaml
+	cat .goreleaser.yaml >> $(TEMPDIR)/goreleaser.yaml
+
+	bash -c "\
+		$(RELEASE_CMD) \
+			--config $(TEMPDIR)/goreleaser.yaml \
+			--release-notes <(cat $(CHANGELOG)) \
+				 || (cat /tmp/quill-*.log && false)"
+
+	# upload the version file that supports the application version update check (excluding pre-releases)
+	.github/scripts/update-version-file.sh "$(DISTDIR)" "$(VERSION)"
+
+.PHONY: ci-check
+ci-check:
+	@.github/scripts/ci-check.sh
 
 .PHONY: quality
 quality: ## Run quality tests
@@ -195,13 +227,31 @@ cli-fingerprint:
 .PHONY: cli
 cli: $(SNAPSHOTDIR) ## Run CLI tests
 	chmod 755 "$(SNAPSHOT_BIN)"
+	$(SNAPSHOT_BIN) version
 	XEOL_BINARY_LOCATION='$(SNAPSHOT_BIN)' \
 		go test -count=1 -v ./test/cli
+
+# note: this is used by CI to determine if various test fixture cache should be restored or recreated
+# TODO (cphillips) check for all fixtures and individual makefile
+fingerprints:
+	$(call title,Creating all test cache input fingerprints)
+
+	# for IMAGE integration test fixtures
+	cd test/integration/test-fixtures && \
+		make cache.fingerprint
+
+	# for INSTALL integration test fixtures
+	cd test/install && \
+		make cache.fingerprint
+
+	# for CLI test fixtures
+	cd test/cli/test-fixtures && \
+		make cache.fingerprint
 
 .PHONY: build
 build: $(SNAPSHOTDIR) ## Build release snapshot binaries and packages
 
-$(SNAPSHOTDIR): ## Build snapshot release binaries and packages
+$(SNAPSHOTDIR):  ## Build snapshot release binaries and packages
 	$(call title,Building snapshot artifacts)
 
 	# create a config with the dist dir overridden
@@ -209,71 +259,23 @@ $(SNAPSHOTDIR): ## Build snapshot release binaries and packages
 	cat .goreleaser.yaml >> $(TEMPDIR)/goreleaser.yaml
 
 	# build release snapshots
-	bash -c "\
-		SKIP_SIGNING=true \
-		SYFT_VERSION=$(SYFT_VERSION)\
-			$(SNAPSHOT_CMD) --skip-sign --config $(TEMPDIR)/goreleaser.yaml"
+	$(SNAPSHOT_CMD) --config $(TEMPDIR)/goreleaser.yaml
 
 .PHONY: changelog
-changelog: clean-changelog CHANGELOG.md
-	@docker run -it --rm \
-		-v $(shell pwd)/CHANGELOG.md:/CHANGELOG.md \
-		rawkode/mdv \
-			-t 748.5989 \
-			/CHANGELOG.md
+changelog: clean-changelog  $(CHANGELOG) ## Generate and show the changelog for the current unreleased version
+	$(CHRONICLE_CMD) -vv -n --version-file VERSION > $(CHANGELOG)
+	@$(GLOW_CMD) $(CHANGELOG)
 
-CHANGELOG.md:
-	$(TEMPDIR)/chronicle -vv > CHANGELOG.md
+$(CHANGELOG):
+	$(CHRONICLE_CMD) -vvv > $(CHANGELOG)
 
 .PHONY: validate-syft-release-version
 validate-syft-release-version:
 	@./.github/scripts/syft-released-version-check.sh
 
 .PHONY: release
-release: clean-dist # CHANGELOG.md ## Build and publish final binaries and packages. Intended to be run only on macOS.
-	$(call title,Publishing release artifacts)
-
-	# create a config with the dist dir overridden
-	echo "dist: $(DISTDIR)" > $(TEMPDIR)/goreleaser.yaml
-	cat .goreleaser.yaml >> $(TEMPDIR)/goreleaser.yaml
-
-	bash -c "\
-		SYFT_VERSION=$(SYFT_VERSION)\
-			$(RELEASE_CMD) \
-				--config $(TEMPDIR)/goreleaser.yaml \
-				--skip-sign \
-				# --release-notes <(cat CHANGELOG.md)\
-					 || false"
-
-	# TODO: turn this into a post-release hook
-	# upload the version file that supports the application version update check (excluding pre-releases)
-	.github/scripts/update-version-file.sh "$(DISTDIR)" "$(VERSION)"
-
-.PHONY: release-docker-assets
-release-docker-assets:
-	$(call title,Publishing docker release assets)
-
-	# create a config with the dist dir overridden
-	echo "dist: $(DISTDIR)" > $(TEMPDIR)/goreleaser.yaml
-	cat .goreleaser_docker.yaml >> $(TEMPDIR)/goreleaser.yaml
-
-	bash -c "\
-		SYFT_VERSION=$(SYFT_VERSION)\
-		$(RELEASE_CMD) \
-			--config $(TEMPDIR)/goreleaser.yaml \
-			--parallelism 1"
-
-snapshot-docker-assets: # Build snapshot images of docker images that will be published on release
-	$(call title,Building snapshot docker release assets)
-
-	# create a config with the dist dir overridden
-	echo "dist: $(DISTDIR)" > $(TEMPDIR)/goreleaser.yaml
-	cat .goreleaser_docker.yaml >> $(TEMPDIR)/goreleaser.yaml
-
-	bash -c "\
-		SYFT_VERSION=$(SYFT_VERSION)\
-		$(SNAPSHOT_CMD) \
-			--config $(TEMPDIR)/goreleaser.yaml"
+release:
+	@.github/scripts/trigger-release.sh
 
 .PHONY: clean
 clean: clean-dist clean-snapshot  ## Remove previous builds and result reports

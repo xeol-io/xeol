@@ -11,8 +11,8 @@ import (
 	"github.com/anchore/syft/syft/pkg"
 	cpes "github.com/anchore/syft/syft/pkg/cataloger/common/cpe"
 
-	"github.com/xeol-io/xeol/internal"
 	"github.com/xeol-io/xeol/internal/log"
+	"github.com/xeol-io/xeol/internal/stringutil"
 )
 
 // the source-rpm field has something akin to "util-linux-ng-2.17.2-12.28.el6_9.2.src.rpm"
@@ -78,7 +78,6 @@ func FromCollection(catalog *pkg.Collection, config SynthesisConfig) []Package {
 
 func FromPackages(syftpkgs []pkg.Package, config SynthesisConfig) []Package {
 	var pkgs []Package
-	var missingCPEs bool
 	for _, p := range syftpkgs {
 		if len(p.CPEs) == 0 {
 			// For SPDX (or any format, really) we may have no CPEs
@@ -86,13 +85,9 @@ func FromPackages(syftpkgs []pkg.Package, config SynthesisConfig) []Package {
 				p.CPEs = cpes.Generate(p)
 			} else {
 				log.Debugf("no CPEs for package: %s", p)
-				missingCPEs = true
 			}
 		}
 		pkgs = append(pkgs, New(p))
-	}
-	if missingCPEs {
-		log.Warnf("some package(s) are missing CPEs. This may result in missing vulnerabilities. You may autogenerate these using: --add-cpes-if-none")
 	}
 	return pkgs
 }
@@ -111,7 +106,6 @@ func removePackagesByOverlap(catalog *pkg.Collection, relationships []artifact.R
 	}
 
 	out := pkg.NewCollection()
-
 	for p := range catalog.Enumerate() {
 		r, ok := byOverlap[p.ID()]
 		if ok {
@@ -223,7 +217,7 @@ func rpmDataFromPkg(p pkg.Package) (metadata *RpmMetadata, upstreams []UpstreamP
 }
 
 func getNameAndELVersion(sourceRpm string) (string, string) {
-	groupMatches := internal.MatchCaptureGroups(rpmPackageNamePattern, sourceRpm)
+	groupMatches := stringutil.MatchCaptureGroups(rpmPackageNamePattern, sourceRpm)
 	version := groupMatches["version"] + "-" + groupMatches["release"]
 	return groupMatches["name"], version
 }

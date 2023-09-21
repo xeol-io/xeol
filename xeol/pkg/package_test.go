@@ -49,7 +49,7 @@ func TestNew(t *testing.T) {
 					Files: []syftPkg.DpkgFileRecord{
 						{
 							Path: "path-info",
-							Digest: &syftFile.Digest{
+							Digest: &file.Digest{
 								Algorithm: "algo-info",
 								Value:     "digest-info",
 							},
@@ -83,7 +83,7 @@ func TestNew(t *testing.T) {
 							Path: "path-info",
 							Mode: 20,
 							Size: 10,
-							Digest: syftFile.Digest{
+							Digest: file.Digest{
 								Algorithm: "algo-info",
 								Value:     "digest-info",
 							},
@@ -324,7 +324,6 @@ func TestNew(t *testing.T) {
 				},
 			},
 		},
-		{},
 		{
 			name: "cpp conan lock metadata",
 			syftPkg: syftPkg.Package{
@@ -335,7 +334,7 @@ func TestNew(t *testing.T) {
 						"fPIC":   "True",
 						"shared": "False",
 					},
-					Path:    "all/conansyftFile.py",
+					Path:    "all/conanfile.py",
 					Context: "host",
 				},
 			},
@@ -420,7 +419,7 @@ func TestNew(t *testing.T) {
 					Extras:            []string{"a"},
 					VersionConstraint: "a",
 					URL:               "a",
-					Markers:           map[string]string{"a": "a"},
+					Markers:           "a",
 				},
 			},
 		},
@@ -434,15 +433,6 @@ func TestNew(t *testing.T) {
 							Classifier: "node",
 						},
 					},
-				},
-			},
-		},
-		{
-			name: "nix-store-metadata",
-			syftPkg: syftPkg.Package{
-				MetadataType: syftPkg.NixStoreMetadataType,
-				Metadata: syftPkg.NixStoreMetadata{
-					Files: []string{},
 				},
 			},
 		},
@@ -517,6 +507,30 @@ func TestNew(t *testing.T) {
 					Imports:          []string{"a"},
 					Depends:          []string{"a"},
 					Suggests:         []string{"a"},
+				},
+			},
+		},
+		{
+			name: "dotnet-portable-executable-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.DotnetPortableExecutableMetadataType,
+				Metadata: syftPkg.DotnetPortableExecutableMetadata{
+					AssemblyVersion: "a",
+					LegalCopyright:  "a",
+					Comments:        "a",
+					InternalName:    "a",
+					CompanyName:     "a",
+					ProductName:     "a",
+					ProductVersion:  "a",
+				},
+			},
+		},
+		{
+			name: "dotnet-portable-executable-metadata",
+			syftPkg: syftPkg.Package{
+				MetadataType: syftPkg.SwiftPackageManagerMetadataType,
+				Metadata: syftPkg.SwiftPackageManagerMetadata{
+					Revision: "a",
 				},
 			},
 		},

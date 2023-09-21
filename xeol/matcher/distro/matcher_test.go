@@ -71,7 +71,7 @@ func TestMatch(t *testing.T) {
 		Cycle:   *cycleFound,
 		Package: p,
 	}
-	actual, err := m.Match(provider, d, time.Now())
+	actual, _, err := m.Match(provider, d, time.Now())
 	assert.NoError(t, err)
 	assertMatches(t, expected, actual)
 }
@@ -101,7 +101,7 @@ func TestMatchCpeMismatch(t *testing.T) {
 		CPEName: "cpe:/o:fedoraproject:fedora:29",
 	}
 
-	actual, err := m.Match(provider, d, time.Now())
+	actual, _, err := m.Match(provider, d, time.Now())
 	assert.NoError(t, err)
 	assertMatches(t, match.Match{}, actual)
 }
@@ -133,7 +133,7 @@ func TestMatchNoMatchingVersion(t *testing.T) {
 		CPEName: "cpe:/o:fedoraproject:fedora:29",
 	}
 
-	actual, err := m.Match(provider, d, time.Now())
+	actual, _, err := m.Match(provider, d, time.Now())
 	assert.NoError(t, err)
 	assertMatches(t, match.Match{}, actual)
 }
@@ -167,7 +167,7 @@ func TestMatchTimeChange(t *testing.T) {
 	eolMatchTime, err := time.Parse("2006-01-02", "2018-01-01")
 	assert.NoError(t, err)
 
-	actual, err := m.Match(provider, d, eolMatchTime)
+	actual, _, err := m.Match(provider, d, eolMatchTime)
 	assert.NoError(t, err)
 	assertMatches(t, match.Match{}, actual)
 }

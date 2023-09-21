@@ -125,3 +125,4 @@ busybox-1.35:
 cache.fingerprint:
 	$(call title,Install test fixture fingerprint)
 	@find ./environments/* -type f -exec md5sum {} + | awk '{print $1}' | sort | tee /dev/stderr | md5sum | tee cache.fingerprint && echo "$(INSTALL_TEST_CACHE_BUSTER)" >> cache.fingerprint
+

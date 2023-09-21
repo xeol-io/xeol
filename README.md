@@ -50,7 +50,7 @@ If you're using GitHub Actions, you can simply use the [Xeol GitHub action](http
 xeol <image>
 ```
 
-The above command scans for EOL packages that are visible in the container (i.e., the squashed representation of the image). To include software from all image layers in the vulnerability scan, regardless of its presence in the final image, provide `--scope all-layers`:
+The above command scans for EOL packages that are visible in the container (i.e., the squashed representation of the image). To include software from all image layers in the scan, regardless of its presence in the final image, provide `--scope all-layers`:
 
 ```
 xeol <image> --scope all-layers
@@ -170,13 +170,13 @@ You can set the cache directory path using the environment variable `XEOL_DB_CAC
 
 #### Data staleness
 
-xeol needs up-to-date vulnerability information to provide accurate matches. By default, it will fail execution if the local database was not built in the last 5 days. The data staleness check is configurable via the environment variable `XEOL_DB_MAX_ALLOWED_BUILT_AGE` and `XEOL_DB_VALIDATE_AGE` or the field `max-allowed-built-age` and `validate-age`, under `db`. It uses [golang's time duration syntax](https://pkg.go.dev/time#ParseDuration). Set `XEOL_DB_VALIDATE_AGE` or `validate-age` to `false` to disable staleness check.
+xeol needs up-to-date information to provide accurate EOL matches. By default, it will fail execution if the local database was not built in the last 5 days. The data staleness check is configurable via the environment variable `XEOL_DB_MAX_ALLOWED_BUILT_AGE` and `XEOL_DB_VALIDATE_AGE` or the field `max-allowed-built-age` and `validate-age`, under `db`. It uses [golang's time duration syntax](https://pkg.go.dev/time#ParseDuration). Set `XEOL_DB_VALIDATE_AGE` or `validate-age` to `false` to disable staleness check.
 
 #### Offline and air-gapped environments
 
 By default, xeol checks for a new database on every run, by making a network call over the Internet. You can tell xeol not to perform this check by setting the environment variable `XEOL_DB_AUTO_UPDATE` to `false`.
 
-As long as you place xeol's `vulnerability.db` and `metadata.json` files in the cache directory for the expected schema version, xeol has no need to access the network. Additionally, you can get a listing of the database archives available for download from the `xeol db list` command in an online environment, download the database archive, transfer it to your offline environment, and use `xeol db import <db-archive-path>` to use the given database in an offline capacity.
+As long as you place xeol's `xeol.db` and `metadata.json` files in the cache directory for the expected schema version, xeol has no need to access the network. Additionally, you can get a listing of the database archives available for download from the `xeol db list` command in an online environment, download the database archive, transfer it to your offline environment, and use `xeol db import <db-archive-path>` to use the given database in an offline capacity.
 
 If you would like to distribute your own xeol databases internally without needing to use `db import` manually you can leverage xeol's DB update mechanism. To do this you can craft your own `listing.json` file similar to the one found publically (see `xeol db list -o raw` for an example of our public `listing.json` file) and change the download URL to point to an internal endpoint (e.g. a private S3 bucket, an internal file server, etc). Any internal installation of xeol can receive database updates automatically by configuring the `db.update-url` (same as the `XEOL_DB_UPDATE_URL` environment variable) to point to the hosted `listing.json` file you've crafted.
 
@@ -201,7 +201,7 @@ Find complete information on xeol's database commands by running `xeol db --help
 xeol supplies shell completion through its CLI implementation ([cobra](https://github.com/spf13/cobra/blob/master/shell_completions.md)). Generate the completion code for your shell by running one of the following commands:
 
 - `xeol completion <bash|zsh|fish>`
-- `go run main.go completion <bash|zsh|fish>`
+- `go run ./cmd/xeol completion <bash|zsh|fish>`
 
 This will output a shell script to STDOUT, which can then be used as a completion script for xeol. Running one of the above commands with the
 `-h` or `--help` flags will provide instructions on how to do that for your chosen shell.
