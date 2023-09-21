@@ -82,8 +82,8 @@ jobs:
     # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
-    - name: Build xeol for CodeQL
-      run: make xeol
+    # - name: Build xeol for CodeQL
+    #   run: make xeol
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@a09933a12a80f87b87005513f0abb1494c27a716 # v2.1.31
