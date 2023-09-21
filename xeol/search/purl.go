@@ -38,20 +38,20 @@ func ByPackagePURL(store eol.Provider, p pkg.Package, _ match.MatcherType, eolMa
 	return match.Match{}, nil
 }
 
-func ByDistroCpe(store eol.Provider, distro *linux.Release, eolMatchDate time.Time) (match.Match, error) {
-	version, cycles, err := store.GetByDistroCpe(distro)
+func ByDistroCpe(store eol.Provider, distro *linux.Release, eolMatchDate time.Time) (match.Match, string, error) {
+	version, cycles, distroCPE, err := store.GetByDistroCpe(distro)
 	if err != nil {
-		return match.Match{}, err
+		return match.Match{}, "", err
 	}
 	if len(cycles) < 1 {
-		return match.Match{}, nil
+		return match.Match{}, "", nil
 	}
 
 	log.Debugf("matching distro %s with version %s", distro.Name, version)
 	cycle, err := cycleMatch(version, cycles, eolMatchDate)
 	if err != nil {
 		log.Warnf("failed to match cycle for distro %s: %v", distro.Name, err)
-		return match.Match{}, nil
+		return match.Match{}, "", nil
 	}
 
 	if (cycle != eol.Cycle{}) {
@@ -62,11 +62,11 @@ func ByDistroCpe(store eol.Provider, distro *linux.Release, eolMatchDate time.Ti
 				Version: version,
 				Type:    "os",
 			},
-		}, nil
+		}, distroCPE, nil
 	}
 
 	log.Warnf("failed to match cycle for distro %s: %v", distro.Name, err)
-	return match.Match{}, nil
+	return match.Match{}, "", nil
 }
 
 // normalizeSemver returns the major.minor.patch portion of a semver string

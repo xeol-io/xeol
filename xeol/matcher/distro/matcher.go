@@ -11,16 +11,16 @@ import (
 )
 
 type Matcher struct {
-	UseCpes bool
+	UseCPEs bool
 }
 
 type MatcherConfig struct {
-	UseCpes bool
+	UseCPEs bool
 }
 
 func NewPackageMatcher(cfg MatcherConfig) *Matcher {
 	return &Matcher{
-		UseCpes: cfg.UseCpes,
+		UseCPEs: cfg.UseCPEs,
 	}
 }
 
@@ -28,6 +28,6 @@ func (m *Matcher) Type() match.MatcherType {
 	return match.PackageMatcher
 }
 
-func (m *Matcher) Match(store eol.Provider, d *linux.Release, eolMatchDate time.Time) (match.Match, error) {
+func (m *Matcher) Match(store eol.Provider, d *linux.Release, eolMatchDate time.Time) (match.Match, string, error) {
 	return search.ByDistroCpe(store, d, eolMatchDate)
 }

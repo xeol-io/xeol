@@ -2,8 +2,14 @@ release:
   prerelease: auto
   draft: false
 
+env:
+  # required to support multi architecture docker builds
+  - DOCKER_CLI_EXPERIMENTAL=enabled
+  - CGO_ENABLED=0
+
 builds:
   - id: linux-build
+    dir: ./cmd/xeol
     binary: xeol
     goos:
       - linux
@@ -14,19 +20,17 @@ builds:
       - s390x
     # set the modified timestamp on the output binary to the git timestamp to ensure a reproducible build
     mod_timestamp: &build-timestamp '{{ .CommitTimestamp }}'
-    env: &build-env
-      - CGO_ENABLED=0
     ldflags: &build-ldflags |
       -w
       -s
       -extldflags '-static'
       -X github.com/xeol-io/xeol/internal/version.version={{.Version}}
-      -X github.com/xeol-io/xeol/internal/version.syftVersion={{.Env.SYFT_VERSION}}
       -X github.com/xeol-io/xeol/internal/version.gitCommit={{.Commit}}
       -X github.com/xeol-io/xeol/internal/version.buildDate={{.Date}}
       -X github.com/xeol-io/xeol/internal/version.gitDescription={{.Summary}}
 
   - id: darwin-build
+    dir: ./cmd/xeol
     binary: xeol
     goos:
       - darwin
@@ -34,17 +38,16 @@ builds:
       - amd64
       - arm64
     mod_timestamp: *build-timestamp
-    env: *build-env
     ldflags: *build-ldflags
 
   - id: windows-build
+    dir: ./cmd/xeol
     binary: xeol
     goos:
       - windows
     goarch:
       - amd64
     mod_timestamp: *build-timestamp
-    env: *build-env
     ldflags: *build-ldflags
 
 archives:
@@ -71,7 +74,7 @@ nfpms:
       - deb
 
 brews:
-  - tap:
+  - repository:
       owner: xeol-io
       name: homebrew-xeol
     ids:
@@ -80,3 +83,127 @@ brews:
     homepage: *website
     description: *description
     license: "Apache License 2.0"
+
+dockers:
+  - image_templates:
+      - noqcks/xeol:debug
+      - noqcks/xeol:{{.Tag}}-debug
+      - ghcr.io/noqcks/xeol:debug
+      - ghcr.io/noqcks/xeol:{{.Tag}}-debug
+    goarch: amd64
+    dockerfile: Dockerfile.debug
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=BUILD_DATE={{.Date}}"
+      - "--build-arg=BUILD_VERSION={{.Version}}"
+      - "--build-arg=VCS_REF={{.FullCommit}}"
+      - "--build-arg=VCS_URL={{.GitURL}}"
+
+  - image_templates:
+      - noqcks/xeol:debug-arm64v8
+      - noqcks/xeol:{{.Tag}}-debug-arm64v8
+      - ghcr.io/noqcks/xeol:debug-arm64v8
+      - ghcr.io/noqcks/xeol:{{.Tag}}-debug-arm64v8
+    goarch: arm64
+    dockerfile: Dockerfile.debug
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64/v8"
+      - "--build-arg=BUILD_DATE={{.Date}}"
+      - "--build-arg=BUILD_VERSION={{.Version}}"
+      - "--build-arg=VCS_REF={{.FullCommit}}"
+      - "--build-arg=VCS_URL={{.GitURL}}"
+
+  - image_templates:
+      - noqcks/xeol:debug-s390x
+      - noqcks/xeol:{{.Tag}}-debug-s390x
+      - ghcr.io/noqcks/xeol:debug-s390x
+      - ghcr.io/noqcks/xeol:{{.Tag}}-debug-s390x
+    goarch: s390x
+    dockerfile: Dockerfile.debug
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/s390x"
+      - "--build-arg=BUILD_DATE={{.Date}}"
+      - "--build-arg=BUILD_VERSION={{.Version}}"
+      - "--build-arg=VCS_REF={{.FullCommit}}"
+      - "--build-arg=VCS_URL={{.GitURL}}"
+
+  - image_templates:
+      - noqcks/xeol:latest
+      - noqcks/xeol:{{.Tag}}
+      - ghcr.io/noqcks/xeol:latest
+      - ghcr.io/noqcks/xeol:{{.Tag}}
+    goarch: amd64
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=BUILD_DATE={{.Date}}"
+      - "--build-arg=BUILD_VERSION={{.Version}}"
+      - "--build-arg=VCS_REF={{.FullCommit}}"
+      - "--build-arg=VCS_URL={{.GitURL}}"
+
+  - image_templates:
+      - noqcks/xeol:{{.Tag}}-arm64v8
+      - ghcr.io/noqcks/xeol:{{.Tag}}-arm64v8
+    goarch: arm64
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64/v8"
+      - "--build-arg=BUILD_DATE={{.Date}}"
+      - "--build-arg=BUILD_VERSION={{.Version}}"
+      - "--build-arg=VCS_REF={{.FullCommit}}"
+      - "--build-arg=VCS_URL={{.GitURL}}"
+
+  - image_templates:
+      - noqcks/xeol:{{.Tag}}-s390x
+      - ghcr.io/noqcks/xeol:{{.Tag}}-s390x
+    goarch: s390x
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/s390x"
+      - "--build-arg=BUILD_DATE={{.Date}}"
+      - "--build-arg=BUILD_VERSION={{.Version}}"
+      - "--build-arg=VCS_REF={{.FullCommit}}"
+      - "--build-arg=VCS_URL={{.GitURL}}"
+
+
+docker_manifests:
+  - name_template: noqcks/xeol:latest
+    image_templates:
+      - noqcks/xeol:{{.Tag}}
+      - noqcks/xeol:{{.Tag}}-arm64v8
+      - noqcks/xeol:{{.Tag}}-s390x
+
+  - name_template: noqcks/xeol:debug
+      - noqcks/xeol:{{.Tag}}-debug
+      - noqcks/xeol:{{.Tag}}-debug-arm64v8
+      - noqcks/xeol:{{.Tag}}-debug-s390x
+
+  - name_template: noqcks/xeol:{{.Tag}}
+    image_templates:
+      - noqcks/xeol:{{.Tag}}
+      - noqcks/xeol:{{.Tag}}-arm64v8
+      - noqcks/xeol:{{.Tag}}-s390x
+
+  - name_template: ghcr.io/noqcks/xeol:latest
+    image_templates:
+      - ghcr.io/noqcks/xeol:{{.Tag}}
+      - ghcr.io/noqcks/xeol:{{.Tag}}-arm64v8
+      - ghcr.io/noqcks/xeol:{{.Tag}}-s390x
+
+  - name_template: ghcr.io/noqcks/xeol:debug
+    image_templates:
+      - ghcr.io/noqcks/xeol:{{.Tag}}-debug
+      - ghcr.io/noqcks/xeol:{{.Tag}}-debug-arm64v8
+      - ghcr.io/noqcks/xeol:{{.Tag}}-debug-s390x
+
+  - name_template: ghcr.io/noqcks/xeol:{{.Tag}}
+    image_templates:
+      - ghcr.io/noqcks/xeol:{{.Tag}}
+      - ghcr.io/noqcks/xeol:{{.Tag}}-arm64v8
+      - ghcr.io/noqcks/xeol:{{.Tag}}-s390x

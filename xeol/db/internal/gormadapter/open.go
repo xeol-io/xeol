@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/anchore/sqlite"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 )
 

@@ -3,11 +3,8 @@ package xeol
 import (
 	"time"
 
-	"github.com/anchore/go-logger"
 	"github.com/anchore/syft/syft/linux"
-	"github.com/wagoodman/go-partybus"
 
-	"github.com/xeol-io/xeol/internal/bus"
 	"github.com/xeol-io/xeol/internal/log"
 	"github.com/xeol-io/xeol/xeol/db"
 	"github.com/xeol-io/xeol/xeol/match"
@@ -17,10 +14,6 @@ import (
 	"github.com/xeol-io/xeol/xeol/xeolerr"
 )
 
-func SetLogger(logger logger.Logger) {
-	log.Log = logger
-}
-
 func FindEol(store store.Store, d *linux.Release, matchers []matcher.Matcher, packages []pkg.Package, failOnEolFound bool, eolMatchDate time.Time) (match.Matches, error) {
 	matches := matcher.FindMatches(store, d, matchers, packages, failOnEolFound, eolMatchDate)
 	var err error
@@ -28,10 +21,6 @@ func FindEol(store store.Store, d *linux.Release, matchers []matcher.Matcher, pa
 		err = xeolerr.ErrEolFound
 	}
 	return matches, err
-}
-
-func SetBus(b *partybus.Bus) {
-	bus.SetPublisher(b)
 }
 
 func LoadEolDB(cfg db.Config, update bool) (*store.Store, *db.Status, *db.Closer, error) {

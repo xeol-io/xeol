@@ -3,7 +3,7 @@ package store
 import (
 	"fmt"
 
-	_ "github.com/anchore/sqlite" // provide the sqlite dialect to gorm via import
+	_ "github.com/glebarez/sqlite" // provide the sqlite dialect to gorm via import
 	"gorm.io/gorm"
 
 	"github.com/xeol-io/xeol/xeol/db/internal/gormadapter"

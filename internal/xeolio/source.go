@@ -11,66 +11,53 @@ type EventSource interface {
 }
 
 type DirectorySource struct {
-	ID     string
 	Type   string
 	Target string
 }
 
 func (s *DirectorySource) Serialize() map[string]interface{} {
 	return map[string]interface{}{
-		"ID":     s.ID,
 		"Type":   s.Type,
 		"Target": s.Target,
 	}
 }
 
-func NewDirectorySource(sbomSource source.Metadata) *DirectorySource {
+func NewDirectorySource(dirSource source.DirectorySourceMetadata) *DirectorySource {
 	return &DirectorySource{
-		ID:     sbomSource.ID,
-		Type:   string(sbomSource.Scheme),
-		Target: sbomSource.Path,
+		Type:   "DirectoryScheme",
+		Target: dirSource.Path,
 	}
 }
 
 type ImageSource struct {
-	ID             string
-	Type           string
-	ImageName      string
-	ImageDigest    string
-	ManifestDigest string
+	Type        string
+	ImageName   string
+	ImageDigest string
 }
 
-func NewImageSource(sbomSource source.Metadata) *ImageSource {
+func NewImageSource(imageSource source.StereoscopeImageSourceMetadata) *ImageSource {
 	return &ImageSource{
-		ID:             sbomSource.ID,
-		Type:           string(sbomSource.Scheme),
-		ImageName:      sbomSource.ImageMetadata.UserInput,
-		ImageDigest:    sbomSource.ImageMetadata.ID,
-		ManifestDigest: sbomSource.ImageMetadata.ManifestDigest,
+		Type:        "ImageScheme",
+		ImageName:   imageSource.UserInput,
+		ImageDigest: imageSource.ManifestDigest,
 	}
 }
 
 func (s *ImageSource) Serialize() map[string]interface{} {
 	return map[string]interface{}{
-		"ID":             s.ID,
-		"Type":           s.Type,
-		"ImageName":      s.ImageName,
-		"ImageDigest":    s.ImageDigest,
-		"ManifestDigest": s.ManifestDigest,
+		"Type":        s.Type,
+		"ImageName":   s.ImageName,
+		"ImageDigest": s.ImageDigest,
 	}
 }
 
-func EventSourceScheme(sbomSource source.Metadata) source.Scheme {
-	return sbomSource.Scheme
-}
-
-func NewEventSource(sbomSource source.Metadata) (map[string]interface{}, error) {
-	if sbomSource.Scheme == source.DirectoryScheme {
-		return NewDirectorySource(sbomSource).Serialize(), nil
+func NewEventSource(sbomSource source.Description) (map[string]interface{}, error) {
+	switch v := sbomSource.Metadata.(type) {
+	case source.DirectorySourceMetadata:
+		return NewDirectorySource(v).Serialize(), nil
+	case source.StereoscopeImageSourceMetadata:
+		return NewImageSource(v).Serialize(), nil
+	default:
+		return nil, fmt.Errorf("unsupported source type: %s", v)
 	}
-	if sbomSource.Scheme == source.ImageScheme {
-		return NewImageSource(sbomSource).Serialize(), nil
-	}
-
-	return nil, fmt.Errorf("unsupported source type: %s", sbomSource.Scheme)
 }

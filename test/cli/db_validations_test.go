@@ -21,7 +21,7 @@ func TestDBValidations(t *testing.T) {
 				"XEOL_DB_CA_CERT":   "./does-not-exist.crt",
 			},
 			assertions: []traitAssertion{
-				assertInOutput("failed to load eol db"),
+				assertInOutput("failed to load EOL db"),
 				assertFailingReturnCode,
 			},
 		},

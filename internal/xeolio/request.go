@@ -64,17 +64,19 @@ func (x *XeolClient) FetchCertificates() (string, error) {
 	var raw json.RawMessage
 	statusCode, err := x.makeRequest("GET", XeolAPIURL, "certificate", nil, &raw)
 	if err != nil {
-		return "", err
+		log.Warnf("failed to fetch certificates, continuing without notary policy evaluation")
+		return "", nil
 	}
 
 	if statusCode == http.StatusNotFound {
-		log.Debugf("no certificates found in xeol.io API response")
+		log.Warnf("no certificates found in xeol.io API response")
 		return "", nil
 	}
 
 	var resp CertificateResponse
 	if err := json.Unmarshal(raw, &resp); err != nil {
-		return "", err
+		log.Warnf("failed to unmarshal certificates, continuing without notary policy evaluation")
+		return "", nil
 	}
 
 	return resp.Certificate, nil
@@ -84,15 +86,21 @@ func (x *XeolClient) FetchPolicies() ([]policy.Policy, error) {
 	var raw json.RawMessage
 	statusCode, err := x.makeRequest("GET", XeolAPIURL, "v2/policy", nil, &raw)
 	if err != nil {
-		return nil, err
-	}
-
-	if statusCode == http.StatusNotFound {
-		log.Debugf("no policies found in xeol.io API response")
+		log.Warnf("failed to fetch policies, continuing without policy evaluation")
 		return nil, nil
 	}
 
-	return policy.UnmarshalPolicies(raw)
+	if statusCode == http.StatusNotFound {
+		log.Warnf("no policies found in xeol.io API response")
+		return nil, nil
+	}
+
+	policies, err := policy.UnmarshalPolicies(raw)
+	if err != nil {
+		log.Warnf("failed to unmarshal policies, continuing without policy evaluation")
+		return nil, nil
+	}
+	return policies, nil
 }
 
 func (x *XeolClient) SendEvent(payload report.XeolEventPayload) error {

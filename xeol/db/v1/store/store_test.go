@@ -1,7 +1,6 @@
 package store
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -26,7 +25,7 @@ func assertIDReader(t *testing.T, reader v1.IDReader, expected v1.ID) {
 }
 
 func TestStore_GetID_SetID(t *testing.T) {
-	dbTempFile, err := ioutil.TempFile("", "grype-db-test-store")
+	dbTempFile, err := os.CreateTemp("", "xeol-db-test-store")
 	if err != nil {
 		t.Fatalf("could not create temp file: %+v", err)
 	}

@@ -2,8 +2,12 @@ package cli
 
 import (
 	"os"
+	"os/exec"
 	"path"
+	"runtime"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestSBOMInput_AsArgument(t *testing.T) {
@@ -51,4 +55,48 @@ func TestSBOMInput_AsArgument(t *testing.T) {
 			})
 		}
 	})
+}
+
+func TestSBOMInput_FromStdin(t *testing.T) {
+	tests := []struct {
+		name       string
+		input      string
+		args       []string
+		wantErr    require.ErrorAssertionFunc
+		wantOutput string
+	}{
+		{
+			name:       "empty file",
+			input:      "./test-fixtures/empty.json",
+			args:       []string{"-c", "../xeol-test-config.yaml"},
+			wantErr:    require.Error,
+			wantOutput: "unable to decode sbom: unable to identify format",
+		},
+		{
+			name:    "sbom",
+			input:   "./test-fixtures/sbom-ubuntu-20.04--pruned.json",
+			args:    []string{"-c", "../xeol-test-config.yaml"},
+			wantErr: require.NoError,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cmd := exec.Command(getXeolSnapshotLocation(t, runtime.GOOS), tt.args...)
+
+			input, err := os.Open(tt.input)
+			require.NoError(t, err)
+
+			attachFileToCommandStdin(t, input, cmd)
+			err = input.Close()
+			require.NoError(t, err)
+
+			output, err := cmd.CombinedOutput()
+			tt.wantErr(t, err, "output: %s", output)
+			if tt.wantOutput != "" {
+				require.Contains(t, string(output), tt.wantOutput)
+			}
+
+		})
+	}
 }

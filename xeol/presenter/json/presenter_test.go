@@ -2,24 +2,24 @@ package json
 
 import (
 	"bytes"
-	"flag"
+	"regexp"
 	"testing"
 
-	"github.com/anchore/go-testutils"
 	"github.com/anchore/syft/syft/linux"
 	"github.com/anchore/syft/syft/source"
-	"github.com/stretchr/testify/assert"
+	"github.com/gkampitakis/go-snaps/snaps"
 
 	"github.com/xeol-io/xeol/xeol/match"
 	"github.com/xeol-io/xeol/xeol/pkg"
+	"github.com/xeol-io/xeol/xeol/presenter/internal"
 	"github.com/xeol-io/xeol/xeol/presenter/models"
 )
 
-var update = flag.Bool("update", false, "update the *.golden files for json presenters")
+var timestampRegexp = regexp.MustCompile(`"timestamp":\s*"[^"]+"`)
 
 func TestJsonImgsPresenter(t *testing.T) {
 	var buffer bytes.Buffer
-	matches, packages, context, _, _ := models.GenerateAnalysis(t, source.ImageScheme)
+	matches, packages, context, _, _ := internal.GenerateAnalysis(t, internal.ImageSource)
 
 	pb := models.PresenterConfig{
 		Matches:  matches,
@@ -34,13 +34,9 @@ func TestJsonImgsPresenter(t *testing.T) {
 		t.Fatal(err)
 	}
 	actual := buffer.Bytes()
-	if *update {
-		testutils.UpdateGoldenFileContents(t, actual)
-	}
+	actual = redact(actual)
 
-	var expected = testutils.GetGoldenFileContents(t)
-
-	assert.JSONEq(t, string(expected), string(actual))
+	snaps.MatchSnapshot(t, actual)
 
 	// TODO: add me back in when there is a JSON schema
 	// validateAgainstDbSchema(t, string(actual))
@@ -49,7 +45,7 @@ func TestJsonImgsPresenter(t *testing.T) {
 func TestJsonDirsPresenter(t *testing.T) {
 	var buffer bytes.Buffer
 
-	matches, packages, context, _, _ := models.GenerateAnalysis(t, source.DirectoryScheme)
+	matches, packages, context, _, _ := internal.GenerateAnalysis(t, internal.DirectorySource)
 
 	pb := models.PresenterConfig{
 		Matches:  matches,
@@ -64,15 +60,9 @@ func TestJsonDirsPresenter(t *testing.T) {
 		t.Fatal(err)
 	}
 	actual := buffer.Bytes()
+	actual = redact(actual)
 
-	if *update {
-		testutils.UpdateGoldenFileContents(t, actual)
-	}
-
-	var expected = testutils.GetGoldenFileContents(t)
-
-	assert.JSONEq(t, string(expected), string(actual))
-
+	snaps.MatchSnapshot(t, actual)
 	// TODO: add me back in when there is a JSON schema
 	// validateAgainstDbSchema(t, string(actual))
 }
@@ -84,7 +74,7 @@ func TestEmptyJsonPresenter(t *testing.T) {
 	matches := match.NewMatches()
 
 	ctx := pkg.Context{
-		Source: &source.Metadata{},
+		Source: &source.Description{},
 		Distro: &linux.Release{
 			ID:      "centos",
 			IDLike:  []string{"rhel"},
@@ -105,11 +95,11 @@ func TestEmptyJsonPresenter(t *testing.T) {
 		t.Fatal(err)
 	}
 	actual := buffer.Bytes()
-	if *update {
-		testutils.UpdateGoldenFileContents(t, actual)
-	}
+	actual = redact(actual)
 
-	var expected = testutils.GetGoldenFileContents(t)
+	snaps.MatchSnapshot(t, actual)
+}
 
-	assert.JSONEq(t, string(expected), string(actual))
+func redact(content []byte) []byte {
+	return timestampRegexp.ReplaceAll(content, []byte(`"timestamp":""`))
 }

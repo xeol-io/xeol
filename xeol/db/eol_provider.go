@@ -24,40 +24,40 @@ func NewEolProvider(reader xeolDB.EolStoreReader) (*EolProvider, error) {
 	}, nil
 }
 
-func (pr *EolProvider) GetByDistroCpe(r *linux.Release) (string, []eol.Cycle, error) {
+func (pr *EolProvider) GetByDistroCpe(r *linux.Release) (string, []eol.Cycle, string, error) {
 	cycles := make([]eol.Cycle, 0)
 	if r == nil {
-		return "", []eol.Cycle{}, errors.New("empty distro release")
+		return "", []eol.Cycle{}, "", errors.New("empty distro release")
 	}
 
 	d, err := distro.NewFromRelease(*r)
 	if err != nil {
-		return "", []eol.Cycle{}, err
+		return "", []eol.Cycle{}, "", err
 	}
 
 	if d == nil || d.CPEName.String() == "" {
-		return "", []eol.Cycle{}, errors.New("empty distro CPEName")
+		return "", []eol.Cycle{}, "", errors.New("empty distro CPEName")
 	}
 
 	shortCPE, version := d.CPEName.Destructured()
 	if version == "" || shortCPE == "" {
-		return "", []eol.Cycle{}, errors.New("invalid distro CPEName")
+		return "", []eol.Cycle{}, "", errors.New("invalid distro CPEName")
 	}
 
 	allCycles, err := pr.reader.GetCyclesByCpe(shortCPE)
 	if err != nil {
-		return "", []eol.Cycle{}, err
+		return "", []eol.Cycle{}, "", err
 	}
 
 	for _, cycle := range allCycles {
 		cycleObj, err := eol.NewCycle(cycle)
 		if err != nil {
-			return "", []eol.Cycle{}, err
+			return "", []eol.Cycle{}, "", err
 		}
 		cycles = append(cycles, *cycleObj)
 	}
 
-	return version, cycles, nil
+	return version, cycles, shortCPE, nil
 }
 
 func (pr *EolProvider) GetByPackagePurl(p pkg.Package) ([]eol.Cycle, error) {
