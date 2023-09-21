@@ -152,7 +152,7 @@ func writeNotaryPolicyEvaluationMessage(writer io.Writer, events ...partybus.Eve
 					nt.Action, nt.Type, nt.ImageReference))
 			}
 		}
-		if _, err := fmt.Fprintln(writer, notice); err != nil {
+		if _, err := fmt.Fprint(writer, strings.TrimSpace(notice)); err != nil {
 			// don't let this be fatal
 			log.WithFields("error", err).Warn("failed to write app update notification")
 		}
@@ -178,7 +178,7 @@ func writeEolPolicyEvaluationMessage(writer io.Writer, events ...partybus.Event)
 				notice = lipgloss.NewStyle().Foreground(terminalYellow).Italic(true).Render(fmt.Sprintf("[%s][%s] Policy Violation: %s (v%s) needs to be upgraded to a newer version.\n", pt.Action, pt.Type, pt.ProductName, pt.Cycle))
 			}
 		}
-		if _, err := fmt.Fprintln(writer, notice); err != nil {
+		if _, err := fmt.Fprint(writer, strings.TrimSpace(notice)); err != nil {
 			// don't let this be fatal
 			log.WithFields("error", err).Warn("failed to write app update notification")
 		}
