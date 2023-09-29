@@ -6,6 +6,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/xeol-io/xeol/blob/main/LICENSE)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol/badge)](https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol)
 [![Github All Releases](https://img.shields.io/github/downloads/xeol-io/xeol/total.svg)](https://img.shields.io/github/downloads/xeol-io/xeol/total.svg)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fxeol-io%2Fxeol.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fxeol-io%2Fxeol?ref=badge_shield)
 [![](https://dcbadge.vercel.app/api/server/23ucxwsb?style=flat)](https://discord.gg/23ucxwsb)
 
 A scanner for End of Life (EOL) packages in container images, filesystems, and SBOMs
@@ -303,3 +304,7 @@ Xeol is pronounced "zee-oh-el", like EOL but with a Z in front :-)
 ## Help
 
 Join our discord for help or feedback! [![](https://dcbadge.vercel.app/api/server/23ucxwsb?style=flat)](https://discord.gg/23ucxwsb)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fxeol-io%2Fxeol.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fxeol-io%2Fxeol?ref=badge_large)
