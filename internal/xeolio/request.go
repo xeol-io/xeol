@@ -37,7 +37,7 @@ func (x *XeolClient) makeRequest(method, url, path string, body io.Reader, out i
 	req.Header.Set("Authorization", fmt.Sprintf("ApiKey %v", x.APIKey))
 
 	client := &http.Client{
-		Timeout: 5 * time.Second,
+		Timeout: 15 * time.Second,
 	}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -110,5 +110,8 @@ func (x *XeolClient) SendEvent(payload report.XeolEventPayload) error {
 	}
 
 	_, err = x.makeRequest("PUT", XeolAPIURL, "v2/scan", bytes.NewBuffer(p), nil)
-	return err
+	if err != nil {
+		log.Warnf("failed to send event to xeol.io API: %v", err)
+	}
+	return nil
 }
