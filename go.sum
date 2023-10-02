@@ -814,8 +814,8 @@ github.com/muesli/reflow v0.3.0/go.mod h1:pbwTDkVPibjO2kyvBQRBxTWEEGDGq0FlB1BIKt
 github.com/muesli/termenv v0.15.2 h1:GohcuySI0QmI3wN8Ok9PtKGkgkFIk7y6Vpb5PvrY+Wo=
 github.com/muesli/termenv v0.15.2/go.mod h1:Epx+iuz8sNs7mNKhxzH4fWXGNpZwUaJKRS1noLXviQ8=
 github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
-github.com/noqcks/syft v0.0.0-20230920223517-21656aa2830c h1:DULb+p2k3BL9VARyikj7uPvLv8Gl6xwmhbEDif9lYTg=
-github.com/noqcks/syft v0.0.0-20230920223517-21656aa2830c/go.mod h1:ttY15BEeLIrGINA9acIOjmzsxB/5AYb1Iq11y3eCxSE=
+github.com/noqcks/syft v0.0.0-20231002145755-294cf5d464ea h1:1gBK3G2WX3tHP6N1HtqQBGCenxR3birr8uwdUDVEnnU=
+github.com/noqcks/syft v0.0.0-20231002145755-294cf5d464ea/go.mod h1:JTwDULqhUlXmeOJXhbesxhY6zG2due9cefe0E01pneE=
 github.com/notaryproject/notation v1.0.0 h1:CJ17obUMRJOljApN8NCgYNmxfJQ878UrN0VbKACvDW0=
 github.com/notaryproject/notation v1.0.0/go.mod h1:BrPDyD390EOKkzLDS/3tEbg79wLIkNc0vCLfKHTd0Hw=
 github.com/notaryproject/notation-core-go v1.0.0 h1:FgOAihtFW4XU9JYyTzItg1xW3OaN4eCasw5Bp00Ydu4=
@@ -911,6 +911,8 @@ github.com/saferwall/pe v1.4.5/go.mod h1:SNzv3cdgk8SBI0UwHfyTcdjawfdnN+nbydnEL7G
 github.com/sagikazarmark/crypt v0.3.0/go.mod h1:uD/D+6UF4SrIR1uGEv7bBNkNqLGqUr43MRiaGWX1Nig=
 github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d h1:hrujxIzL1woJ7AwssoOcM/tq5JjjG2yYOc8odClEiXA=
 github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d/go.mod h1:uugorj2VCxiV1x+LzaIdVa9b4S4qGAcH6cbhh4qVxOU=
+github.com/samber/lo v1.38.1 h1:j2XEAqXKb09Am4ebOg31SpvzUTTs6EN3VfgeLUhPdXM=
+github.com/samber/lo v1.38.1/go.mod h1:+m/ZKRl6ClXCE2Lgf3MsQlWfh4bn1bz6CXEOxnEXnEA=
 github.com/sassoftware/go-rpmutils v0.2.0 h1:pKW0HDYMFWQ5b4JQPiI3WI12hGsVoW0V8+GMoZiI/JE=
 github.com/sassoftware/go-rpmutils v0.2.0/go.mod h1:TJJQYtLe/BeEmEjelI3b7xNZjzAukEkeWKmoakvaOoI=
 github.com/scylladb/go-set v1.0.3-0.20200225121959-cc7b2070d91e h1:7q6NSFZDeGfvvtIRwBrU/aegEYJYmvev0cHAwo17zZQ=
