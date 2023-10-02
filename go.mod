@@ -58,7 +58,7 @@ require (
 	oras.land/oras-go/v2 v2.2.1
 )
 
-replace github.com/anchore/syft => github.com/noqcks/syft v0.0.0-20230920223517-21656aa2830c
+replace github.com/anchore/syft => github.com/noqcks/syft v0.0.0-20231002145755-294cf5d464ea
 
 require (
 	cloud.google.com/go v0.110.2 // indirect
@@ -198,6 +198,7 @@ require (
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/saferwall/pe v1.4.5 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
+	github.com/samber/lo v1.38.1 // indirect
 	github.com/sassoftware/go-rpmutils v0.2.0 // indirect
 	github.com/sergi/go-diff v1.3.1 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
