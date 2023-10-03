@@ -74,9 +74,13 @@ func ByDistroCpe(store eol.Provider, distro *linux.Release, eolMatchDate time.Ti
 // here to create matches for patterns we KNOW, because otherwise we could
 // introduce false positives.
 func normalizeSemver(version string) string {
-	// For Ruby versions. Example: 2.5.3p105 -> 2.5.3
-	re := regexp.MustCompile(`^(\d+\.\d+\.\d+)p\d+`)
-	return re.ReplaceAllString(version, "$1")
+	// Handle Ruby versions. Example: 2.5.3p105 -> 2.5.3
+	rubyRe := regexp.MustCompile(`^(\d+\.\d+\.\d+)p\d+`)
+	version = rubyRe.ReplaceAllString(version, "$1")
+
+	// Handle 4-component versions. Example: 5.0.20.5194 -> 5.0.20
+	fourCompRe := regexp.MustCompile(`^(\d+\.\d+\.\d+)\.\d+`)
+	return fourCompRe.ReplaceAllString(version, "$1")
 }
 
 func versionLength(version string) int {
@@ -100,7 +104,11 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 	}
 
 	for _, c := range cycles {
-		// direct match, if it exists
+		// direct match, if it exists. we check the raw version and
+		// the normalized semver version since either could match
+		if version == c.ReleaseCycle {
+			return c, nil
+		}
 		if normalizedVersion == c.ReleaseCycle {
 			return c, nil
 		}
