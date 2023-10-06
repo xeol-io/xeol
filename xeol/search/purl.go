@@ -76,7 +76,13 @@ func ByDistroCpe(store eol.Provider, distro *linux.Release, eolMatchDate time.Ti
 func normalizeSemver(version string) string {
 	// For Ruby versions. Example: 2.5.3p105 -> 2.5.3
 	re := regexp.MustCompile(`^(\d+\.\d+\.\d+)p\d+`)
-	return re.ReplaceAllString(version, "$1")
+	version = re.ReplaceAllString(version, "$1")
+
+	// Handle 4-component versions.
+	// Example: 5.0.20.5194 -> 5.0.20
+	// Example: 2.0.4.RELEASE -> 2.0.4
+	fourCompRe := regexp.MustCompile(`^(\d+\.\d+\.\d+)\.\w+`)
+	return fourCompRe.ReplaceAllString(version, "$1")
 }
 
 func versionLength(version string) int {
