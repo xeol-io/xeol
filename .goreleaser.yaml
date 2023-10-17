@@ -16,10 +16,17 @@ builds:
     goarch:
       - amd64
       - arm64
-      - ppc64le
-      - s390x
     # set the modified timestamp on the output binary to the git timestamp to ensure a reproducible build
     mod_timestamp: &build-timestamp '{{ .CommitTimestamp }}'
+    flags:
+      # trimpath is for reproducible builds
+      # remove all file system paths from the resulting executable.
+      # Instead of absolute file system paths, the recorded file names
+      # will begin with either "go" (for the standard library),
+      # or a module path@version (when using modules),
+      # or a plain import path (when using GOPATH).
+      - -trimpath
+      - -tags=netgo
     ldflags: &build-ldflags |
       -w
       -s
@@ -37,6 +44,15 @@ builds:
     goarch:
       - amd64
       - arm64
+    flags:
+      # trimpath is for reproducible builds
+      # remove all file system paths from the resulting executable.
+      # Instead of absolute file system paths, the recorded file names
+      # will begin with either "go" (for the standard library),
+      # or a module path@version (when using modules),
+      # or a plain import path (when using GOPATH).
+      - -trimpath
+      - -tags=netgo
     mod_timestamp: *build-timestamp
     ldflags: *build-ldflags
 
@@ -47,6 +63,16 @@ builds:
       - windows
     goarch:
       - amd64
+      - arm64
+    flags:
+      # trimpath is for reproducible builds
+      # remove all file system paths from the resulting executable.
+      # Instead of absolute file system paths, the recorded file names
+      # will begin with either "go" (for the standard library),
+      # or a module path@version (when using modules),
+      # or a plain import path (when using GOPATH).
+      - -trimpath
+      - -tags=netgo
     mod_timestamp: *build-timestamp
     ldflags: *build-ldflags
 
@@ -170,7 +196,6 @@ dockers:
       - "--build-arg=BUILD_VERSION={{.Version}}"
       - "--build-arg=VCS_REF={{.FullCommit}}"
       - "--build-arg=VCS_URL={{.GitURL}}"
-
 
 docker_manifests:
   - name_template: noqcks/xeol:latest
