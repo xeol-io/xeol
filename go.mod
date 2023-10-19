@@ -43,8 +43,8 @@ require (
 	github.com/notaryproject/notation-go v1.0.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/opencontainers/go-digest v1.0.0
-	github.com/opencontainers/image-spec v1.1.0-rc4
-	github.com/oras-project/oras-credentials-go v0.3.0
+	github.com/opencontainers/image-spec v1.1.0-rc5
+	github.com/oras-project/oras-credentials-go v0.3.1
 	github.com/pkg/errors v0.9.1
 	github.com/scylladb/go-set v1.0.3-0.20200225121959-cc7b2070d91e
 	github.com/sigstore/sigstore v1.7.3
@@ -55,7 +55,7 @@ require (
 	github.com/wagoodman/go-presenter v0.0.0-20211015174752-f9c01afc824b
 	github.com/wagoodman/go-progress v0.0.0-20230911172108-cf810b7e365c
 	gorm.io/gorm v1.25.2
-	oras.land/oras-go/v2 v2.2.1
+	oras.land/oras-go/v2 v2.3.0
 )
 
 replace github.com/anchore/syft => github.com/noqcks/syft v0.0.0-20231002145755-294cf5d464ea
@@ -238,7 +238,7 @@ require (
 	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/oauth2 v0.11.0 // indirect
-	golang.org/x/sync v0.3.0 // indirect
+	golang.org/x/sync v0.4.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/term v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
