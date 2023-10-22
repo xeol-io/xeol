@@ -74,6 +74,7 @@ run_test_case test_positive_snapshot_download_asset "linux" "arm64" "deb"
 run_test_case test_positive_snapshot_download_asset "darwin" "amd64" "tar.gz"
 run_test_case test_positive_snapshot_download_asset "darwin" "arm64" "tar.gz"
 run_test_case test_positive_snapshot_download_asset "windows" "amd64" "zip"
+run_test_case test_positive_snapshot_download_asset "windows" "arm64" "zip"
 
 # let's make certain we covered all assets that were expected
 run_test_case test_download_snapshot_asset_exercised_all_assets
