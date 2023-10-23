@@ -4,6 +4,7 @@
 [![GitHub release](https://img.shields.io/github/release/xeol-io/xeol.svg)](https://github.com/xeol-io/xeol/releases/latest)
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/xeol-io/xeol.svg)](https://github.com/xeol-io/xeol)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/xeol-io/xeol/blob/main/LICENSE)
+[![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://slsa.dev)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol/badge)](https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol)
 [![Github All Releases](https://img.shields.io/github/downloads/xeol-io/xeol/total.svg)](https://img.shields.io/github/downloads/xeol-io/xeol/total.svg)
 [![](https://dcbadge.vercel.app/api/server/23ucxwsb?style=flat)](https://discord.gg/23ucxwsb)
@@ -41,6 +42,24 @@ brew install xeol
 ### GitHub Actions
 
 If you're using GitHub Actions, you can simply use the [Xeol GitHub action](https://github.com/marketplace/actions/xeol-end-of-life-eol-scan) to run EOL scans on your code or container images during your CI workflows.
+
+### Verifying SLSA provenance for downloaded releases
+
+We generate SLSA provenance for all Xeol releases starting with v0.9.5. You can verify the provenance for the release binaries like so:
+1. Install the [slsa-framework/slsa-verifier#installation](https://github.com/slsa-framework/slsa-verifier#installation) tool
+2. Download the signature file `attestation.intoto.jsonl` from a Xeol release
+3. Download the Xeol release binary you want to verify
+4. Run `slsa-verifier verify-artifact --provenance-path multiple.intoto.jsonl <release-binary> --source-uri=github.com/xeol-io/xeol`
+
+You should see something like this is the release binary is verified:
+```
+➜  ~ slsa-verifier verify-artifact --provenance-path multiple.intoto.jsonl xeol_0.9.5_darwin_amd64.tar.gz --source-uri=github.com/xeol-io/xeol
+Verified signature against tlog entry index 44906341 at URL: https://rekor.sigstore.dev/api/v1/log/entries/24296fb24b8ad77a658e74e86e03e7aedcca39eebddebf59310b4d9c463b037951109186d73a5681
+Verified build using builder "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@refs/tags/v1.9.0" at commit fdc6f5efca3f7277aacf25ef42f502355398f512
+Verifying artifact xeol_0.9.5_darwin_amd64.tar.gz: PASSED
+
+PASSED: Verified SLSA provenance
+```
 
 ## Getting started
 

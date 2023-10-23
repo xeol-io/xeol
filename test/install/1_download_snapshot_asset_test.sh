@@ -71,16 +71,10 @@ run_test_case test_positive_snapshot_download_asset "linux" "amd64" "deb"
 run_test_case test_positive_snapshot_download_asset "linux" "arm64" "tar.gz"
 run_test_case test_positive_snapshot_download_asset "linux" "arm64" "rpm"
 run_test_case test_positive_snapshot_download_asset "linux" "arm64" "deb"
-run_test_case test_positive_snapshot_download_asset "linux" "s390x" "tar.gz"
-run_test_case test_positive_snapshot_download_asset "linux" "s390x" "rpm"
-run_test_case test_positive_snapshot_download_asset "linux" "s390x" "deb"
-run_test_case test_positive_snapshot_download_asset "linux" "ppc64le" "tar.gz"
-run_test_case test_positive_snapshot_download_asset "linux" "ppc64le" "rpm"
-run_test_case test_positive_snapshot_download_asset "linux" "ppc64le" "deb"
 run_test_case test_positive_snapshot_download_asset "darwin" "amd64" "tar.gz"
 run_test_case test_positive_snapshot_download_asset "darwin" "arm64" "tar.gz"
 run_test_case test_positive_snapshot_download_asset "windows" "amd64" "zip"
-# note: the mac signing process produces a dmg which is not part of the snapshot process (thus is not exercised here)
+run_test_case test_positive_snapshot_download_asset "windows" "arm64" "zip"
 
 # let's make certain we covered all assets that were expected
 run_test_case test_download_snapshot_asset_exercised_all_assets
