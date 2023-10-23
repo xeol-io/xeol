@@ -163,6 +163,7 @@ jobs:
     with:
       base64-subjects: "${{ needs.release.outputs.hashes }}"
       upload-assets: true # upload to a new release
+      upload-tag-name: "${{ github.event.inputs.version }}"
 
 
 
