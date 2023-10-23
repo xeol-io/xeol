@@ -46,6 +46,24 @@ brew install xeol
 
 If you're using GitHub Actions, you can simply use the [Xeol GitHub action](https://github.com/marketplace/actions/xeol-end-of-life-eol-scan) to run EOL scans on your code or container images during your CI workflows.
 
+### Verifying SLSA provenance for downloaded releases
+
+We generate SLSA provenance for all Xeol releases starting with v0.9.5. You can verify the provenance for the release binaries like so:
+1. Install the [slsa-framework/slsa-verifier#installation](https://github.com/slsa-framework/slsa-verifier#installation) tool
+2. Download the signature file `attestation.intoto.jsonl` from a Xeol release
+3. Download the Xeol release binary you want to verify
+4. Run `slsa-verifier verify-artifact --provenance-path multiple.intoto.jsonl <release-binary> --source-uri=github.com/xeol-io/xeol`
+
+You should see something like this is the release binary is verified:
+```
+➜  ~ slsa-verifier verify-artifact --provenance-path multiple.intoto.jsonl xeol_0.9.5_darwin_amd64.tar.gz --source-uri=github.com/xeol-io/xeol
+Verified signature against tlog entry index 44906341 at URL: https://rekor.sigstore.dev/api/v1/log/entries/24296fb24b8ad77a658e74e86e03e7aedcca39eebddebf59310b4d9c463b037951109186d73a5681
+Verified build using builder "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@refs/tags/v1.9.0" at commit fdc6f5efca3f7277aacf25ef42f502355398f512
+Verifying artifact xeol_0.9.5_darwin_amd64.tar.gz: PASSED
+
+PASSED: Verified SLSA provenance
+```
+
 ## Getting started
 
 [Install the binary](#installation), and make sure that `xeol` is available in your path. To scan for EOL packages in an image:
