@@ -1,11 +1,8 @@
 name: release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: tag the latest commit on main with the given version (prefixed with v)
-        required: true
+  push:
+    tags: [v*]
 
 permissions:
   contents: read
@@ -17,12 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v2.5.0
 
-      - name: Check if tag already exists
-        # note: this will fail if the tag already exists
-        run: |
-          [[ "${{ github.event.inputs.version }}" == v* ]] || (echo "version '${{ github.event.inputs.version }}' does not have a 'v' prefix" && exit 1)
-          git tag ${{ github.event.inputs.version }}
-
       - name: Check static analysis results
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
         id: static-analysis
@@ -30,7 +21,6 @@ jobs:
           token: ${{ secrets.XEOL_GITHUB_TOKEN }}
           # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
           checkName: "Static analysis"
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Check unit test results
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
@@ -39,7 +29,6 @@ jobs:
           token: ${{ secrets.XEOL_GITHUB_TOKEN }}
           # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
           checkName: "Unit tests"
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Check integration test results
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
@@ -48,7 +37,6 @@ jobs:
           token: ${{ secrets.XEOL_GITHUB_TOKEN }}
           # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
           checkName: "Integration tests"
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Check acceptance test results (linux)
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
@@ -57,7 +45,6 @@ jobs:
           token: ${{ secrets.XEOL_GITHUB_TOKEN }}
           # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
           checkName: "Acceptance tests (Linux)"
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Check acceptance test results (mac)
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
@@ -66,7 +53,6 @@ jobs:
           token: ${{ secrets.XEOL_GITHUB_TOKEN }}
           # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
           checkName: "Acceptance tests (Mac)"
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Check cli test results (linux)
         uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
@@ -75,7 +61,6 @@ jobs:
           token: ${{ secrets.XEOL_GITHUB_TOKEN }}
           # This check name is defined as the github action job name (in .github/workflows/testing.yaml)
           checkName: "CLI tests (Linux)"
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Quality gate
         if: steps.static-analysis.outputs.conclusion != 'success' || steps.unit.outputs.conclusion != 'success' || steps.cli-linux.outputs.conclusion != 'success' || steps.acceptance-linux.outputs.conclusion != 'success' || steps.acceptance-mac.outputs.conclusion != 'success'
@@ -119,13 +104,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.XEOL_GITHUB_TOKEN }}
 
-      - name: Tag release
-        run: |
-          git tag ${{ github.event.inputs.version }}
-          git push origin --tags
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build & publish release artifacts
         run: make ci-release
         env:
@@ -163,8 +141,3 @@ jobs:
     with:
       base64-subjects: "${{ needs.release.outputs.hashes }}"
       upload-assets: true # upload to a new release
-      upload-tag-name: "${{ github.event.inputs.version }}"
-
-
-
-
