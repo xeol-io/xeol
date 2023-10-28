@@ -50,7 +50,7 @@ If you're using GitHub Actions, you can simply use the [Xeol GitHub action](http
 
 We generate SLSA provenance for all Xeol releases starting with v0.9.5. You can verify the provenance for the release binaries like so:
 1. Install the [slsa-framework/slsa-verifier#installation](https://github.com/slsa-framework/slsa-verifier#installation) tool
-2. Download the signature file `attestation.intoto.jsonl` from a Xeol release
+2. Download the signature file `multiple.intoto.jsonl` from a Xeol release
 3. Download the Xeol release binary you want to verify
 4. Run `slsa-verifier verify-artifact --provenance-path multiple.intoto.jsonl <release-binary> --source-uri=github.com/xeol-io/xeol`
 
