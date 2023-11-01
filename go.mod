@@ -58,7 +58,7 @@ require (
 	oras.land/oras-go/v2 v2.3.0
 )
 
-replace github.com/anchore/syft => github.com/noqcks/syft v0.0.0-20231002145755-294cf5d464ea
+replace github.com/anchore/syft => github.com/noqcks/syft v0.0.0-20231012144435-aa2262d32557
 
 require (
 	cloud.google.com/go v0.110.2 // indirect
