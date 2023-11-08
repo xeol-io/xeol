@@ -33,6 +33,7 @@ type ImageSource struct {
 	Type        string
 	ImageName   string
 	ImageDigest string
+	ImageLabels map[string]string
 }
 
 func NewImageSource(imageSource source.StereoscopeImageSourceMetadata) *ImageSource {
@@ -40,6 +41,7 @@ func NewImageSource(imageSource source.StereoscopeImageSourceMetadata) *ImageSou
 		Type:        "ImageScheme",
 		ImageName:   imageSource.UserInput,
 		ImageDigest: imageSource.ManifestDigest,
+		ImageLabels: imageSource.Labels,
 	}
 }
 
@@ -48,6 +50,7 @@ func (s *ImageSource) Serialize() map[string]interface{} {
 		"Type":        s.Type,
 		"ImageName":   s.ImageName,
 		"ImageDigest": s.ImageDigest,
+		"ImageLabels": s.ImageLabels,
 	}
 }
 
