@@ -41,11 +41,18 @@ var _ interface {
 } = (*Xeol)(nil)
 
 func DefaultXeol(id clio.Identification) *Xeol {
+	project, commit := getDefaultProjectNameAndCommit()
+
 	config := &Xeol{
 		Search:            defaultSearch(source.SquashedScope),
 		DB:                DefaultDatabase(id),
 		Match:             defaultMatchConfig(),
 		CheckForAppUpdate: true,
+		Lookahead:         "30d",
+		FailOnEolFound:    false,
+		ProjectName:       project,
+		CommitHash:        commit,
+		ImagePath:         "Dockerfile",
 	}
 	return config
 }
@@ -142,16 +149,6 @@ func (o *Xeol) parseLookaheadOption() (err error) {
 	return nil
 }
 
-func (o *Xeol) loadDefaltValues() {
-	project, commit := getDefaultProjectNameAndCommit()
-	o.FailOnEolFound = false
-	o.Lookahead = "30d"
-	o.ProjectName = project
-	o.CommitHash = commit
-	o.ImagePath = "Dockerfile"
-}
-
 func (o *Xeol) PostLoad() error {
-	o.loadDefaltValues()
 	return o.parseLookaheadOption()
 }
