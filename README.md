@@ -11,7 +11,7 @@
   <a href="https://github.com/xeol-io/xeol/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License: Apache-2.0"/></a>
   <a href="https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol"><img src="https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol/badge" alt="OpenSSF Scorecard"/></a>
   <a href="https://img.shields.io/github/downloads/xeol-io/xeol/total.svg"><img src="https://img.shields.io/github/downloads/xeol-io/xeol/total.svg" alt="Github All Releases"/></a>
-  <a href="https://discord.gg/23ucxwsb"><img src="https://dcbadge.vercel.app/api/server/23ucxwsb?style=flat" alt="Discord"/></a>
+  <a href="https://slsa.dev/images/gh-badge-level3.svg"><img src="https://slsa.dev/images/gh-badge-level3.svg" alt="SLSA"/></a>
 
   <img src="https://user-images.githubusercontent.com/4740147/216162986-2c3add2b-af9f-4d9d-97eb-4c1617da3a71.gif" width="800px" />
 </div>
