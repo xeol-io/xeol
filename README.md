@@ -3,9 +3,9 @@
   <img src="https://s3.amazonaws.com/static.xeol.io/xeol-logo/logo-white-bg.png" width="80px" />
   <h1 align="center">Xeol</h1>
 
-  <h3 align="center">
+  <h4 align="center">
     🔎  A scanner for end-of-life (EOL) packages in container images, filesystems, and SBOMs  🔍
-  </h3>
+  </h4>
 
   <a href="https://img.shields.io/github/downloads/xeol-io/xeol/total.svg"><img src="https://img.shields.io/github/downloads/xeol-io/xeol/total.svg" alt="Github All Releases"/></a>
   <a href="https://goreportcard.com/report/github.com/xeol-io/xeol"><img src="https://goreportcard.com/badge/github.com/xeol-io/xeol" alt="Go Report Card"/></a>
@@ -14,13 +14,13 @@
   <a href="https://github.com/xeol-io/xeol/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License: Apache-2.0"/></a>
   <a href="https://slsa.dev/images/gh-badge-level3.svg"><img src="https://slsa.dev/images/gh-badge-level3.svg" alt="SLSA"/></a>
 
-  <h3 align="center">
+  <h4 align="center">
     <a href="https://www.xeol.io/end-of-life">🌐 Website</a>
     <span>  |  </span>
     <a href="https://docs.xeol.io/home/home">📑 Docs</a>
     <span>  |  </span>
     <a href="https://www.xeol.io/blog">✍🏻 Blog</a>
-  </h3>
+  </h4>
 
   <img src="https://user-images.githubusercontent.com/4740147/216162986-2c3add2b-af9f-4d9d-97eb-4c1617da3a71.gif" width="800px" />
 </div>
