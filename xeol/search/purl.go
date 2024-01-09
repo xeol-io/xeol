@@ -47,7 +47,7 @@ func ByDistroCpe(store eol.Provider, distro *linux.Release, eolMatchDate time.Ti
 		return match.Match{}, "", nil
 	}
 
-	log.Debugf("matching distro %s with version %s", distro.Name, version)
+	log.Debugf("attempting to match distro %s with version %s", distro.Name, version)
 	cycle, err := cycleMatch(version, cycles, eolMatchDate)
 	if err != nil {
 		log.Warnf("failed to match cycle for distro %s: %v", distro.Name, err)
@@ -65,7 +65,7 @@ func ByDistroCpe(store eol.Provider, distro *linux.Release, eolMatchDate time.Ti
 		}, distroCPE, nil
 	}
 
-	log.Warnf("failed to match cycle for distro %s: %v", distro.Name, err)
+	log.Debugf("matched cycle for distro %s: %v", distro.Name, version)
 	return match.Match{}, "", nil
 }
 
