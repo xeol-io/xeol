@@ -84,8 +84,8 @@ func normalizeSemver(version string) string {
 	fourCompRe := regexp.MustCompile(`^(\d+\.\d+\.\d+)\.\w+`)
 	version = fourCompRe.ReplaceAllString(version, "$1")
 
-	// // Handle packages with tilde (~) characters
-	// // Example: 1.23.3-1~bullseye
+	// Handle packages with tilde (~) characters
+	// Example: 1.23.3-1~bullseye
 	tildeRe := regexp.MustCompile(`^(\d+\.\d+\.\d+)-\d+~\w+`)
 	return tildeRe.ReplaceAllString(version, "$1")
 }
