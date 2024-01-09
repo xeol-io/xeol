@@ -82,7 +82,12 @@ func normalizeSemver(version string) string {
 	// Example: 5.0.20.5194 -> 5.0.20
 	// Example: 2.0.4.RELEASE -> 2.0.4
 	fourCompRe := regexp.MustCompile(`^(\d+\.\d+\.\d+)\.\w+`)
-	return fourCompRe.ReplaceAllString(version, "$1")
+	version = fourCompRe.ReplaceAllString(version, "$1")
+
+	// Handle packages with tilde (~) characters
+	// Example: 1.23.3-1~bullseye
+	tildeRe := regexp.MustCompile(`^(\d+\.\d+\.\d+)-\d+~\w+`)
+	return tildeRe.ReplaceAllString(version, "$1")
 }
 
 func versionLength(version string) int {
