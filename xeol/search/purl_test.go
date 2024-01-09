@@ -15,6 +15,10 @@ func TestNormalizeSemver(t *testing.T) {
 		expected string
 	}{
 		{
+			version:  "1.23.3-1~bullseye",
+			expected: "1.23.3",
+		},
+		{
 			version:  "2.0.4.RELEASE",
 			expected: "2.0.4",
 		},
