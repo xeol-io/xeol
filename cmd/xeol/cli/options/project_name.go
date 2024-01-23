@@ -133,6 +133,7 @@ func (f *URLFormatter) Format() string {
 	gURL, err := parseRawGitURL(f.URL)
 	if err != nil {
 		log.Debug(err)
+		return ""
 	}
 
 	return gURL.String()
