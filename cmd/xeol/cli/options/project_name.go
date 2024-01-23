@@ -2,12 +2,13 @@ package options
 
 import (
 	"fmt"
-	"log"
 	"net/url"
 	"regexp"
 	"strings"
 
 	git "github.com/go-git/go-git/v5"
+
+	"github.com/xeol-io/xeol/internal/log"
 )
 
 type Project struct {
@@ -131,7 +132,8 @@ func parseRawGitURL(rawurl string) (GitURL, error) {
 func (f *URLFormatter) Format() string {
 	gURL, err := parseRawGitURL(f.URL)
 	if err != nil {
-		log.Fatal(err)
+		log.Debug(err)
+		return ""
 	}
 
 	return gURL.String()
