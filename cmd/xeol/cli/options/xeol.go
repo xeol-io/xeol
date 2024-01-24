@@ -9,7 +9,6 @@ import (
 	git "github.com/go-git/go-git/v5"
 	"github.com/karrick/tparse"
 
-	"github.com/xeol-io/xeol/cmd/xeol/internal/types"
 	"github.com/xeol-io/xeol/internal/format"
 )
 
@@ -100,11 +99,6 @@ func (o *Xeol) AddFlags(flags clio.FlagSet) {
 		"manually set the name of the project being analyzed for xeol.io. If you are running xeol inside a git repository, this will be automatically detected.",
 	)
 
-	flags.StringVarP(&o.CommitHash,
-		"commit-hash", "",
-		"manually set the commit hash of the project being analyzed for xeol.io. If you are running xeol inside a git repository, this will be automatically detected.",
-	)
-
 	flags.StringVarP(&o.APIKey,
 		"api-key", "",
 		"set the API key for xeol.io. When this is set, scans will be uploaded to xeol.io.",
@@ -155,28 +149,6 @@ func (o *Xeol) parseLookaheadOption() (err error) {
 	return nil
 }
 
-func (o *Xeol) parseProjectAndCommitOption() (err error) {
-	if o.APIKey != "" {
-		if o.ProjectName == "" {
-			return fmt.Errorf("must specify a project name when using --api-key. This is usually inferred automatically when running inside a git repository, but you may also pass it manually with --project-name")
-		}
-		if err := types.ProjectName(o.ProjectName).IsValid(); err != nil {
-			return err
-		}
-
-		if o.CommitHash == "" {
-			return fmt.Errorf("must specify a commit hash when using --api-key. This is usually inferred automatically when running inside a git repository, but you may also pass it manually with --commit-hash")
-		}
-		if err := types.CommitHash(o.CommitHash).IsValid(); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func (o *Xeol) PostLoad() error {
-	if err := o.parseLookaheadOption(); err != nil {
-		return err
-	}
-	return o.parseProjectAndCommitOption()
+	return o.parseLookaheadOption()
 }
