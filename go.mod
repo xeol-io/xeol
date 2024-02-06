@@ -183,7 +183,7 @@ require (
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/notaryproject/notation-core-go v1.0.0 // indirect
 	github.com/nwaples/rardecode v1.1.2 // indirect
-	github.com/opencontainers/runc v1.1.5 // indirect
+	github.com/opencontainers/runc v1.1.12 // indirect
 	github.com/opencontainers/runtime-spec v1.1.0-rc.1 // indirect
 	github.com/opencontainers/selinux v1.11.0 // indirect
 	github.com/pborman/indent v1.2.1 // indirect
