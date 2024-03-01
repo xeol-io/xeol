@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/static-debian11@sha256:7198a357ff3a8ef750b041324873960cf2153c11cc50abb9d8d5f8bb089f6b4e AS build
+FROM gcr.io/distroless/static-debian11@sha256:072d78bc452a2998929a9579464e55067db4bf6d2c5f9cde582e33c10a415bd1 AS build
 
 
 FROM alpine:3.17@sha256:f71a5f071694a785e064f05fed657bf8277f1b2113a8ed70c90ad486d6ee54dc
