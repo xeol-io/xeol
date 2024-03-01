@@ -15,7 +15,7 @@ require (
 	github.com/anchore/stereoscope v0.0.0-20230919183137-5841b53a0375
 	github.com/anchore/syft v0.92.0
 	github.com/bmatcuk/doublestar/v2 v2.0.4
-	github.com/charmbracelet/bubbletea v0.24.2
+	github.com/charmbracelet/bubbletea v0.25.0
 	github.com/charmbracelet/lipgloss v0.8.0
 	github.com/docker/distribution v2.8.2+incompatible
 	github.com/docker/docker v24.0.6+incompatible
