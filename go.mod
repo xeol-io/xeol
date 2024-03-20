@@ -18,7 +18,7 @@ require (
 	github.com/charmbracelet/bubbletea v0.24.2
 	github.com/charmbracelet/lipgloss v0.8.0
 	github.com/docker/distribution v2.8.2+incompatible
-	github.com/docker/docker v24.0.6+incompatible
+	github.com/docker/docker v24.0.9+incompatible
 	github.com/dustin/go-humanize v1.0.1
 	github.com/facebookincubator/nvdtools v0.1.5
 	github.com/gabriel-vasile/mimetype v1.4.2
