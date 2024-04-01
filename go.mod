@@ -23,7 +23,7 @@ require (
 	github.com/facebookincubator/nvdtools v0.1.5
 	github.com/gabriel-vasile/mimetype v1.4.2
 	github.com/gkampitakis/go-snaps v0.4.10
-	github.com/glebarez/sqlite v1.9.0
+	github.com/glebarez/sqlite v1.11.0
 	github.com/go-git/go-git/v5 v5.9.0
 	github.com/go-test/deep v1.1.0
 	github.com/google/go-cmp v0.5.9
@@ -54,7 +54,7 @@ require (
 	github.com/wagoodman/go-partybus v0.0.0-20230516145632-8ccac152c651
 	github.com/wagoodman/go-presenter v0.0.0-20211015174752-f9c01afc824b
 	github.com/wagoodman/go-progress v0.0.0-20230911172108-cf810b7e365c
-	gorm.io/gorm v1.25.6
+	gorm.io/gorm v1.25.7
 	oras.land/oras-go/v2 v2.3.0
 )
 
