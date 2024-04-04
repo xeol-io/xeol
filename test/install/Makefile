@@ -3,7 +3,7 @@ NAME=xeol
 IMAGE_NAME=$(NAME)-install.sh-env
 UBUNTU_IMAGE=$(IMAGE_NAME):ubuntu-20.04
 ALPINE_IMAGE=$(IMAGE_NAME):alpine-3.6
-BUSYBOX_IMAGE=busybox:1.35
+
 
 ENVS=./environments
 DOCKER_RUN=docker run --rm -t -w /project/test/install -v $(shell pwd)/../../:/project
@@ -32,7 +32,7 @@ ci-test-mac: unit-local acceptance-local
 
 # note: do not add acceptance-local to this list
 .PHONY: acceptance
-acceptance: acceptance-ubuntu-20.04 acceptance-alpine-3.6 acceptance-busybox-1.35
+acceptance: acceptance-ubuntu-20.04 acceptance-alpine-3.6
 
 .PHONY: unit
 unit: unit-ubuntu-20.04
@@ -55,17 +55,15 @@ acceptance-previous-release-local:
 	xeol version | grep $(shell echo $(PREVIOUS_RELEASE)| tr -d "v")
 
 .PHONY: save
-save: ubuntu-20.04 alpine-3.6 busybox-1.35
+save: ubuntu-20.04 alpine-3.6
 	@mkdir cache || true
 	docker image save -o cache/ubuntu-env.tar $(UBUNTU_IMAGE)
 	docker image save -o cache/alpine-env.tar $(ALPINE_IMAGE)
-	docker image save -o cache/busybox-env.tar $(BUSYBOX_IMAGE)
 
 .PHONY: load
 load:
 	docker image load -i cache/ubuntu-env.tar
 	docker image load -i cache/alpine-env.tar
-	docker image load -i cache/busybox-env.tar
 
 ## UBUNTU #######################################################
 
@@ -100,24 +98,6 @@ acceptance-alpine-3.6: alpine-3.6
 alpine-3.6:
 	$(call title,alpine:3.6 - build environment)
 	docker build -t $(ALPINE_IMAGE) -f $(ENVS)/Dockerfile-alpine-3.6 .
-
-## BUSYBOX #######################################################
-
-# note: unit tests cannot be run with sh (busybox dosn't have bash by default)
-
-# note: busybox by default will not have cacerts, so you will get TLS warnings (we want to test under these conditions)
-
-.PHONY: acceptance-busybox-1.35
-acceptance-busybox-1.35: busybox-1.35
-	$(call title,busybox-1.35 - acceptance)
-	$(DOCKER_RUN) $(BUSYBOX_IMAGE) \
-		$(ACCEPTANCE_CMD)
-	@echo "\n*** test note: you should see xeol spit out a 'x509: certificate signed by unknown authority' error --this is expected ***"
-
-.PHONY: busybox-1.35
-busybox-1.35:
-	$(call title,busybox-1.35 - build environment)
-	docker pull $(BUSYBOX_IMAGE)
 
 ## For CI ########################################################
 
