@@ -39,7 +39,7 @@ jobs:
           app_id: ${{ secrets.TOKEN_APP_ID }}
           private_key: ${{ secrets.TOKEN_APP_PRIVATE_KEY }}
 
-      - uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 # v5.0.2
+      - uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # v6.0.5
         with:
           signoff: true
           delete-branch: true
