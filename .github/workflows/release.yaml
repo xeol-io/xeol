@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v2.5.0
 
       - name: Check static analysis results
-        uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
+        uses: fountainhead/action-wait-for-check@5a908a24814494009c4bb27c242ea38c93c593be # v1.2.0
         id: static-analysis
         with:
           token: ${{ secrets.XEOL_GITHUB_TOKEN }}
@@ -23,7 +23,7 @@ jobs:
           checkName: "Static analysis"
 
       - name: Check unit test results
-        uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
+        uses: fountainhead/action-wait-for-check@5a908a24814494009c4bb27c242ea38c93c593be # v1.2.0
         id: unit
         with:
           token: ${{ secrets.XEOL_GITHUB_TOKEN }}
@@ -31,7 +31,7 @@ jobs:
           checkName: "Unit tests"
 
       - name: Check integration test results
-        uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
+        uses: fountainhead/action-wait-for-check@5a908a24814494009c4bb27c242ea38c93c593be # v1.2.0
         id: integration
         with:
           token: ${{ secrets.XEOL_GITHUB_TOKEN }}
@@ -39,7 +39,7 @@ jobs:
           checkName: "Integration tests"
 
       - name: Check acceptance test results (linux)
-        uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
+        uses: fountainhead/action-wait-for-check@5a908a24814494009c4bb27c242ea38c93c593be # v1.2.0
         id: acceptance-linux
         with:
           token: ${{ secrets.XEOL_GITHUB_TOKEN }}
@@ -47,7 +47,7 @@ jobs:
           checkName: "Acceptance tests (Linux)"
 
       - name: Check acceptance test results (mac)
-        uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
+        uses: fountainhead/action-wait-for-check@5a908a24814494009c4bb27c242ea38c93c593be # v1.2.0
         id: acceptance-mac
         with:
           token: ${{ secrets.XEOL_GITHUB_TOKEN }}
@@ -55,7 +55,7 @@ jobs:
           checkName: "Acceptance tests (Mac)"
 
       - name: Check cli test results (linux)
-        uses: fountainhead/action-wait-for-check@297be350cf8393728ea4d4b39435c7d7ae167c93 # v1.1.0
+        uses: fountainhead/action-wait-for-check@5a908a24814494009c4bb27c242ea38c93c593be # v1.2.0
         id: cli-linux
         with:
           token: ${{ secrets.XEOL_GITHUB_TOKEN }}
