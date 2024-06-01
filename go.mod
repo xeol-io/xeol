@@ -54,7 +54,7 @@ require (
 	github.com/wagoodman/go-partybus v0.0.0-20230516145632-8ccac152c651
 	github.com/wagoodman/go-presenter v0.0.0-20211015174752-f9c01afc824b
 	github.com/wagoodman/go-progress v0.0.0-20230911172108-cf810b7e365c
-	gorm.io/gorm v1.25.6
+	gorm.io/gorm v1.25.10
 	oras.land/oras-go/v2 v2.3.0
 )
 
