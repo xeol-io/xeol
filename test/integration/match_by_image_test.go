@@ -148,7 +148,7 @@ func addPostgres9Matches(t *testing.T, theResult *match.Matches) {
 			ID:      "2ba17cf1680ce4f2",
 			Version: "9.6.24-1.pgdg90+1",
 			Type:    syftPkg.DebPkg,
-			PURL:    "pkg:deb/debian/postgresql-9.6@9.6.24-1.pgdg90+1?arch=amd64&distro=debian-9",
+			PURL:    "pkg:deb/debian/postgresql-9.6@9.6.24-1.pgdg90%2B1?arch=amd64&distro=debian-9",
 		},
 		Cycle: eol.Cycle{
 			ProductName:  "PostgreSQL",
@@ -158,49 +158,14 @@ func addPostgres9Matches(t *testing.T, theResult *match.Matches) {
 	})
 }
 
-func addElaticsearch6Matches(t *testing.T, theResult *match.Matches) {
-	// TODO: tracking issue https://github.com/anchore/syft/issues/2153
-	// theResult.Add(match.Match{
-	// 	Package: pkg.Package{
-	// 		Name:     "python",
-	// 		ID:       "2ba17cf1680ce4f2",
-	// 		Version:  "2.7.5",
-	// 		Type:     syftPkg.BinaryPkg,
-	// 		Language: "",
-	// 		PURL:     "pkg:generic/python@2.7.5",
-	// 	},
-	// 	Cycle: eol.Cycle{
-	// 		ProductName:  "Python",
-	// 		ReleaseCycle: "2.7",
-	// 		Eol:          "2020-01-01",
-	// 	},
-	// })
-	theResult.Add(match.Match{
-		Package: pkg.Package{
-			Name:     "elasticsearch",
-			ID:       "2ba17cf1680ce4f2",
-			Version:  "6.8.21",
-			Type:     syftPkg.JavaPkg,
-			Language: syftPkg.Java,
-			PURL:     "pkg:maven/org.elasticsearch%23server/elasticsearch@6.8.21",
-		},
-		Cycle: eol.Cycle{
-			ReleaseCycle: "6",
-			ProductName:  "Elasticsearch",
-			Eol:          "2022-02-10",
-		},
-	})
-}
-
 func addNodejs6Matches(t *testing.T, theResult *match.Matches) {
 	theResult.Add(match.Match{
 		Package: pkg.Package{
-			Name:     "node",
-			ID:       "2ba17cf1680ce4f2",
-			Version:  "6.13.1",
-			Type:     syftPkg.BinaryPkg,
-			Language: syftPkg.JavaScript,
-			PURL:     "pkg:generic/node@6.13.1",
+			Name:    "node",
+			ID:      "2ba17cf1680ce4f2",
+			Version: "6.13.1",
+			Type:    syftPkg.BinaryPkg,
+			PURL:    "pkg:generic/node@6.13.1",
 		},
 		Cycle: eol.Cycle{
 			ProductName:  "Node.js",
