@@ -11,6 +11,7 @@ import (
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/anchore/syft/syft/source"
 	"github.com/anchore/syft/syft/source/sourceproviders"
+
 	"github.com/xeol-io/xeol/internal/log"
 )
 

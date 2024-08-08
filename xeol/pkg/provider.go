@@ -4,10 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/bmatcuk/doublestar/v2"
-
 	"github.com/anchore/syft/syft/file"
 	"github.com/anchore/syft/syft/sbom"
+	"github.com/bmatcuk/doublestar/v2"
 )
 
 var errDoesNotProvide = fmt.Errorf("cannot provide packages from the given source")

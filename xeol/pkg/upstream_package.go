@@ -3,9 +3,8 @@ package pkg
 import (
 	"strings"
 
-	"github.com/scylladb/go-set/strset"
-
 	"github.com/anchore/syft/syft/cpe"
+	"github.com/scylladb/go-set/strset"
 )
 
 type UpstreamPackage struct {

@@ -7,11 +7,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mitchellh/go-homedir"
-
 	"github.com/anchore/packageurl-go"
 	"github.com/anchore/syft/syft/cpe"
 	"github.com/anchore/syft/syft/pkg"
+	"github.com/mitchellh/go-homedir"
 )
 
 const (

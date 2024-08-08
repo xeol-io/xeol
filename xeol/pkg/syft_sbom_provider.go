@@ -7,11 +7,11 @@ import (
 	"os"
 	"strings"
 
+	"github.com/anchore/syft/syft/format"
+	"github.com/anchore/syft/syft/sbom"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/mitchellh/go-homedir"
 
-	"github.com/anchore/syft/syft/format"
-	"github.com/anchore/syft/syft/sbom"
 	"github.com/xeol-io/xeol/internal"
 	"github.com/xeol-io/xeol/internal/log"
 )
