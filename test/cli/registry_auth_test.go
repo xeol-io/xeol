@@ -14,55 +14,55 @@ func TestRegistryAuth(t *testing.T) {
 	}{
 		{
 			name: "fallback to keychain",
-			args: []string{"-vv", "registry:localhost:5000/something:latest"},
+			args: []string{"-vv", "redis:latest"},
 			assertions: []traitAssertion{
 				assertInOutput("source=OciRegistry"),
-				assertInOutput("localhost:5000/something:latest"),
-				assertInOutput(`no registry credentials configured for "localhost:5000", using the default keychain`),
+				assertInOutput("redis:latest"),
+				assertInOutput(`no registry credentials configured for "index.docker.io", using the default keychain`),
 			},
 		},
 		{
 			name: "use creds",
-			args: []string{"-vv", "registry:localhost:5000/something:latest"},
+			args: []string{"-vv", "redis:latest"},
 			env: map[string]string{
-				"XEOL_REGISTRY_AUTH_AUTHORITY": "localhost:5000",
+				"XEOL_REGISTRY_AUTH_AUTHORITY": "index.docker.io",
 				"XEOL_REGISTRY_AUTH_USERNAME":  "username",
 				"XEOL_REGISTRY_AUTH_PASSWORD":  "password",
 			},
 			assertions: []traitAssertion{
 				assertInOutput("source=OciRegistry"),
-				assertInOutput("localhost:5000/something:latest"),
-				assertInOutput(`using basic auth for registry "localhost:5000"`),
+				assertInOutput("redis:latest"),
+				assertInOutput(`using basic auth for registry "index.docker.io"`),
 			},
 		},
 		{
 			name: "use token",
-			args: []string{"-vv", "registry:localhost:5000/something:latest"},
+			args: []string{"-vv", "redis:latest"},
 			env: map[string]string{
-				"XEOL_REGISTRY_AUTH_AUTHORITY": "localhost:5000",
+				"XEOL_REGISTRY_AUTH_AUTHORITY": "index.docker.io",
 				"XEOL_REGISTRY_AUTH_TOKEN":     "my-token",
 			},
 			assertions: []traitAssertion{
 				assertInOutput("source=OciRegistry"),
-				assertInOutput("localhost:5000/something:latest"),
-				assertInOutput(`using token for registry "localhost:5000"`),
+				assertInOutput("redis:latest"),
+				assertInOutput(`using token for registry "index.docker.io"`),
 			},
 		},
 		{
 			name: "not enough info fallsback to keychain",
-			args: []string{"-vv", "registry:localhost:5000/something:latest"},
+			args: []string{"-vv", "redis:latest"},
 			env: map[string]string{
-				"XEOL_REGISTRY_AUTH_AUTHORITY": "localhost:5000",
+				"XEOL_REGISTRY_AUTH_AUTHORITY": "index.docker.io",
 			},
 			assertions: []traitAssertion{
 				assertInOutput("source=OciRegistry"),
-				assertInOutput("localhost:5000/something:latest"),
-				assertInOutput(`no registry credentials configured for "localhost:5000", using the default keychain`),
+				assertInOutput("redis:latest"),
+				assertInOutput(`no registry credentials configured for "index.docker.io", using the default keychain`),
 			},
 		},
 		{
 			name: "allows insecure http flag",
-			args: []string{"-vv", "registry:localhost:5000/something:latest"},
+			args: []string{"-vv", "redis:latest"},
 			env: map[string]string{
 				"XEOL_REGISTRY_INSECURE_USE_HTTP": "true",
 			},
@@ -72,7 +72,7 @@ func TestRegistryAuth(t *testing.T) {
 		},
 		{
 			name: "use tls configuration",
-			args: []string{"-vvv", "registry:localhost:5000/something:latest"},
+			args: []string{"-vvv", "redis:latest"},
 			env: map[string]string{
 				"XEOL_REGISTRY_AUTH_TLS_CERT": "place.crt",
 				"XEOL_REGISTRY_AUTH_TLS_KEY":  "place.key",
