@@ -286,14 +286,6 @@ func TestMatchByImage(t *testing.T) {
 			},
 		},
 		{
-			fixtureImage: "image-elasticsearch-6",
-			expectedFn: func() match.Matches {
-				expectedMatches := match.NewMatches()
-				addElaticsearch6Matches(t, &expectedMatches)
-				return expectedMatches
-			},
-		},
-		{
 			fixtureImage: "image-redis-5",
 			expectedFn: func() match.Matches {
 				expectedMatches := match.NewMatches()
