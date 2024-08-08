@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/anchore/syft/syft/linux"
 	hashiVer "github.com/hashicorp/go-version"
+
+	"github.com/anchore/syft/syft/linux"
 )
 
 // Distro represents a Linux Distribution.
@@ -61,6 +62,14 @@ func NewFromRelease(release linux.Release) (*Distro, error) {
 		}
 	}
 
+	if t == Debian && release.VersionID == "" && release.Version == "" && strings.Contains(release.PrettyName, "sid") {
+		return &Distro{
+			Type:       t,
+			RawVersion: "unstable",
+			IDLike:     release.IDLike,
+		}, nil
+	}
+
 	return New(t, release.CPEName, selectedVersion, release.IDLike...)
 }
 
@@ -91,5 +100,15 @@ func (d Distro) String() string {
 }
 
 func (d Distro) IsRolling() bool {
-	return d.Type == Wolfi || d.Type == ArchLinux || d.Type == Gentoo
+	return d.Type == Wolfi || d.Type == Chainguard || d.Type == ArchLinux || d.Type == Gentoo
+}
+
+// Unsupported Linux distributions
+func (d Distro) Disabled() bool {
+	switch {
+	case d.Type == ArchLinux:
+		return true
+	default:
+		return false
+	}
 }

@@ -5,13 +5,14 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/go-test/deep"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/anchore/syft/syft/cpe"
 	"github.com/anchore/syft/syft/file"
 	"github.com/anchore/syft/syft/linux"
 	"github.com/anchore/syft/syft/source"
-	"github.com/go-test/deep"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestParseSyftJSON(t *testing.T) {
@@ -38,12 +39,113 @@ func TestParseSyftJSON(t *testing.T) {
 					},
 					Type: "apk",
 					CPEs: []cpe.CPE{
-						cpe.Must("cpe:2.3:a:alpine:alpine_baselayout:3.2.0-r6:*:*:*:*:*:*:*"),
+						cpe.Must("cpe:2.3:a:alpine:alpine_baselayout:3.2.0-r6:*:*:*:*:*:*:*", ""),
 					},
 					PURL: "pkg:alpine/alpine-baselayout@3.2.0-r6?arch=x86_64",
 					Upstreams: []UpstreamPackage{
 						{
 							Name: "alpine-baselayout",
+						},
+					},
+					Metadata: ApkMetadata{
+						Files: []ApkFileRecord{
+							{Path: "/dev"},
+							{Path: "/dev/pts"},
+							{Path: "/dev/shm"},
+							{Path: "/etc"},
+							{Path: "/etc/fstab"},
+							{Path: "/etc/group"},
+							{Path: "/etc/hostname"},
+							{Path: "/etc/hosts"},
+							{Path: "/etc/inittab"},
+							{Path: "/etc/modules"},
+							{Path: "/etc/motd"},
+							{Path: "/etc/mtab"},
+							{Path: "/etc/passwd"},
+							{Path: "/etc/profile"},
+							{Path: "/etc/protocols"},
+							{Path: "/etc/services"},
+							{Path: "/etc/shadow"},
+							{Path: "/etc/shells"},
+							{Path: "/etc/sysctl.conf"},
+							{Path: "/etc/apk"},
+							{Path: "/etc/conf.d"},
+							{Path: "/etc/crontabs"},
+							{Path: "/etc/crontabs/root"},
+							{Path: "/etc/init.d"},
+							{Path: "/etc/modprobe.d"},
+							{Path: "/etc/modprobe.d/aliases.conf"},
+							{Path: "/etc/modprobe.d/blacklist.conf"},
+							{Path: "/etc/modprobe.d/i386.conf"},
+							{Path: "/etc/modprobe.d/kms.conf"},
+							{Path: "/etc/modules-load.d"},
+							{Path: "/etc/network"},
+							{Path: "/etc/network/if-down.d"},
+							{Path: "/etc/network/if-post-down.d"},
+							{Path: "/etc/network/if-pre-up.d"},
+							{Path: "/etc/network/if-up.d"},
+							{Path: "/etc/opt"},
+							{Path: "/etc/periodic"},
+							{Path: "/etc/periodic/15min"},
+							{Path: "/etc/periodic/daily"},
+							{Path: "/etc/periodic/hourly"},
+							{Path: "/etc/periodic/monthly"},
+							{Path: "/etc/periodic/weekly"},
+							{Path: "/etc/profile.d"},
+							{Path: "/etc/profile.d/README"},
+							{Path: "/etc/profile.d/color_prompt.sh.disabled"},
+							{Path: "/etc/profile.d/locale.sh"},
+							{Path: "/etc/sysctl.d"},
+							{Path: "/home"},
+							{Path: "/lib"},
+							{Path: "/lib/firmware"},
+							{Path: "/lib/mdev"},
+							{Path: "/lib/modules-load.d"},
+							{Path: "/lib/sysctl.d"},
+							{Path: "/lib/sysctl.d/00-alpine.conf"},
+							{Path: "/media"},
+							{Path: "/media/cdrom"},
+							{Path: "/media/floppy"},
+							{Path: "/media/usb"},
+							{Path: "/mnt"},
+							{Path: "/opt"},
+							{Path: "/proc"},
+							{Path: "/root"},
+							{Path: "/run"},
+							{Path: "/sbin"},
+							{Path: "/sbin/mkmntdirs"},
+							{Path: "/srv"},
+							{Path: "/sys"},
+							{Path: "/tmp"},
+							{Path: "/usr"},
+							{Path: "/usr/lib"},
+							{Path: "/usr/lib/modules-load.d"},
+							{Path: "/usr/local"},
+							{Path: "/usr/local/bin"},
+							{Path: "/usr/local/lib"},
+							{Path: "/usr/local/share"},
+							{Path: "/usr/sbin"},
+							{Path: "/usr/share"},
+							{Path: "/usr/share/man"},
+							{Path: "/usr/share/misc"},
+							{Path: "/var"},
+							{Path: "/var/run"},
+							{Path: "/var/cache"},
+							{Path: "/var/cache/misc"},
+							{Path: "/var/empty"},
+							{Path: "/var/lib"},
+							{Path: "/var/lib/misc"},
+							{Path: "/var/local"},
+							{Path: "/var/lock"},
+							{Path: "/var/lock/subsys"},
+							{Path: "/var/log"},
+							{Path: "/var/mail"},
+							{Path: "/var/opt"},
+							{Path: "/var/spool"},
+							{Path: "/var/spool/mail"},
+							{Path: "/var/spool/cron"},
+							{Path: "/var/spool/cron/crontabs"},
+							{Path: "/var/tmp"},
 						},
 					},
 				},
@@ -62,8 +164,8 @@ func TestParseSyftJSON(t *testing.T) {
 					},
 					Type: "dpkg",
 					CPEs: []cpe.CPE{
-						cpe.Must("cpe:2.3:a:*:fake:1.2.0:*:*:*:*:*:*:*"),
-						cpe.Must("cpe:2.3:a:fake:fake:1.2.0:*:*:*:*:*:*:*"),
+						cpe.Must("cpe:2.3:a:*:fake:1.2.0:*:*:*:*:*:*:*", ""),
+						cpe.Must("cpe:2.3:a:fake:fake:1.2.0:*:*:*:*:*:*:*", ""),
 					},
 					PURL: "pkg:deb/debian/fake@1.2.0?arch=x86_64",
 					Upstreams: []UpstreamPackage{
@@ -88,11 +190,10 @@ func TestParseSyftJSON(t *testing.T) {
 					},
 					Type: "java-archive",
 					CPEs: []cpe.CPE{
-						cpe.Must("cpe:2.3:a:*:gmp:6.2.0-r0:*:*:*:*:*:*:*"),
-						cpe.Must("cpe:2.3:a:gmp:gmp:6.2.0-r0:*:*:*:*:*:*:*"),
+						cpe.Must("cpe:2.3:a:*:gmp:6.2.0-r0:*:*:*:*:*:*:*", ""),
+						cpe.Must("cpe:2.3:a:gmp:gmp:6.2.0-r0:*:*:*:*:*:*:*", ""),
 					},
-					PURL:         "pkg:alpine/gmp@6.2.0-r0?arch=x86_64",
-					MetadataType: JavaMetadataType,
+					PURL: "pkg:alpine/gmp@6.2.0-r0?arch=x86_64",
 					Metadata: JavaMetadata{
 						PomArtifactID: "aid",
 						PomGroupID:    "gid",
@@ -102,9 +203,9 @@ func TestParseSyftJSON(t *testing.T) {
 			},
 			Context: Context{
 				Source: &source.Description{
-					Metadata: source.StereoscopeImageSourceMetadata{
+					Metadata: source.ImageMetadata{
 						UserInput: "alpine:fake",
-						Layers: []source.StereoscopeLayerMetadata{
+						Layers: []source.LayerMetadata{
 							{
 								MediaType: "application/vnd.docker.image.rootfs.diff.tar.gzip",
 								Digest:    "sha256:50644c29ef5a27c9a40c393a73ece2479de78325cae7d762ef3cdc19bf42dd0a",
@@ -136,7 +237,7 @@ func TestParseSyftJSON(t *testing.T) {
 				t.Fatalf("unable to parse: %+v", err)
 			}
 
-			if m, ok := context.Source.Metadata.(source.StereoscopeImageSourceMetadata); ok {
+			if m, ok := context.Source.Metadata.(source.ImageMetadata); ok {
 				m.RawConfig = nil
 				m.RawManifest = nil
 
@@ -191,12 +292,11 @@ var springImageTestCase = struct {
 			Licenses: []string{},
 			Type:     "java-archive",
 			CPEs: []cpe.CPE{
-				cpe.Must("cpe:2.3:a:charsets:charsets:*:*:*:*:*:java:*:*"),
-				cpe.Must("cpe:2.3:a:charsets:charsets:*:*:*:*:*:maven:*:*"),
+				cpe.Must("cpe:2.3:a:charsets:charsets:*:*:*:*:*:java:*:*", ""),
+				cpe.Must("cpe:2.3:a:charsets:charsets:*:*:*:*:*:maven:*:*", ""),
 			},
-			PURL:         "",
-			MetadataType: JavaMetadataType,
-			Metadata:     JavaMetadata{VirtualPath: "/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/charsets.jar"},
+			PURL:     "",
+			Metadata: JavaMetadata{VirtualPath: "/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/charsets.jar"},
 		},
 		{
 			Name:    "tomcat-embed-el",
@@ -211,19 +311,18 @@ var springImageTestCase = struct {
 			Licenses: []string{},
 			Type:     "java-archive",
 			CPEs: []cpe.CPE{
-				cpe.Must("cpe:2.3:a:tomcat_embed_el:tomcat-embed-el:9.0.27:*:*:*:*:java:*:*"),
-				cpe.Must("cpe:2.3:a:tomcat-embed-el:tomcat_embed_el:9.0.27:*:*:*:*:maven:*:*"),
+				cpe.Must("cpe:2.3:a:tomcat_embed_el:tomcat-embed-el:9.0.27:*:*:*:*:java:*:*", ""),
+				cpe.Must("cpe:2.3:a:tomcat-embed-el:tomcat_embed_el:9.0.27:*:*:*:*:maven:*:*", ""),
 			},
-			PURL:         "",
-			MetadataType: JavaMetadataType,
-			Metadata:     JavaMetadata{VirtualPath: "/app/libs/tomcat-embed-el-9.0.27.jar"},
+			PURL:     "",
+			Metadata: JavaMetadata{VirtualPath: "/app/libs/tomcat-embed-el-9.0.27.jar"},
 		},
 	},
 	Context: Context{
 		Source: &source.Description{
-			Metadata: source.StereoscopeImageSourceMetadata{
+			Metadata: source.ImageMetadata{
 				UserInput: "springio/gs-spring-boot-docker:latest",
-				Layers: []source.StereoscopeLayerMetadata{
+				Layers: []source.LayerMetadata{
 					{
 						MediaType: "application/vnd.docker.image.rootfs.diff.tar.gzip",
 						Digest:    "sha256:42a3027eaac150d2b8f516100921f4bd83b3dbc20bfe64124f686c072b49c602",

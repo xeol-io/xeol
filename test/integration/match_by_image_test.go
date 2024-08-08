@@ -1,13 +1,14 @@
 package integration
 
 import (
+	"context"
 	"testing"
 	"time"
 
 	"github.com/anchore/stereoscope/pkg/imagetest"
 	"github.com/anchore/syft/syft"
+	"github.com/anchore/syft/syft/cataloging/pkgcataloging"
 	syftPkg "github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger"
 	"github.com/anchore/syft/syft/source"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
@@ -344,27 +345,21 @@ func TestMatchByImage(t *testing.T) {
 			imagetest.GetFixtureImage(t, "docker-archive", test.fixtureImage)
 			tarPath := imagetest.GetFixtureImageTarPath(t, test.fixtureImage)
 
-			userImage := "docker-archive:" + tarPath
-
-			detection, err := source.Detect(userImage, source.DetectConfig{})
-			require.NoError(t, err)
-
 			// this is purely done to help setup mocks
-			theSource, err := detection.NewSource(source.DetectionSourceConfig{})
+			theSource, err := syft.GetSource(context.Background(), tarPath, syft.DefaultGetSourceConfig().WithSources("docker-archive"))
 			require.NoError(t, err)
 			t.Cleanup(func() {
 				require.NoError(t, theSource.Close())
 			})
 
 			// TODO: relationships are not verified at this time
-			config := cataloger.DefaultConfig()
+			// enable all catalogers to cover non default cases
+			config := syft.DefaultCreateSBOMConfig().WithCatalogerSelection(pkgcataloging.NewSelectionRequest().WithDefaults("all"))
 			config.Search.Scope = source.SquashedScope
 
-			// enable all catalogers to cover non default cases
-			config.Catalogers = []string{"all"}
-
-			collection, _, theDistro, err := syft.CatalogPackages(theSource, config)
+			s, err := syft.CreateSBOM(context.Background(), theSource, config)
 			require.NoError(t, err)
+			require.NotNil(t, s)
 
 			matchers := matcher.NewDefaultMatchers(matcher.Config{})
 
@@ -374,7 +369,7 @@ func TestMatchByImage(t *testing.T) {
 				Provider: ep,
 			}
 
-			actualResults, err := xeol.FindEol(str, theDistro, matchers, pkg.FromCollection(collection, pkg.SynthesisConfig{}), false, time.Now())
+			actualResults, err := xeol.FindEol(str, s.Artifacts.LinuxDistribution, matchers, pkg.FromCollection(s.Artifacts.Packages, pkg.SynthesisConfig{}), false, time.Now())
 			require.NoError(t, err)
 
 			// build expected matches from what's discovered from the catalog
