@@ -353,6 +353,7 @@ func getProviderConfig(opts *options.Xeol) pkg.ProviderConfig {
 		pkgcataloging.NewSelectionRequest().WithRemovals(
 			// the dotnet-executable-parser has myriad issues with naming as well as
 			// incorrect versioning, excluding it for now until the quality is better.
+			// https://github.com/xeol-io/xeol/pull/232
 			"dotnet-portable-executable-cataloger",
 		).WithAdditions(
 			"alpm-db-cataloger",
