@@ -11,6 +11,7 @@ import (
 	"github.com/CycloneDX/cyclonedx-go"
 	"github.com/anchore/clio"
 	"github.com/anchore/syft/syft"
+	"github.com/anchore/syft/syft/cataloging/pkgcataloging"
 	"github.com/anchore/syft/syft/format/common/cyclonedxhelpers"
 	"github.com/anchore/syft/syft/linux"
 	syftPkg "github.com/anchore/syft/syft/pkg"
@@ -348,7 +349,44 @@ func getMatchers(opts *options.Xeol) []matcher.Matcher {
 }
 
 func getProviderConfig(opts *options.Xeol) pkg.ProviderConfig {
-	cfg := syft.DefaultCreateSBOMConfig()
+	cfg := syft.DefaultCreateSBOMConfig().WithCatalogerSelection(
+		pkgcataloging.NewSelectionRequest().WithRemovals(
+			"dotnet-portable-executable-cataloger",
+		).WithAdditions(
+			"alpm-db-cataloger",
+			"apkdb-cataloger",
+			"binary-cataloger",
+			"cargo-auditable-binary-cataloger",
+			"cocoapods-cataloger",
+			"conan-cataloger",
+			"dartlang-lock-cataloger",
+			"dotnet-deps-cataloger",
+			"dpkgdb-cataloger",
+			"javascript-cataloger",
+			"elixir-mix-lock-cataloger",
+			"erlang-rebar-lock-cataloger",
+			"go-module-file-cataloger",
+			"go-module-binary-cataloger",
+			"graalvm-native-image-cataloger",
+			"haskell-cataloger",
+			"java-cataloger",
+			"java-gradle-lockfile-cataloger",
+			"java-pom-cataloger",
+			"linux-kernel-cataloger",
+			"nix-store-cataloger",
+			"php-composer-installed-cataloger",
+			"php-composer-lock-cataloger",
+			"portage-cataloger",
+			"python-package-cataloger",
+			"python-installed-package-cataloger",
+			"rpm-db-cataloger",
+			"rpm-archive-cataloger",
+			"ruby-gemfile-cataloger",
+			"ruby-installed-gemspec-cataloger",
+			"rust-cargo-lock-cataloger",
+			"sbom-cataloger",
+			"spm-cataloger",
+		))
 
 	return pkg.ProviderConfig{
 		SyftProviderConfig: pkg.SyftProviderConfig{
