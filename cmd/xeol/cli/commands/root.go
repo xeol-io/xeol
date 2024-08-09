@@ -351,6 +351,8 @@ func getMatchers(opts *options.Xeol) []matcher.Matcher {
 func getProviderConfig(opts *options.Xeol) pkg.ProviderConfig {
 	cfg := syft.DefaultCreateSBOMConfig().WithCatalogerSelection(
 		pkgcataloging.NewSelectionRequest().WithRemovals(
+			// the dotnet-executable-parser has myriad issues with naming as well as
+			// incorrect versioning, excluding it for now until the quality is better.
 			"dotnet-portable-executable-cataloger",
 		).WithAdditions(
 			"alpm-db-cataloger",
