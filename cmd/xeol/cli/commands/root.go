@@ -358,7 +358,6 @@ func getProviderConfig(opts *options.Xeol) pkg.ProviderConfig {
 		).WithAdditions(
 			"alpm-db-cataloger",
 			"apk-db-cataloger",
-			"binary-cataloger",
 			"cargo-auditable-binary-cataloger",
 			"cocoapods-cataloger",
 			"conan-cataloger",
