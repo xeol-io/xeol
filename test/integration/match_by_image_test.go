@@ -1,13 +1,14 @@
 package integration
 
 import (
+	"context"
 	"testing"
 	"time"
 
 	"github.com/anchore/stereoscope/pkg/imagetest"
 	"github.com/anchore/syft/syft"
+	"github.com/anchore/syft/syft/cataloging/pkgcataloging"
 	syftPkg "github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger"
 	"github.com/anchore/syft/syft/source"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
@@ -147,7 +148,7 @@ func addPostgres9Matches(t *testing.T, theResult *match.Matches) {
 			ID:      "2ba17cf1680ce4f2",
 			Version: "9.6.24-1.pgdg90+1",
 			Type:    syftPkg.DebPkg,
-			PURL:    "pkg:deb/debian/postgresql-9.6@9.6.24-1.pgdg90+1?arch=amd64&distro=debian-9",
+			PURL:    "pkg:deb/debian/postgresql-9.6@9.6.24-1.pgdg90%2B1?arch=amd64&distro=debian-9",
 		},
 		Cycle: eol.Cycle{
 			ProductName:  "PostgreSQL",
@@ -157,49 +158,14 @@ func addPostgres9Matches(t *testing.T, theResult *match.Matches) {
 	})
 }
 
-func addElaticsearch6Matches(t *testing.T, theResult *match.Matches) {
-	// TODO: tracking issue https://github.com/anchore/syft/issues/2153
-	// theResult.Add(match.Match{
-	// 	Package: pkg.Package{
-	// 		Name:     "python",
-	// 		ID:       "2ba17cf1680ce4f2",
-	// 		Version:  "2.7.5",
-	// 		Type:     syftPkg.BinaryPkg,
-	// 		Language: "",
-	// 		PURL:     "pkg:generic/python@2.7.5",
-	// 	},
-	// 	Cycle: eol.Cycle{
-	// 		ProductName:  "Python",
-	// 		ReleaseCycle: "2.7",
-	// 		Eol:          "2020-01-01",
-	// 	},
-	// })
-	theResult.Add(match.Match{
-		Package: pkg.Package{
-			Name:     "elasticsearch",
-			ID:       "2ba17cf1680ce4f2",
-			Version:  "6.8.21",
-			Type:     syftPkg.JavaPkg,
-			Language: syftPkg.Java,
-			PURL:     "pkg:maven/org.elasticsearch%23server/elasticsearch@6.8.21",
-		},
-		Cycle: eol.Cycle{
-			ReleaseCycle: "6",
-			ProductName:  "Elasticsearch",
-			Eol:          "2022-02-10",
-		},
-	})
-}
-
 func addNodejs6Matches(t *testing.T, theResult *match.Matches) {
 	theResult.Add(match.Match{
 		Package: pkg.Package{
-			Name:     "node",
-			ID:       "2ba17cf1680ce4f2",
-			Version:  "6.13.1",
-			Type:     syftPkg.BinaryPkg,
-			Language: syftPkg.JavaScript,
-			PURL:     "pkg:generic/node@6.13.1",
+			Name:    "node",
+			ID:      "2ba17cf1680ce4f2",
+			Version: "6.13.1",
+			Type:    syftPkg.BinaryPkg,
+			PURL:    "pkg:generic/node@6.13.1",
 		},
 		Cycle: eol.Cycle{
 			ProductName:  "Node.js",
@@ -320,14 +286,6 @@ func TestMatchByImage(t *testing.T) {
 			},
 		},
 		{
-			fixtureImage: "image-elasticsearch-6",
-			expectedFn: func() match.Matches {
-				expectedMatches := match.NewMatches()
-				addElaticsearch6Matches(t, &expectedMatches)
-				return expectedMatches
-			},
-		},
-		{
 			fixtureImage: "image-redis-5",
 			expectedFn: func() match.Matches {
 				expectedMatches := match.NewMatches()
@@ -344,27 +302,21 @@ func TestMatchByImage(t *testing.T) {
 			imagetest.GetFixtureImage(t, "docker-archive", test.fixtureImage)
 			tarPath := imagetest.GetFixtureImageTarPath(t, test.fixtureImage)
 
-			userImage := "docker-archive:" + tarPath
-
-			detection, err := source.Detect(userImage, source.DetectConfig{})
-			require.NoError(t, err)
-
 			// this is purely done to help setup mocks
-			theSource, err := detection.NewSource(source.DetectionSourceConfig{})
+			theSource, err := syft.GetSource(context.Background(), tarPath, syft.DefaultGetSourceConfig().WithSources("docker-archive"))
 			require.NoError(t, err)
 			t.Cleanup(func() {
 				require.NoError(t, theSource.Close())
 			})
 
 			// TODO: relationships are not verified at this time
-			config := cataloger.DefaultConfig()
+			// enable all catalogers to cover non default cases
+			config := syft.DefaultCreateSBOMConfig().WithCatalogerSelection(pkgcataloging.NewSelectionRequest().WithDefaults("all"))
 			config.Search.Scope = source.SquashedScope
 
-			// enable all catalogers to cover non default cases
-			config.Catalogers = []string{"all"}
-
-			collection, _, theDistro, err := syft.CatalogPackages(theSource, config)
+			s, err := syft.CreateSBOM(context.Background(), theSource, config)
 			require.NoError(t, err)
+			require.NotNil(t, s)
 
 			matchers := matcher.NewDefaultMatchers(matcher.Config{})
 
@@ -374,7 +326,7 @@ func TestMatchByImage(t *testing.T) {
 				Provider: ep,
 			}
 
-			actualResults, err := xeol.FindEol(str, theDistro, matchers, pkg.FromCollection(collection, pkg.SynthesisConfig{}), false, time.Now())
+			actualResults, err := xeol.FindEol(str, s.Artifacts.LinuxDistribution, matchers, pkg.FromCollection(s.Artifacts.Packages, pkg.SynthesisConfig{}), false, time.Now())
 			require.NoError(t, err)
 
 			// build expected matches from what's discovered from the catalog

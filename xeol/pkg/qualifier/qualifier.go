@@ -1,7 +1,10 @@
 package qualifier
 
-import "github.com/xeol-io/xeol/xeol/pkg"
+import (
+	"github.com/xeol-io/xeol/xeol/distro"
+	"github.com/xeol-io/xeol/xeol/pkg"
+)
 
 type Qualifier interface {
-	Satisfied(p pkg.Package) (bool, error)
+	Satisfied(d *distro.Distro, p pkg.Package) (bool, error)
 }

@@ -64,11 +64,11 @@ func (p eolScanningAdapter) Stage() string {
 	return fmt.Sprintf("%d eol matches", p.mon.MatchesDiscovered.Current())
 }
 
-func (m *Handler) handleEolScanningStarted(e partybus.Event) []tea.Model {
+func (m *Handler) handleEolScanningStarted(e partybus.Event) ([]tea.Model, tea.Cmd) {
 	mon, err := parsers.ParseEolScanningStarted(e)
 	if err != nil {
 		log.WithFields("error", err).Warn("unable to parse event")
-		return nil
+		return nil, nil
 	}
 
 	tsk := m.newTaskProgress(
@@ -87,7 +87,7 @@ func (m *Handler) handleEolScanningStarted(e partybus.Event) []tea.Model {
 	return []tea.Model{
 		tsk,
 		neweolProgressTree(mon, textStyle),
-	}
+	}, nil
 }
 
 func (l eolProgressTree) Init() tea.Cmd {

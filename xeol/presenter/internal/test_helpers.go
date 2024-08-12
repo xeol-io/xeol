@@ -10,6 +10,9 @@ import (
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/sbom"
 	syftSource "github.com/anchore/syft/syft/source"
+	"github.com/anchore/syft/syft/source/directorysource"
+	"github.com/anchore/syft/syft/source/filesource"
+	"github.com/anchore/syft/syft/source/stereoscopesource"
 	"github.com/google/uuid"
 
 	"github.com/xeol-io/xeol/xeol/eol"
@@ -166,9 +169,7 @@ func generateContext(t *testing.T, scheme SyftSource) pkg.Context {
 	switch scheme {
 	case FileSource:
 		var err error
-		src, err = syftSource.NewFromFile(syftSource.FileConfig{
-			Path: "user-input",
-		})
+		src, err = filesource.NewFromPath("user-input")
 		if err != nil {
 			t.Fatalf("failed to generate mock file source from mock image: %+v", err)
 		}
@@ -207,7 +208,9 @@ func generateContext(t *testing.T, scheme SyftSource) pkg.Context {
 		}
 
 		var err error
-		src, err = syftSource.NewFromStereoscopeImageObject(&img, "user-input", nil)
+		src = stereoscopesource.New(&img, stereoscopesource.ImageConfig{
+			Reference: "user-input",
+		})
 		if err != nil {
 			t.Fatalf("failed to generate mock image source from mock image: %+v", err)
 		}
@@ -216,15 +219,13 @@ func generateContext(t *testing.T, scheme SyftSource) pkg.Context {
 		// note: the dir must exist for the source to be created
 		d := t.TempDir()
 		var err error
-		src, err = syftSource.NewFromDirectory(syftSource.DirectoryConfig{
-			Path: d,
-		})
+		src, err = directorysource.NewFromPath(d)
 
 		if err != nil {
 			t.Fatalf("failed to generate mock directory source from mock dir: %+v", err)
 		}
 		desc = src.Describe()
-		if m, ok := desc.Metadata.(syftSource.DirectorySourceMetadata); ok {
+		if m, ok := desc.Metadata.(syftSource.DirectoryMetadata); ok {
 			m.Path = "/some/path"
 			desc.Metadata = m
 		}

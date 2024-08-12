@@ -1,10 +1,16 @@
 package pkg
 
 import (
+	"context"
+	"errors"
+
+	"github.com/anchore/go-collections"
+	"github.com/anchore/stereoscope"
 	"github.com/anchore/stereoscope/pkg/image"
 	"github.com/anchore/syft/syft"
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/anchore/syft/syft/source"
+	"github.com/anchore/syft/syft/source/sourceproviders"
 
 	"github.com/xeol-io/xeol/internal/log"
 )
@@ -23,44 +29,34 @@ func syftProvider(userInput string, config ProviderConfig) ([]Package, Context, 
 		}
 	}()
 
-	catalog, relationships, theDistro, err := syft.CatalogPackages(src, config.CatalogingOptions)
+	s, err := syft.CreateSBOM(context.Background(), src, config.SBOMOptions)
 	if err != nil {
 		return nil, Context{}, nil, err
 	}
 
-	catalog = removePackagesByOverlap(catalog, relationships)
+	if s == nil {
+		return nil, Context{}, nil, errors.New("no SBOM provided")
+	}
+
+	pkgCatalog := removePackagesByOverlap(s.Artifacts.Packages, s.Relationships, s.Artifacts.LinuxDistribution)
 
 	srcDescription := src.Describe()
 
-	packages := FromCollection(catalog, config.SynthesisConfig)
-	context := Context{
+	packages := FromCollection(pkgCatalog, config.SynthesisConfig)
+	pkgCtx := Context{
 		Source: &srcDescription,
-		Distro: theDistro,
+		Distro: s.Artifacts.LinuxDistribution,
 	}
 
-	sbom := &sbom.SBOM{
-		Source:        srcDescription,
-		Relationships: relationships,
-		Artifacts: sbom.Artifacts{
-			Packages: catalog,
-		},
-	}
-
-	return packages, context, sbom, nil
+	return packages, pkgCtx, s, nil
 }
 
 func getSource(userInput string, config ProviderConfig) (source.Source, error) {
-	if config.CatalogingOptions.Search.Scope == "" {
+	if config.SBOMOptions.Search.Scope == "" {
 		return nil, errDoesNotProvide
 	}
 
-	detection, err := source.Detect(userInput, source.DetectConfig{
-		DefaultImageSource: config.DefaultImagePullSource,
-	})
-	if err != nil {
-		return nil, err
-	}
-
+	var err error
 	var platform *image.Platform
 	if config.Platform != "" {
 		platform, err = image.NewPlatform(config.Platform)
@@ -69,14 +65,22 @@ func getSource(userInput string, config ProviderConfig) (source.Source, error) {
 		}
 	}
 
-	return detection.NewSource(source.DetectionSourceConfig{
-		Alias: source.Alias{
-			Name: config.Name,
-		},
-		RegistryOptions: config.RegistryOptions,
-		Platform:        platform,
-		Exclude: source.ExcludeConfig{
-			Paths: config.Exclusions,
-		},
-	})
+	var sources []string
+	schemeSource, newUserInput := stereoscope.ExtractSchemeSource(userInput, allSourceTags()...)
+	if schemeSource != "" {
+		sources = []string{schemeSource}
+		userInput = newUserInput
+	}
+
+	return syft.GetSource(context.Background(), userInput, syft.DefaultGetSourceConfig().
+		WithSources(sources...).
+		WithDefaultImagePullSource(config.DefaultImagePullSource).
+		WithAlias(source.Alias{Name: config.Name}).
+		WithRegistryOptions(config.RegistryOptions).
+		WithPlatform(platform).
+		WithExcludeConfig(source.ExcludeConfig{Paths: config.Exclusions}))
+}
+
+func allSourceTags() []string {
+	return collections.TaggedValueSet[source.Provider]{}.Join(sourceproviders.All("", nil)...).Tags()
 }

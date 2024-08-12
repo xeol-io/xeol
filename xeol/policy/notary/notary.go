@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/docker/distribution/reference"
+	"github.com/distribution/reference"
 	"github.com/wagoodman/go-partybus"
 
 	"github.com/xeol-io/xeol/internal/bus"

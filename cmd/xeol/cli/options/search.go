@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/anchore/clio"
-	"github.com/anchore/syft/syft/pkg/cataloger"
+	"github.com/anchore/syft/syft/cataloging"
 	"github.com/anchore/syft/syft/source"
 )
 
@@ -14,10 +14,13 @@ type search struct {
 	IncludeIndexedArchives   bool   `yaml:"indexed-archives" json:"indexed-archives" mapstructure:"indexed-archives"`
 }
 
-var _ clio.PostLoader = (*search)(nil)
+var _ interface {
+	clio.PostLoader
+	clio.FieldDescriber
+} = (*search)(nil)
 
 func defaultSearch(scope source.Scope) search {
-	c := cataloger.DefaultSearchConfig()
+	c := cataloging.DefaultArchiveSearchConfig()
 	return search{
 		Scope:                    scope.String(),
 		IncludeUnindexedArchives: c.IncludeUnindexedArchives,
@@ -33,52 +36,14 @@ func (cfg *search) PostLoad() error {
 	return nil
 }
 
-func (cfg search) GetScope() source.Scope {
-	return source.ParseScope(cfg.Scope)
+func (cfg *search) DescribeFields(descriptions clio.FieldDescriptionSet) {
+	descriptions.Add(&cfg.IncludeUnindexedArchives, `search within archives that do contain a file index to search against (zip)
+note: for now this only applies to the java package cataloger`)
+	descriptions.Add(&cfg.IncludeIndexedArchives, `search within archives that do not contain a file index to search against (tar, tar.gz, tar.bz2, etc)
+note: enabling this may result in a performance impact since all discovered compressed tars will be decompressed
+note: for now this only applies to the java package cataloger`)
 }
 
-func (cfg search) ToConfig() cataloger.Config {
-	return cataloger.Config{
-		Search: cataloger.SearchConfig{
-			IncludeIndexedArchives:   cfg.IncludeIndexedArchives,
-			IncludeUnindexedArchives: cfg.IncludeUnindexedArchives,
-			Scope:                    cfg.GetScope(),
-		},
-		Catalogers: []string{
-			"alpm-db-cataloger",
-			"apkdb-cataloger",
-			"binary-cataloger",
-			"cargo-auditable-binary-cataloger",
-			"cocoapods-cataloger",
-			"conan-cataloger",
-			"dartlang-lock-cataloger",
-			"dotnet-deps-cataloger",
-			"dpkgdb-cataloger",
-			"javascript-cataloger",
-			"elixir-mix-lock-cataloger",
-			"erlang-rebar-lock-cataloger",
-			"go-module-file-cataloger",
-			"go-module-binary-cataloger",
-			"graalvm-native-image-cataloger",
-			"haskell-cataloger",
-			"java-cataloger",
-			"java-gradle-lockfile-cataloger",
-			"java-pom-cataloger",
-			"linux-kernel-cataloger",
-			"nix-store-cataloger",
-			"php-composer-installed-cataloger",
-			"php-composer-lock-cataloger",
-			"portage-cataloger",
-			"python-package-cataloger",
-			"python-installed-package-cataloger",
-			"rpm-db-cataloger",
-			"rpm-archive-cataloger",
-			"ruby-gemfile-cataloger",
-			"ruby-installed-gemspec-cataloger",
-			"rust-cargo-lock-cataloger",
-			"sbom-cataloger",
-			"spm-cataloger",
-		},
-		ExcludeBinaryOverlapByOwnership: true,
-	}
+func (cfg search) GetScope() source.Scope {
+	return source.ParseScope(cfg.Scope)
 }

@@ -49,7 +49,7 @@ func TestHandler_handleEolScanningStarted(t *testing.T) {
 				Height: 80,
 			}
 
-			models := handler.Handle(e)
+			models, _ := handler.Handle(e)
 			require.Len(t, models, 2)
 
 			t.Run("task line", func(t *testing.T) {

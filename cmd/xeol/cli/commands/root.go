@@ -10,7 +10,9 @@ import (
 
 	"github.com/CycloneDX/cyclonedx-go"
 	"github.com/anchore/clio"
-	"github.com/anchore/syft/syft/formats/common/cyclonedxhelpers"
+	"github.com/anchore/syft/syft"
+	"github.com/anchore/syft/syft/cataloging/pkgcataloging"
+	"github.com/anchore/syft/syft/format/common/cyclonedxhelpers"
 	"github.com/anchore/syft/syft/linux"
 	syftPkg "github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/sbom"
@@ -187,7 +189,7 @@ func runXeol(app clio.Application, opts *options.Xeol, userInput string) error {
 		var failScan bool
 		var imageVerified bool
 		var sourceIsImageType bool
-		if _, ok := s.Source.Metadata.(source.StereoscopeImageSourceMetadata); ok {
+		if _, ok := s.Source.Metadata.(source.ImageMetadata); ok {
 			sourceIsImageType = true
 		}
 
@@ -347,10 +349,51 @@ func getMatchers(opts *options.Xeol) []matcher.Matcher {
 }
 
 func getProviderConfig(opts *options.Xeol) pkg.ProviderConfig {
+	cfg := syft.DefaultCreateSBOMConfig().WithCatalogerSelection(
+		pkgcataloging.NewSelectionRequest().WithRemovals(
+			// the dotnet-executable-parser has myriad issues with naming as well as
+			// incorrect versioning, excluding it for now until the quality is better.
+			// https://github.com/xeol-io/xeol/pull/232
+			"dotnet-portable-executable-cataloger",
+		).WithAdditions(
+			"alpm-db-cataloger",
+			"apk-db-cataloger",
+			"cargo-auditable-binary-cataloger",
+			"cocoapods-cataloger",
+			"conan-cataloger",
+			"dart-pubspec-lock-cataloger",
+			"dotnet-deps-cataloger",
+			"dpkg-db-cataloger",
+			"javascript-package-cataloger",
+			"javascript-lock-cataloger",
+			"elixir-mix-lock-cataloger",
+			"erlang-rebar-lock-cataloger",
+			"go-module-file-cataloger",
+			"go-module-binary-cataloger",
+			"graalvm-native-image-cataloger",
+			"haskell-cataloger",
+			"java-archive-cataloger",
+			"java-gradle-lockfile-cataloger",
+			"java-pom-cataloger",
+			"linux-kernel-cataloger",
+			"nix-store-cataloger",
+			"php-composer-installed-cataloger",
+			"php-composer-lock-cataloger",
+			"portage-cataloger",
+			"python-package-cataloger",
+			"python-installed-package-cataloger",
+			"rpm-db-cataloger",
+			"rpm-archive-cataloger",
+			"ruby-gemfile-cataloger",
+			"ruby-installed-gemspec-cataloger",
+			"rust-cargo-lock-cataloger",
+			"sbom-cataloger",
+		))
+
 	return pkg.ProviderConfig{
 		SyftProviderConfig: pkg.SyftProviderConfig{
 			RegistryOptions:        opts.Registry.ToOptions(),
-			CatalogingOptions:      opts.Search.ToConfig(),
+			SBOMOptions:            cfg,
 			Platform:               opts.Platform,
 			Name:                   opts.Name,
 			DefaultImagePullSource: opts.DefaultImagePullSource,

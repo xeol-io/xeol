@@ -8,9 +8,8 @@ import (
 	"strings"
 
 	"github.com/anchore/packageurl-go"
-	syftCpe "github.com/anchore/syft/syft/cpe"
+	"github.com/anchore/syft/syft/cpe"
 	"github.com/anchore/syft/syft/pkg"
-	"github.com/facebookincubator/nvdtools/wfn"
 	"github.com/mitchellh/go-homedir"
 )
 
@@ -52,18 +51,27 @@ func decodePurlFile(reader io.Reader) ([]Package, error) {
 			return nil, fmt.Errorf("unable to decode purl %s: %w", rawLine, err)
 		}
 
-		cpes := []wfn.Attributes{}
+		cpes := []cpe.CPE{}
+		epoch := "0"
 		for _, qualifier := range purl.Qualifiers {
 			if qualifier.Key == cpesQualifierKey {
 				rawCpes := strings.Split(qualifier.Value, ",")
 				for _, rawCpe := range rawCpes {
-					cpe, err := syftCpe.New(rawCpe)
+					c, err := cpe.New(rawCpe, "")
 					if err != nil {
 						return nil, fmt.Errorf("unable to decode cpe %s in purl %s: %w", rawCpe, rawLine, err)
 					}
-					cpes = append(cpes, cpe)
+					cpes = append(cpes, c)
 				}
 			}
+
+			if qualifier.Key == "epoch" {
+				epoch = qualifier.Value
+			}
+		}
+
+		if purl.Type == packageurl.TypeRPM && !strings.HasPrefix(purl.Version, fmt.Sprintf("%s:", epoch)) {
+			purl.Version = fmt.Sprintf("%s:%s", epoch, purl.Version)
 		}
 
 		packages = append(packages, Package{

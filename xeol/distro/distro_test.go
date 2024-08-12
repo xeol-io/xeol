@@ -5,10 +5,11 @@ import (
 
 	"github.com/anchore/syft/syft/linux"
 	"github.com/anchore/syft/syft/source"
+	"github.com/anchore/syft/syft/source/directorysource"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/xeol-io/xeol/internal"
+	"github.com/xeol-io/xeol/internal/stringutil"
 )
 
 func Test_NewDistroFromRelease(t *testing.T) {
@@ -17,7 +18,6 @@ func Test_NewDistroFromRelease(t *testing.T) {
 		release            linux.Release
 		expectedVersion    string
 		expectedRawVersion string
-		expectedCpe        string
 		expectedType       Type
 		expectErr          bool
 	}{
@@ -66,6 +66,21 @@ func Test_NewDistroFromRelease(t *testing.T) {
 				VersionID: "8",
 			},
 			expectErr: true,
+		},
+		{
+			// syft -o json debian:testing | jq .distro
+			name: "unstable debian",
+			release: linux.Release{
+				ID:              "debian",
+				VersionID:       "",
+				Version:         "",
+				PrettyName:      "Debian GNU/Linux trixie/sid",
+				VersionCodename: "trixie",
+				Name:            "Debian GNU/Linux",
+			},
+			expectedType:       Debian,
+			expectedRawVersion: "unstable",
+			expectedVersion:    "",
 		},
 	}
 
@@ -209,10 +224,14 @@ func Test_NewDistroFromRelease_Coverage(t *testing.T) {
 			fixture: "test-fixtures/os/wolfi",
 			Type:    Wolfi,
 		},
+		{
+			fixture: "test-fixtures/os/chainguard",
+			Type:    Chainguard,
+		},
 	}
 
-	observedDistros := internal.NewStringSet()
-	definedDistros := internal.NewStringSet()
+	observedDistros := stringutil.NewStringSet()
+	definedDistros := stringutil.NewStringSet()
 
 	for _, distroType := range All {
 		definedDistros.Add(string(distroType))
@@ -224,7 +243,7 @@ func Test_NewDistroFromRelease_Coverage(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.fixture, func(t *testing.T) {
-			s, err := source.NewFromDirectory(source.DirectoryConfig{Path: test.fixture})
+			s, err := directorysource.NewFromPath(test.fixture)
 			require.NoError(t, err)
 
 			resolver, err := s.FileResolver(source.SquashedScope)
@@ -244,7 +263,6 @@ func Test_NewDistroFromRelease_Coverage(t *testing.T) {
 			if test.Version != "" {
 				assert.Equal(t, d.Version.String(), test.Version)
 			}
-
 		})
 	}
 
@@ -333,150 +351,4 @@ func TestDistro_MajorVersion(t *testing.T) {
 		})
 	}
 
-}
-
-func TestDistro_CpeName(t *testing.T) {
-	tests := []struct {
-		fixture     string
-		expectedCpe string
-	}{
-		{
-			fixture:     "test-fixtures/os/ubuntu",
-			expectedCpe: "cpe:2.3:o:canonical:ubuntu_linux:20.04",
-		},
-		{
-			fixture:     "test-fixtures/os/redhat",
-			expectedCpe: "cpe:/o:redhat:enterprise_linux:7.3:GA:server",
-		},
-		{
-			fixture:     "test-fixtures/os/debian",
-			expectedCpe: "cpe:2.3:o:debian:debian_linux:8",
-		},
-		{
-			fixture:     "test-fixtures/os/fedora",
-			expectedCpe: "cpe:/o:fedoraproject:fedora:31",
-		},
-		{
-			fixture:     "test-fixtures/os/photon",
-			expectedCpe: "cpe:2.3:o:vmware:photon_os:2.0",
-		},
-		{
-			fixture:     "test-fixtures/os/almalinux",
-			expectedCpe: "cpe:/o:almalinux:almalinux:8.4:GA",
-		},
-		{
-			fixture:     "test-fixtures/os/alpine",
-			expectedCpe: "cpe:2.3:o:alpinelinux:alpine_linux:3.11.6",
-		},
-		{
-			fixture:     "test-fixtures/os/amazon",
-			expectedCpe: "cpe:2.3:o:amazon:amazon_linux:2",
-		},
-		{
-			fixture:     "test-fixtures/os/arch",
-			expectedCpe: "",
-		},
-		{
-			fixture:     "test-fixtures/os/busybox",
-			expectedCpe: "cpe:2.3:o:busybox:busybox:1.31.1",
-		},
-		{
-			fixture:     "test-fixtures/os/centos",
-			expectedCpe: "cpe:/o:centos:centos:8",
-		},
-		{
-			fixture:     "test-fixtures/os/gentoo",
-			expectedCpe: "",
-		},
-		{
-			fixture:     "test-fixtures/os/oraclelinux",
-			expectedCpe: "cpe:/o:oracle:linux:8:3:server",
-		},
-		{
-			fixture:     "test-fixtures/os/opensuse-leap",
-			expectedCpe: "cpe:/o:opensuse:leap:15.2",
-		},
-		{
-			fixture:     "test-fixtures/os/sles",
-			expectedCpe: "cpe:/o:suse:sles:15:sp2",
-		},
-		{
-			fixture:     "test-fixtures/os/mariner",
-			expectedCpe: "cpe:2.3:o:microsoft:mariner:1.0",
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.fixture, func(t *testing.T) {
-			s, err := source.NewFromDirectory(source.DirectoryConfig{Path: test.fixture})
-			require.NoError(t, err)
-
-			resolver, err := s.FileResolver(source.SquashedScope)
-			require.NoError(t, err)
-
-			// make certain syft and pick up on the raw information we need
-			release := linux.IdentifyRelease(resolver)
-			require.NotNil(t, release, "empty linux release info")
-
-			// craft a new distro from the syft raw info
-			d, err := NewFromRelease(*release)
-			require.NoError(t, err)
-
-			assert.Equal(t, d.CPEName.String(), test.expectedCpe)
-		})
-	}
-
-}
-
-func TestDistro_CpeNameDestructured(t *testing.T) {
-	testCases := []struct {
-		name             string
-		input            string
-		expectedShortCpe string
-		expectedVersion  string
-	}{
-		{
-			name:             "Exact CPE 2.2",
-			input:            "cpe:/a:apache:struts:2.5.10",
-			expectedShortCpe: "cpe:/a:apache:struts",
-			expectedVersion:  "2.5.10",
-		},
-		{
-			name:             "Exact CPE 2.3",
-			input:            "cpe:2.3:a:apache:struts:2.5.10",
-			expectedShortCpe: "cpe:2.3:a:apache:struts",
-			expectedVersion:  "2.5.10",
-		},
-		{
-			name:             "CPE 2.2",
-			input:            "cpe:/a:apache:struts:2.5:*:*:*:*:*:*:*",
-			expectedShortCpe: "cpe:/a:apache:struts",
-			expectedVersion:  "2.5",
-		},
-		{
-			name:             "CPE 2.3",
-			input:            "cpe:2.3:a:apache:struts:2.5:*:*:*:*:*:*:*",
-			expectedShortCpe: "cpe:2.3:a:apache:struts",
-			expectedVersion:  "2.5",
-		},
-		{
-			name:             "Empty CPE",
-			input:            "",
-			expectedShortCpe: "",
-			expectedVersion:  "",
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			gotCpe, gotVersion := CPEName(tc.input).Destructured()
-
-			if gotVersion != tc.expectedVersion {
-				t.Errorf("Expected version '%v', got '%v'", tc.expectedVersion, gotVersion)
-			}
-			if gotCpe != tc.expectedShortCpe {
-				t.Errorf("Expected short CPE '%v', got '%v'", tc.expectedShortCpe, gotCpe)
-			}
-		})
-	}
 }

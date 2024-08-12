@@ -22,7 +22,7 @@ func (s *DirectorySource) Serialize() map[string]interface{} {
 	}
 }
 
-func NewDirectorySource(dirSource source.DirectorySourceMetadata) *DirectorySource {
+func NewDirectorySource(dirSource source.DirectoryMetadata) *DirectorySource {
 	return &DirectorySource{
 		Type:   "DirectoryScheme",
 		Target: dirSource.Path,
@@ -36,7 +36,7 @@ type ImageSource struct {
 	ImageLabels map[string]string
 }
 
-func NewImageSource(imageSource source.StereoscopeImageSourceMetadata) *ImageSource {
+func NewImageSource(imageSource source.ImageMetadata) *ImageSource {
 	return &ImageSource{
 		Type:        "ImageScheme",
 		ImageName:   imageSource.UserInput,
@@ -56,9 +56,9 @@ func (s *ImageSource) Serialize() map[string]interface{} {
 
 func NewEventSource(sbomSource source.Description) (map[string]interface{}, error) {
 	switch v := sbomSource.Metadata.(type) {
-	case source.DirectorySourceMetadata:
+	case source.DirectoryMetadata:
 		return NewDirectorySource(v).Serialize(), nil
-	case source.StereoscopeImageSourceMetadata:
+	case source.ImageMetadata:
 		return NewImageSource(v).Serialize(), nil
 	default:
 		return nil, fmt.Errorf("unsupported source type: %s", v)
