@@ -333,4 +333,4 @@ Xeol is pronounced "zee-oh-el", like EOL but with a Z in front :-)
 
 ## Help
 
-Join our discord for help or feedback! [![](https://dcbadge.vercel.app/api/server/23ucxwsb?style=flat)](https://discord.gg/23ucxwsb)
+Join our [discord](https://discord.gg/xAePvPpEx5) for help or feedback! 
