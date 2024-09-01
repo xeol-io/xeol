@@ -23,7 +23,7 @@ require (
 	github.com/distribution/reference v0.6.0
 	github.com/docker/docker v27.1.1+incompatible
 	github.com/dustin/go-humanize v1.0.1
-	github.com/gabriel-vasile/mimetype v1.4.4
+	github.com/gabriel-vasile/mimetype v1.4.5
 	github.com/gkampitakis/go-snaps v0.5.6
 	github.com/glebarez/sqlite v1.9.0
 	github.com/go-git/go-git/v5 v5.12.0
