@@ -57,7 +57,7 @@ require (
 	github.com/wagoodman/go-presenter v0.0.0-20211015174752-f9c01afc824b
 	github.com/wagoodman/go-progress v0.0.0-20230925121702-07e42b3cdba0
 	gorm.io/gorm v1.25.6
-	oras.land/oras-go/v2 v2.3.0
+	oras.land/oras-go/v2 v2.5.0
 )
 
 require (
