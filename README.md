@@ -89,7 +89,7 @@ xeol <image> --scope all-layers
 
 To run xeol from a Docker container so it can scan a running container, use the following command:
 
-```yml
+```sh
 docker run --rm \
 --volume /var/run/docker.sock:/var/run/docker.sock \
 --name xeol noqcks/xeol:latest \
@@ -100,7 +100,7 @@ $(ImageName):$(ImageTag)
 
 xeol can scan a variety of sources beyond those found in Docker.
 
-```
+```sh
 # scan a container image archive (from the result of `docker image save ...`, `podman save ...`, or `skopeo copy` commands)
 xeol path/to/image.tar
 
@@ -128,7 +128,7 @@ att:attestation.json --key cosign.pub  explicitly use the input as an attestatio
 
 Use SBOMs for even faster EOL scanning in xeol:
 
-```
+```sh
 # Then scan for new EOL packages as frequently as needed
 xeol sbom:./sbom.json
 
@@ -148,7 +148,7 @@ By default, xeol will match any package that has an EOL date that is less than t
 
 You can have xeol exit with an error if it finds any EOL packages. This is useful for CI/CD pipelines. To do this, use the `--fail-on-eol-found` CLI flag.
 
-```
+```sh
 xeol <image> --fail-on-eol-found
 ```
 
@@ -247,7 +247,7 @@ For more information see the `go-containerregistry` [documentation](https://gith
 
 An example `config.json` looks something like this:
 
-```
+```json
 // config.json
 {
 	"auths": {
@@ -270,47 +270,47 @@ The below section shows a simple workflow on how to mount this config file as a 
 1.  Create a secret. The value of `config.json` is important. It refers to the specification detailed [here](https://github.com/google/go-containerregistry/tree/main/pkg/authn#the-config-file).
     Below this section is the `secret.yaml` file that the pod configuration will consume as a volume.
     The key `config.json` is important. It will end up being the name of the file when mounted into the pod.
-    ``` # secret.yaml
+    ```yaml
+    # secret.yaml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: registry-config
+      namespace: xeol
+    data:
+      config.json: <base64 encoded config.json>
+    ```
 
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: registry-config
-          namespace: xeol
-        data:
-          config.json: <base64 encoded config.json>
-        ```
-
-        `kubectl apply -f secret.yaml`
+    `kubectl apply -f secret.yaml`
 
 2.  Create your pod running xeol. The env `DOCKER_CONFIG` is important because it advertises where to look for the credential file.
     In the below example, setting `DOCKER_CONFIG=/config` informs xeol that credentials can be found at `/config/config.json`.
     This is why we used `config.json` as the key for our secret. When mounted into containers the secrets' key is used as the filename.
     The `volumeMounts` section mounts our secret to `/config`. The `volumes` section names our volume and leverages the secret we created in step one.
-    ``` # pod.yaml
+    ```yaml
+    # pod.yaml
+    apiVersion: v1
+    kind: Pod
+    spec:
+      containers:
+        - image: noqcks/xeol:latest
+          name: xeol-private-registry-demo
+          env:
+            - name: DOCKER_CONFIG
+              value: /config
+          volumeMounts:
+          - mountPath: /config
+            name: registry-config
+            readOnly: true
+          args:
+            - <private_image>
+      volumes:
+      - name: registry-config
+        secret:
+          secretName: registry-config
+    ```
 
-        apiVersion: v1
-        kind: Pod
-        spec:
-          containers:
-            - image: noqcks/xeol:latest
-              name: xeol-private-registry-demo
-              env:
-                - name: DOCKER_CONFIG
-                  value: /config
-              volumeMounts:
-              - mountPath: /config
-                name: registry-config
-                readOnly: true
-              args:
-                - <private_image>
-          volumes:
-          - name: registry-config
-            secret:
-              secretName: registry-config
-        ```
-
-        `kubectl apply -f pod.yaml`
+    `kubectl apply -f pod.yaml`
 
 3.  The user can now run `kubectl logs xeol-private-registry-demo`. The logs should show the xeol analysis for the `<private_image>` provided in the pod configuration.
 
