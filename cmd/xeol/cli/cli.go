@@ -5,6 +5,7 @@ import (
 	"runtime/debug"
 
 	"github.com/anchore/clio"
+	"github.com/anchore/go-logger"
 	"github.com/anchore/stereoscope"
 	"github.com/anchore/syft/syft"
 	"github.com/spf13/cobra"
@@ -33,6 +34,8 @@ func create(id clio.Identification) (clio.Application, *cobra.Command) {
 		WithGlobalConfigFlag().   // add persistent -c <path> for reading an application config from
 		WithGlobalLoggingFlags(). // add persistent -v and -q flags tied to the logging config
 		WithConfigInRootHelp().   // --help on the root command renders the full application config in the help text
+		WithLoggingConfig(        // default to error level logging
+			clio.LoggingConfig{Level: logger.ErrorLevel}).
 		WithUIConstructor(
 			// select a UI based on the logging configuration and state of stdin (if stdin is a tty)
 			func(cfg clio.Config) ([]clio.UI, error) {
