@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Masterminds/semver"
+	"github.com/Masterminds/semver/v3"
 	"github.com/anchore/syft/syft/linux"
 
 	"github.com/xeol-io/xeol/internal/log"
@@ -111,15 +111,29 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 	}
 
 	for _, c := range cycles {
+		
 		// direct match, if it exists
 		if normalizedVersion == c.ReleaseCycle {
 			return c, nil
 		}
 
-		// match on major, minor, or patch
+		// if it's a constraint, let's use that first
+		cx, err := semver.NewConstraint(c.ReleaseCycle)
+		if err == nil {
+			matched := cx.Check(v)
+			if matched {
+				return c, nil
+			}else {
+				// if it parsed a constraint but we didn't match, dip out
+				continue
+			}
+		}
+
+		// if it's not a constraint, try to match on major, minor, or patch
 		versionLength := versionLength(c.ReleaseCycle)
 		cv, err := semver.NewVersion(c.ReleaseCycle)
 		if err != nil {
+			log.Debugf("Failed to parse ReleaseCycle(%s): %s", c.ReleaseCycle, err)
 			return eol.Cycle{}, err
 		}
 
@@ -149,7 +163,7 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 func cycleMatch(version string, cycles []eol.Cycle, eolMatchDate time.Time) (eol.Cycle, error) {
 	cycle, err := returnMatchingCycle(version, cycles)
 	if err != nil {
-		log.Debugf("error matching cycle for %s: %s", err)
+		log.Debugf("Error matching cycle for %s: %v", err, err)
 		return eol.Cycle{}, err
 	}
 
