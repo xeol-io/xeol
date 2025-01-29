@@ -122,10 +122,9 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 			matched := cx.Check(v)
 			if matched {
 				return c, nil
-			} else {
-				// if it parsed a constraint but we didn't match, dip out
-				continue
 			}
+			// if it parsed a constraint but we didn't match, dip out
+			continue
 		}
 
 		// if it's not a constraint, try to match on major, minor, or patch
