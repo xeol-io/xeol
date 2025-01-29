@@ -111,7 +111,6 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 	}
 
 	for _, c := range cycles {
-		
 		// direct match, if it exists
 		if normalizedVersion == c.ReleaseCycle {
 			return c, nil
@@ -123,7 +122,7 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 			matched := cx.Check(v)
 			if matched {
 				return c, nil
-			}else {
+			} else {
 				// if it parsed a constraint but we didn't match, dip out
 				continue
 			}
