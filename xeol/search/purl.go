@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Masterminds/semver/v3"
+	"github.com/Masterminds/semver"
 	"github.com/anchore/syft/syft/linux"
 
 	"github.com/xeol-io/xeol/internal/log"
@@ -118,11 +118,8 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 
 		// if it's a constraint, let's use that first
 		cx, err := semver.NewConstraint(c.ReleaseCycle)
-		if err == nil {
-			matched := cx.Check(v)
-			if matched {
-				return c, nil
-			}
+		if err == nil && cx.Check(v) {
+			return c, nil
 		}
 
 		// if it's not a constraint, try to match on major, minor, or patch
