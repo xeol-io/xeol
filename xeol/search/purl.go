@@ -116,17 +116,12 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 			return c, nil
 		}
 
-		// if it's a constraint, let's use that first
-		cx, err := semver.NewConstraint(c.ReleaseCycle)
-		if err == nil && cx.Check(v) {
-			return c, nil
-		}
+		releaseCycle := strings.TrimPrefix(c.ReleaseCycle, "~")
+		versionLength := versionLength(releaseCycle)
 
-		// if it's not a constraint, try to match on major, minor, or patch
-		versionLength := versionLength(c.ReleaseCycle)
-		cv, err := semver.NewVersion(c.ReleaseCycle)
+		cv, err := semver.NewVersion(releaseCycle)
 		if err != nil {
-			log.Debugf("Failed to parse ReleaseCycle(%s): %s", c.ReleaseCycle, err)
+			log.Debugf("Failed to parse ReleaseCycle(%s): %s", releaseCycle, err)
 			return eol.Cycle{}, err
 		}
 
