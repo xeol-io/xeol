@@ -29,6 +29,7 @@ coverage.txt
 *.so
 *.dylib
 /xeol/xeol
+cmd/xeol/xeol
 
 
 # Test binary, build with `go test -c`
@@ -36,3 +37,7 @@ coverage.txt
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Ignore npm dependencies in fixtures
+package-lock.json
+node_modules

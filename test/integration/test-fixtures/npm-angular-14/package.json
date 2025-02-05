@@ -1,0 +1,7 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "dependencies": {
+    "@angular/core": "14.0.2"
+  }
+}

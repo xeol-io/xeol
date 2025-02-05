@@ -48,7 +48,7 @@ func DefaultXeol(id clio.Identification) *Xeol {
 		DB:                DefaultDatabase(id),
 		Match:             defaultMatchConfig(),
 		CheckForAppUpdate: true,
-		Lookahead:         "30d",
+		Lookahead:         "1y",
 		FailOnEolFound:    false,
 		ProjectName:       project,
 		CommitHash:        commit,

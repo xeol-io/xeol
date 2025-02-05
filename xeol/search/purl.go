@@ -116,10 +116,12 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 			return c, nil
 		}
 
-		// match on major, minor, or patch
-		versionLength := versionLength(c.ReleaseCycle)
-		cv, err := semver.NewVersion(c.ReleaseCycle)
+		releaseCycle := strings.TrimPrefix(c.ReleaseCycle, "~")
+		versionLength := versionLength(releaseCycle)
+
+		cv, err := semver.NewVersion(releaseCycle)
 		if err != nil {
+			log.Debugf("Failed to parse ReleaseCycle(%s): %s", releaseCycle, err)
 			return eol.Cycle{}, err
 		}
 
@@ -149,7 +151,7 @@ func returnMatchingCycle(version string, cycles []eol.Cycle) (eol.Cycle, error) 
 func cycleMatch(version string, cycles []eol.Cycle, eolMatchDate time.Time) (eol.Cycle, error) {
 	cycle, err := returnMatchingCycle(version, cycles)
 	if err != nil {
-		log.Debugf("error matching cycle for %s: %s", err)
+		log.Debugf("Error matching cycle for %s: %v", err, err)
 		return eol.Cycle{}, err
 	}
 
