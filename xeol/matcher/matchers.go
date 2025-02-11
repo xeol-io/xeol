@@ -83,7 +83,7 @@ func FindMatches(store interface {
 
 	distroMatch, distroCPE, err := distroMatcher.Match(store, distro, eolMatchDate)
 	if err != nil {
-		log.Warnf("matcher failed for distro=%s: %+v", distro, err)
+		log.Debugf("matcher failed for distro=%s: %+v", distro, err)
 	}
 	if (distroMatch.Cycle != eol.Cycle{}) {
 		logDistroMatch(distroCPE)
@@ -97,7 +97,7 @@ func FindMatches(store interface {
 
 		pkgMatch, err := defaultMatcher.Match(store, p, eolMatchDate)
 		if err != nil {
-			log.Warnf("matcher failed for pkg=%s: %+v", p, err)
+			log.Debugf("matcher failed for pkg=%s: %+v", p, err)
 		}
 		if (pkgMatch.Cycle != eol.Cycle{}) {
 			logPkgMatch(p)
