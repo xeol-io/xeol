@@ -5,7 +5,6 @@ import (
 )
 
 func TestSubprocessStdin(t *testing.T) {
-	return true
 	//  := path.Dir(getXeolSnapshotLocation(t, "linux"))
 	// tests := []struct {
 	// 	name       string
