@@ -1,13 +1,10 @@
 package cli
 
 import (
-	"fmt"
 	"path"
 	"strings"
 	"testing"
 	"time"
-
-	"github.com/anchore/stereoscope/pkg/imagetest"
 )
 
 func TestSubprocessStdin(t *testing.T) {
