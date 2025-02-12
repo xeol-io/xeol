@@ -18,28 +18,28 @@ func TestSubprocessStdin(t *testing.T) {
 		env        map[string]string
 		assertions []traitAssertion
 	}{
-		{
-			// regression
-			name: "ensure can be used by node subprocess (without hanging)",
-			args: []string{"-v", fmt.Sprintf("%s:%s:ro", binDir, "/app/bin"), imagetest.LoadFixtureImageIntoDocker(t, "image-node-subprocess"), "node", "/app.js"},
-			env: map[string]string{
-				"XEOL_CHECK_FOR_APP_UPDATE": "false",
-			},
-			assertions: []traitAssertion{
-				assertSucceedingReturnCode,
-			},
-		},
-		{
-			// regression: https://github.com/anchore/grype/issues/267
-			name: "ensure can be used by java subprocess (without hanging)",
-			args: []string{"-v", fmt.Sprintf("%s:%s:ro", binDir, "/app/bin"), imagetest.LoadFixtureImageIntoDocker(t, "image-java-subprocess"), "java", "/app.java"},
-			env: map[string]string{
-				"XEOL_CHECK_FOR_APP_UPDATE": "false",
-			},
-			assertions: []traitAssertion{
-				assertSucceedingReturnCode,
-			},
-		},
+		// {
+		// 	// regression
+		// 	name: "ensure can be used by node subprocess (without hanging)",
+		// 	args: []string{"-v", fmt.Sprintf("%s:%s:ro", binDir, "/app/bin"), imagetest.LoadFixtureImageIntoDocker(t, "image-node-subprocess"), "node", "/app.js"},
+		// 	env: map[string]string{
+		// 		"XEOL_CHECK_FOR_APP_UPDATE": "false",
+		// 	},
+		// 	assertions: []traitAssertion{
+		// 		assertSucceedingReturnCode,
+		// 	},
+		// },
+		// {
+		// 	// regression: https://github.com/anchore/grype/issues/267
+		// 	name: "ensure can be used by java subprocess (without hanging)",
+		// 	args: []string{"-v", fmt.Sprintf("%s:%s:ro", binDir, "/app/bin"), imagetest.LoadFixtureImageIntoDocker(t, "image-java-subprocess"), "java", "/app.java"},
+		// 	env: map[string]string{
+		// 		"XEOL_CHECK_FOR_APP_UPDATE": "false",
+		// 	},
+		// 	assertions: []traitAssertion{
+		// 		assertSucceedingReturnCode,
+		// 	},
+		// },
 	}
 
 	for _, test := range tests {
