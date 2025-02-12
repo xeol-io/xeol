@@ -38,7 +38,7 @@ runs:
 
     - name: Restore python cache
       id: python-venv-cache
-      uses: actions/cache@69d9d449aced6a2ede0bc19182fadc3a0a42d2b0 # v3.2.6
+      uses: actions/cache@v4
       with:
         path: |
           test/quality/venv
@@ -49,7 +49,7 @@ runs:
 
     - name: Restore tool cache
       id: tool-cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ github.workspace }}/.tmp
         key: ${{ inputs.cache-key-prefix }}-${{ runner.os }}-tool-${{ hashFiles('Makefile') }}
@@ -59,7 +59,7 @@ runs:
     - name: Restore go module cache
       id: go-mod-cache
       if: inputs.use-go-cache == 'true'
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/go/pkg/mod
@@ -75,7 +75,7 @@ runs:
     - name: Restore go build cache
       id: go-cache
       if: inputs.use-go-cache == 'true'
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/.cache/go-build

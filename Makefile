@@ -91,7 +91,7 @@ format: ## Auto-format all source code
 
 .PHONY: bootstrap-tools
 bootstrap-tools: $(TEMPDIR)
-	GO111MODULE=off GOBIN=$(realpath $(TEMPDIR)) go get -u golang.org/x/perf/cmd/benchstat
+	GOBIN=$(realpath $(TEMPDIR)) go install golang.org/x/perf/cmd/benchstat@latest
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(TEMPDIR)/ $(GOLANGCILINT_VERSION)
 	curl -sSfL https://raw.githubusercontent.com/wagoodman/go-bouncer/master/bouncer.sh | sh -s -- -b $(TEMPDIR)/ $(BOUNCER_VERSION)
 	curl -sSfL https://raw.githubusercontent.com/anchore/chronicle/main/install.sh | sh -s -- -b $(TEMPDIR)/ $(CHRONICLE_VERSION)
