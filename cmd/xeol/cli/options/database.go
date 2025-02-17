@@ -27,8 +27,8 @@ func DefaultDatabase(id clio.Identification) Database {
 		UpdateURL:   internal.DBUpdateURL,
 		AutoUpdate:  true,
 		ValidateAge: true,
-		// After this period (5 days) the db data is considered stale
-		MaxAllowedBuiltAge: time.Hour * 24 * 5,
+		// After this period (90 days) the db data is considered stale
+		MaxAllowedBuiltAge: time.Hour * 24 * 90,
 	}
 }
 
