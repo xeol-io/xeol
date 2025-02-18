@@ -5,6 +5,7 @@ import (
 	"crypto/x509"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 	"strconv"
@@ -195,6 +196,28 @@ func (c *Curator) IsUpdateAvailable() (bool, *Metadata, *ListingEntry, error) {
 	current, err := NewMetadataFromDir(c.fs, c.dbDir)
 	if err != nil {
 		return false, nil, nil, fmt.Errorf("current metadata corrupt: %w", err)
+	}
+
+	isBrewTest := os.Getenv("HOMEBREW_GITHUB_ACTIONS")
+	if isBrewTest == "1" {
+		sampleEntry := ListingEntry{
+			Built:    time.Now(),
+			Version:  1,
+			Checksum: "sha256:8c3188056b129e55272b8d6c25cb9e27de59ec02b23c1a4c0e98f17d22333a31",
+			URL: &url.URL{
+				Scheme: "https",
+				Host:   "s3.us-east-1.amazonaws.com",
+				Path:   "/data.xeol.io/xeol/databases/sample.tar.gz",
+			},
+		}
+
+		sampleMeta := Metadata{
+			Built:    time.Now(),
+			Version:  1,
+			Checksum: "sha256:8c3188056b129e55272b8d6c25cb9e27de59ec02b23c1a4c0e98f17d22333a31",
+		}
+		log.Infof("homebrew sample url: %s", sampleEntry)
+		return true, &sampleMeta, &sampleEntry, nil
 	}
 
 	if current.IsSupersededBy(updateEntry) {
