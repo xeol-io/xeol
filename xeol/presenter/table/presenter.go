@@ -18,15 +18,17 @@ var now = time.Now
 
 // Presenter is a generic struct for holding fields needed for reporting
 type Presenter struct {
-	matches  match.Matches
-	packages []pkg.Package
+	matches       match.Matches
+	packages      []pkg.Package
+	showVulnCount bool
 }
 
 // NewPresenter is a *Presenter constructor
 func NewPresenter(pb models.PresenterConfig) *Presenter {
 	return &Presenter{
-		matches:  pb.Matches,
-		packages: pb.Packages,
+		matches:       pb.Matches,
+		packages:      pb.Packages,
+		showVulnCount: pb.ShowVulnCount,
 	}
 }
 
@@ -35,12 +37,16 @@ func (pres *Presenter) Present(output io.Writer) error {
 	rows := make([][]string, 0)
 
 	columns := []string{"NAME", "VERSION", "EOL", "DAYS EOL", "TYPE"}
+	if pres.showVulnCount {
+		columns = append(columns, "VULNERABILITIES")
+	}
+
 	// Generate rows for matches
 	for m := range pres.matches.Enumerate() {
 		if m.Package.Name == "" {
 			continue
 		}
-		row, err := createRow(m)
+		row, err := createRow(m, pres.showVulnCount)
 
 		if err != nil {
 			return err
@@ -85,17 +91,24 @@ func (pres *Presenter) Present(output io.Writer) error {
 	return nil
 }
 
-func createRow(m match.Match) ([]string, error) {
+func createRow(m match.Match, showVulnCount bool) ([]string, error) {
 	daysEol, err := calculateDaysEol(m)
 	if err != nil {
 		return nil, err
 	}
 
+	row := []string{m.Package.Name, m.Package.Version}
 	if m.Cycle.EolBool {
-		return []string{m.Package.Name, m.Package.Version, "YES", "-", string(m.Package.Type)}, nil
+		row = append(row, "YES", "-", string(m.Package.Type))
+	} else {
+		row = append(row, m.Cycle.Eol, daysEol, string(m.Package.Type))
 	}
 
-	return []string{m.Package.Name, m.Package.Version, m.Cycle.Eol, daysEol, string(m.Package.Type)}, nil
+	if showVulnCount {
+		row = append(row, strconv.Itoa(m.VulnCount))
+	}
+
+	return row, nil
 }
 
 func calculateDaysEol(m match.Match) (string, error) {

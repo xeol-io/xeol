@@ -244,12 +244,12 @@ func runXeol(app clio.Application, opts *options.Xeol, userInput string) error {
 		}
 
 		if err := writer.Write(models.PresenterConfig{
-			Matches:   allMatches,
-			Packages:  packages,
-			Context:   pkgContext,
-			SBOM:      s,
-			AppConfig: opts,
-			DBStatus:  status,
+			Matches:       allMatches,
+			Packages:      packages,
+			Context:       pkgContext,
+			SBOM:          s,
+			ShowVulnCount: opts.ShowVulnCount,
+			DBStatus:      status,
 		}); err != nil {
 			errs <- err
 		}
