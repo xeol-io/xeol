@@ -248,6 +248,7 @@ func runXeol(app clio.Application, opts *options.Xeol, userInput string) error {
 			Packages:      packages,
 			Context:       pkgContext,
 			SBOM:          s,
+			AppConfig:     opts,
 			ShowVulnCount: opts.ShowVulnCount,
 			DBStatus:      status,
 		}); err != nil {

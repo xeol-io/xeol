@@ -11,19 +11,21 @@ import (
 
 // Presenter is a generic struct for holding fields needed for reporting
 type Presenter struct {
-	matches  match.Matches
-	packages []pkg.Package
-	context  pkg.Context
-	dbStatus interface{}
+	matches   match.Matches
+	packages  []pkg.Package
+	context   pkg.Context
+	appConfig interface{}
+	dbStatus  interface{}
 }
 
 // NewPresenter is a *Presenter constructor
 func NewPresenter(pb models.PresenterConfig) *Presenter {
 	return &Presenter{
-		matches:  pb.Matches,
-		packages: pb.Packages,
-		context:  pb.Context,
-		dbStatus: pb.DBStatus,
+		matches:   pb.Matches,
+		packages:  pb.Packages,
+		context:   pb.Context,
+		appConfig: pb.AppConfig,
+		dbStatus:  pb.DBStatus,
 	}
 }
 

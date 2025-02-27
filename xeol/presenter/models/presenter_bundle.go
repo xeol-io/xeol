@@ -12,6 +12,7 @@ type PresenterConfig struct {
 	Packages      []pkg.Package
 	Context       pkg.Context
 	SBOM          *sbom.SBOM
+	AppConfig     interface{}
 	ShowVulnCount bool
 	DBStatus      interface{}
 }
