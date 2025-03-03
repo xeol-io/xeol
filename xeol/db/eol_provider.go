@@ -90,7 +90,7 @@ func (pr *EolProvider) GetVulnCount(p pkg.Package) (int, error) {
 		return 0, err
 	}
 
-	vulnCount, err := pr.reader.GetVulnCountByPurl(shortPurl)
+	vulnCount, err := pr.reader.GetVulnCountByPurlAndVersion(shortPurl, p.Version)
 	if err != nil {
 		return 0, err
 	}

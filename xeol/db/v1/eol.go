@@ -36,7 +36,7 @@ type EolStore interface {
 type EolStoreReader interface {
 	GetCyclesByPurl(purl string) ([]Cycle, error)
 	GetCyclesByCpe(cpe string) ([]Cycle, error)
-	GetVulnCountByPurl(purl string) (int, error)
+	GetVulnCountByPurlAndVersion(purl string, version string) (int, error)
 	GetAllProducts() (*[]Product, error)
 }
 

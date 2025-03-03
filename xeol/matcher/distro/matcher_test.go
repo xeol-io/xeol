@@ -29,6 +29,10 @@ func (s *mockStore) GetCyclesByCpe(cpe string) ([]xeolDB.Cycle, error) {
 	return s.backend[cpe], nil
 }
 
+func (s *mockStore) GetVulnCountByPurlAndVersion(purl string, version string) (int, error) {
+	return 0, nil
+}
+
 func (s *mockStore) GetAllProducts() (*[]xeolDB.Product, error) {
 	return nil, nil
 }

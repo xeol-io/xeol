@@ -144,12 +144,12 @@ func (s *store) GetCyclesByPurl(purl string) ([]v1.Cycle, error) {
 	return cycles, nil
 }
 
-func (s *store) GetVulnCountByPurl(purl string) (int, error) {
+func (s *store) GetVulnCountByPurlAndVersion(purl string, version string) (int, error) {
 	var vulnCount int
 	if result := s.db.Table("vulns").
-		Select("COUNT(vulns.*").
+		Select("vulns.issue_count").
 		Joins("JOIN purls ON vulns.purl_id = purls.id").
-		Where("purls.purl = ?", purl).Find(&vulnCount); result.Error != nil {
+		Where("purls.purl = ? AND vulns.version = ?", purl, version).Find(&vulnCount); result.Error != nil {
 		return 0, result.Error
 	}
 	return vulnCount, nil
