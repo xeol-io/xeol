@@ -38,7 +38,7 @@ func (pres *Presenter) Present(output io.Writer) error {
 
 	columns := []string{"NAME", "VERSION", "EOL", "DAYS EOL", "TYPE"}
 	if pres.showVulnCount {
-		columns = append(columns, "VULNERABILITIES")
+		columns = append(columns, "# OF VULNS.")
 	}
 
 	// Generate rows for matches
