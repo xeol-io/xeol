@@ -33,6 +33,7 @@ func (m Match) Fingerprint() Fingerprint {
 		eolDate:      m.Cycle.Eol,
 		eolBool:      m.Cycle.EolBool,
 		lts:          m.Cycle.LTS,
+		version:      m.Package.Version,
 	}
 }
 

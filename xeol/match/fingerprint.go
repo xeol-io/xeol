@@ -13,6 +13,7 @@ type Fingerprint struct {
 	eolDate      string
 	eolBool      bool
 	lts          string
+	version      string
 }
 
 func (m Fingerprint) String() string {
