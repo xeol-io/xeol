@@ -30,9 +30,16 @@ func ByPackagePURL(store eol.Provider, p pkg.Package, _ match.MatcherType, eolMa
 	}
 
 	if (cycle != eol.Cycle{}) {
+		vulnCount, err := store.GetVulnCount(p)
+		if err != nil {
+			log.Warnf("failed to get vulnerability count for package %s: %v", p, err)
+			vulnCount = 0
+		}
+
 		return match.Match{
-			Cycle:   cycle,
-			Package: p,
+			Cycle:     cycle,
+			Package:   p,
+			VulnCount: vulnCount,
 		}, nil
 	}
 	return match.Match{}, nil

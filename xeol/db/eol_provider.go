@@ -83,3 +83,17 @@ func (pr *EolProvider) GetByPackagePurl(p pkg.Package) ([]eol.Cycle, error) {
 
 	return cycles, nil
 }
+
+func (pr *EolProvider) GetVulnCount(p pkg.Package) (int, error) {
+	shortPurl, err := purl.ShortPurl(p)
+	if err != nil {
+		return 0, err
+	}
+
+	vulnCount, err := pr.reader.GetVulnCountByPurlAndVersion(shortPurl, p.Version)
+	if err != nil {
+		return 0, err
+	}
+
+	return vulnCount, nil
+}

@@ -8,10 +8,11 @@ import (
 )
 
 type PresenterConfig struct {
-	Matches   match.Matches
-	Packages  []pkg.Package
-	Context   pkg.Context
-	SBOM      *sbom.SBOM
-	AppConfig interface{}
-	DBStatus  interface{}
+	Matches       match.Matches
+	Packages      []pkg.Package
+	Context       pkg.Context
+	SBOM          *sbom.SBOM
+	AppConfig     interface{}
+	ShowVulnCount bool
+	DBStatus      interface{}
 }

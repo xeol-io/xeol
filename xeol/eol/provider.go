@@ -13,6 +13,7 @@ type Provider interface {
 
 type ProviderByPackagePurl interface {
 	GetByPackagePurl(p pkg.Package) ([]Cycle, error)
+	GetVulnCount(p pkg.Package) (int, error)
 }
 
 type ProviderByDistroCpe interface {

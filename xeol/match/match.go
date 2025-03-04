@@ -11,8 +11,9 @@ var ErrCannotMerge = fmt.Errorf("unable to merge eol matches")
 
 // Match represents a finding in the eol matching process, pairing a single package and a single eol object.
 type Match struct {
-	Cycle   eol.Cycle
-	Package pkg.Package // The package used to search for a match.
+	Cycle     eol.Cycle
+	Package   pkg.Package // The package used to search for a match.
+	VulnCount int
 }
 
 // String is the string representation of select match fields.
@@ -32,6 +33,7 @@ func (m Match) Fingerprint() Fingerprint {
 		eolDate:      m.Cycle.Eol,
 		eolBool:      m.Cycle.EolBool,
 		lts:          m.Cycle.LTS,
+		version:      m.Package.Version,
 	}
 }
 

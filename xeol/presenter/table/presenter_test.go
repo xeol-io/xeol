@@ -69,7 +69,7 @@ func TestCreateRow(t *testing.T) {
 
 	for _, testCase := range cases {
 		t.Run(testCase.name, func(t *testing.T) {
-			row, err := createRow(testCase.match)
+			row, err := createRow(testCase.match, false)
 
 			assert.Equal(t, testCase.expectedErr, err)
 			assert.Equal(t, testCase.expectedRow, row)

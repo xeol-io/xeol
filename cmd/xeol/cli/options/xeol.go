@@ -33,6 +33,7 @@ type Xeol struct {
 	Registry               registry    `yaml:"registry" json:"registry" mapstructure:"registry"`
 	Name                   string      `yaml:"name" json:"name" mapstructure:"name"`
 	DefaultImagePullSource string      `yaml:"default-image-pull-source" json:"default-image-pull-source" mapstructure:"default-image-pull-source"`
+	ShowVulnCount          bool        `yaml:"show-vuln-count" json:"show-vuln-count" mapstructure:"show-vuln-count"`
 }
 
 var _ interface {
@@ -53,6 +54,7 @@ func DefaultXeol(id clio.Identification) *Xeol {
 		ProjectName:       project,
 		CommitHash:        commit,
 		ImagePath:         "Dockerfile",
+		ShowVulnCount:     false,
 	}
 	return config
 }
@@ -122,6 +124,11 @@ func (o *Xeol) AddFlags(flags clio.FlagSet) {
 	flags.StringVarP(&o.Platform,
 		"platform", "",
 		"an optional platform specifier for container image sources (e.g. 'linux/arm64', 'linux/arm64/v8', 'arm64', 'linux')",
+	)
+
+	flags.BoolVarP(&o.ShowVulnCount,
+		"show-vuln-count", "",
+		"show the number of vulnerabilities found for each package (default is false)",
 	)
 }
 
