@@ -18,7 +18,7 @@ import (
 )
 
 func resolveReferenceWithWarning(ctx context.Context, inputType inputType, reference string, sigRepo notationregistry.Repository, operation string) (ocispec.Descriptor, string, error) {
-	return resolveReference(ctx, inputType, reference, sigRepo, func(ref string, manifestDesc ocispec.Descriptor) {
+	return resolveReference(ctx, inputType, reference, sigRepo, func(ref string, _ ocispec.Descriptor) {
 		log.Warnf("Warning: Always %s the artifact using digest(@sha256:...) rather than a tag(:%s) because resolved digest may not point to the same signed artifact, as tags are mutable.\n", operation, ref)
 	})
 }

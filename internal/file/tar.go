@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -80,7 +81,7 @@ func UnTarGz(dst string, r io.Reader) error {
 			}
 
 		case tar.TypeReg:
-			f, err := os.OpenFile(target, os.O_CREATE|os.O_RDWR, os.FileMode(header.Mode))
+			f, err := os.OpenFile(target, os.O_CREATE|os.O_RDWR, os.FileMode(math.Max(0, float64(header.Mode))))
 			if err != nil {
 				return fmt.Errorf("failed to open file (%s): %w", target, err)
 			}

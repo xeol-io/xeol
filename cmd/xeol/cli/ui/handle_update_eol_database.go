@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/anchore/bubbly/bubbles/taskprogress"
 	tea "github.com/charmbracelet/bubbletea"
@@ -27,7 +28,9 @@ func (s dbDownloadProgressStager) Stage() string {
 			return "validating"
 		}
 		// show intermediate progress of the download
-		return fmt.Sprintf("%s / %s", humanize.Bytes(uint64(s.prog.Current())), humanize.Bytes(uint64(s.prog.Size())))
+		progress := uint64(math.Max(0, float64(s.prog.Current())))
+		total := uint64(math.Max(1, float64(s.prog.Size())))
+		return fmt.Sprintf("%s / %s", humanize.Bytes(progress), humanize.Bytes(total))
 	}
 	return stage
 }
