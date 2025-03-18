@@ -1,4 +1,3 @@
-
 <div align="center">
   <img src="https://s3.amazonaws.com/static.xeol.io/xeol-logo/logo-white-bg.png" width="80px" />
   <h1 align="center">Xeol</h1>
@@ -7,12 +6,12 @@
     🔎  A scanner for end-of-life (EOL) packages in container images, filesystems, and SBOMs  🔍
   </h4>
 
-  <a href="https://img.shields.io/github/downloads/xeol-io/xeol/total.svg"><img src="https://img.shields.io/github/downloads/xeol-io/xeol/total.svg" alt="Github All Releases"/></a>
-  <a href="https://goreportcard.com/report/github.com/xeol-io/xeol"><img src="https://goreportcard.com/badge/github.com/xeol-io/xeol" alt="Go Report Card"/></a>
-  <a href="https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol"><img src="https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol/badge" alt="OpenSSF Scorecard"/></a>
-  <a href="https://github.com/xeol-io/xeol/releases/latest"><img src="https://img.shields.io/github/release/xeol-io/xeol.svg" alt="GitHub release"/></a>
-  <a href="https://github.com/xeol-io/xeol/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License: Apache-2.0"/></a>
-  <a href="https://slsa.dev/images/gh-badge-level3.svg"><img src="https://slsa.dev/images/gh-badge-level3.svg" alt="SLSA"/></a>
+<a href="https://img.shields.io/github/downloads/xeol-io/xeol/total.svg"><img src="https://img.shields.io/github/downloads/xeol-io/xeol/total.svg" alt="Github All Releases"/></a>
+<a href="https://goreportcard.com/report/github.com/xeol-io/xeol"><img src="https://goreportcard.com/badge/github.com/xeol-io/xeol" alt="Go Report Card"/></a>
+<a href="https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol"><img src="https://api.securityscorecards.dev/projects/github.com/xeol-io/xeol/badge" alt="OpenSSF Scorecard"/></a>
+<a href="https://github.com/xeol-io/xeol/releases/latest"><img src="https://img.shields.io/github/release/xeol-io/xeol.svg" alt="GitHub release"/></a>
+<a href="https://github.com/xeol-io/xeol/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License: Apache-2.0"/></a>
+<a href="https://slsa.dev/images/gh-badge-level3.svg"><img src="https://slsa.dev/images/gh-badge-level3.svg" alt="SLSA"/></a>
 
   <h4 align="center">
     <a href="https://www.xeol.io/end-of-life">🌐 Website</a>
@@ -34,6 +33,7 @@ curl -sSfL https://raw.githubusercontent.com/xeol-io/xeol/main/install.sh | sh -
 ```
 
 Check installation or check version of xeol
+
 ```
 xeol version
 ```
@@ -58,12 +58,14 @@ If you're using GitHub Actions, you can simply use the [Xeol GitHub action](http
 ### Verifying SLSA provenance for downloaded releases
 
 We generate SLSA provenance for all Xeol releases starting with v0.9.5. You can verify the provenance for the release binaries like so:
+
 1. Install the [slsa-framework/slsa-verifier#installation](https://github.com/slsa-framework/slsa-verifier#installation) tool
 2. Download the signature file `multiple.intoto.jsonl` from a Xeol release
 3. Download the Xeol release binary you want to verify
 4. Run `slsa-verifier verify-artifact --provenance-path multiple.intoto.jsonl <release-binary> --source-uri=github.com/xeol-io/xeol`
 
 You should see something like this is the release binary is verified:
+
 ```
 ➜  ~ slsa-verifier verify-artifact --provenance-path multiple.intoto.jsonl xeol_0.9.5_darwin_amd64.tar.gz --source-uri=github.com/xeol-io/xeol
 Verified signature against tlog entry index 44906341 at URL: https://rekor.sigstore.dev/api/v1/log/entries/24296fb24b8ad77a658e74e86e03e7aedcca39eebddebf59310b4d9c463b037951109186d73a5681
@@ -139,7 +141,6 @@ cat ./sbom.json | xeol
 xeol supports input of [Syft](https://github.com/xeol-io/xeol), [SPDX](https://spdx.dev/), and [CycloneDX](https://cyclonedx.org/)
 SBOM formats. If Syft has generated any of these file types, they should have the appropriate information to work properly with xeol.
 
-
 ### Lookahead
 
 By default, xeol will match any package that has an EOL date that is less than the current date + 30d. In order to set a custom lookahead matching time, you can use `--lookahead <duration>`. where `<duration>` is like `1w`, `30d` or `1y`.
@@ -157,12 +158,18 @@ xeol <image> --fail-on-eol-found
 End of Life (EOL) means the vendor has decided the software in question has reached the end of its
 “useful lifespan.” After this particular date, the manufacturer no longer markets, sells, provides technical support, sustains, enhances, or fixes the product. Note that End of Life (EOL) and End of Support (EOS) are being treated as the same by xeol, even though various vendors may use these terms differently. EOL Software is a security risk because it is no longer being maintained and receiving security updates.
 
-The data that xeol uses to determine if a package is EOL is sourced from [endoflife.date](https://endoflife.date/). While endoflife.date includes extended support dates, xeol does not currently support this and we only match on the standard EOL support dates from vendors.
+xeol does not currently support extended support dates and only matches standard EOL support dates from vendors.
 
 ## xeol's database
 
+When xeol performs a scan for EOL packages, it does so using a database that's stored on your local filesystem, which is constructed by pulling data from several sources:
 
-When xeol performs a scan for EOL packages, it does so using a database that's stored on your local filesystem, which is constructed by pulling data from [endoflife.date](https://endoflife.date/).
+- Aggregators: endoflife.date
+- Package registries: cargo, maven, npm, nuget, pypi, rubygems
+- Vendor packages: Adobe, Broadcom, IBM, Ivanti, Microsoft, Oracle, UIPath, Wireshark
+- Browsers: Chrome, Edge
+
+xeol's database is not a comprehensive list of all EOL packages. It is a curated list of commonly used software.
 
 By default, xeol automatically manages this database for you. xeol checks for new updates to the database to make sure that every scan uses up-to-date EOL information. This behavior is configurable. For more information, see the Managing xeeol's database section.
 
@@ -250,12 +257,12 @@ An example `config.json` looks something like this:
 ```json
 // config.json
 {
-	"auths": {
-		"registry.example.com": {
-			"username": "AzureDiamond",
-			"password": "hunter2"
-		}
-	}
+  "auths": {
+    "registry.example.com": {
+      "username": "AzureDiamond",
+      "password": "hunter2"
+    }
+  }
 }
 ```
 
@@ -270,6 +277,7 @@ The below section shows a simple workflow on how to mount this config file as a 
 1.  Create a secret. The value of `config.json` is important. It refers to the specification detailed [here](https://github.com/google/go-containerregistry/tree/main/pkg/authn#the-config-file).
     Below this section is the `secret.yaml` file that the pod configuration will consume as a volume.
     The key `config.json` is important. It will end up being the name of the file when mounted into the pod.
+
     ```yaml
     # secret.yaml
     apiVersion: v1
@@ -287,6 +295,7 @@ The below section shows a simple workflow on how to mount this config file as a 
     In the below example, setting `DOCKER_CONFIG=/config` informs xeol that credentials can be found at `/config/config.json`.
     This is why we used `config.json` as the key for our secret. When mounted into containers the secrets' key is used as the filename.
     The `volumeMounts` section mounts our secret to `/config`. The `volumes` section names our volume and leverages the secret we created in step one.
+
     ```yaml
     # pod.yaml
     apiVersion: v1
@@ -299,15 +308,15 @@ The below section shows a simple workflow on how to mount this config file as a 
             - name: DOCKER_CONFIG
               value: /config
           volumeMounts:
-          - mountPath: /config
-            name: registry-config
-            readOnly: true
+            - mountPath: /config
+              name: registry-config
+              readOnly: true
           args:
             - <private_image>
       volumes:
-      - name: registry-config
-        secret:
-          secretName: registry-config
+        - name: registry-config
+          secret:
+            secretName: registry-config
     ```
 
     `kubectl apply -f pod.yaml`
@@ -326,11 +335,10 @@ Configuration search paths:
 - `~/.xeol.yaml`
 - `<XDG_CONFIG_HOME>/xeol/config.yaml`
 
-
 ## Pronunciation
 
 Xeol is pronounced "zee-oh-el", like EOL but with a Z in front :-)
 
 ## Help
 
-Join our [discord](https://discord.gg/xAePvPpEx5) for help or feedback! 
+Join our [discord](https://discord.gg/xAePvPpEx5) for help or feedback!
