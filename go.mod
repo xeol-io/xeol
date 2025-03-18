@@ -1,8 +1,6 @@
 module github.com/xeol-io/xeol
 
-go 1.22.0
-
-toolchain go1.22.6
+go 1.24.1
 
 require (
 	github.com/CycloneDX/cyclonedx-go v0.9.0

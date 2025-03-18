@@ -18,7 +18,7 @@ func DBDelete(app clio.Application) *cobra.Command {
 		Use:   "delete",
 		Short: "delete the EOL database",
 		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return runDBDelete(opts.DB)
 		},
 	}, opts)

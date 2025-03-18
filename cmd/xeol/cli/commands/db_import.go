@@ -20,7 +20,7 @@ func DBImport(app clio.Application) *cobra.Command {
 		Short: "import a EOL database archive",
 		Long:  fmt.Sprintf("import a EOL database archive from a local FILE.\nDB archives can be obtained from %q.", internal.DBUpdateURL),
 		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			return runDBImport(opts.DB, args[0])
 		},
 	}, opts)
