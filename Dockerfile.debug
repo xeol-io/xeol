@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/static-debian12:debug@sha256:6a237461502fc122b76112a49945e0bf1b0a358b2455f38fd383241281696709
+FROM gcr.io/distroless/static-debian12:debug@sha256:ea6a51495f94a482dc431cd247bbace8f9a096ed6397005995245520ce5afcfe
 
 
 # create the /tmp dir, which is needed for image content cache
