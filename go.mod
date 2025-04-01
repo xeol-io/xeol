@@ -22,7 +22,7 @@ require (
 	github.com/docker/docker v28.0.1+incompatible
 	github.com/dustin/go-humanize v1.0.1
 	github.com/gabriel-vasile/mimetype v1.4.8
-	github.com/gkampitakis/go-snaps v0.5.6
+	github.com/gkampitakis/go-snaps v0.5.11
 	github.com/glebarez/sqlite v1.9.0
 	github.com/go-git/go-git/v5 v5.14.0
 	github.com/go-test/deep v1.1.1
@@ -139,7 +139,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
 	github.com/github/go-spdx/v2 v2.3.1 // indirect
-	github.com/gkampitakis/ciinfo v0.3.0 // indirect
+	github.com/gkampitakis/ciinfo v0.3.1 // indirect
 	github.com/gkampitakis/go-diff v1.3.2 // indirect
 	github.com/glebarez/go-sqlite v1.21.2 // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.7 // indirect
@@ -150,6 +150,7 @@ require (
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-restruct/restruct v1.2.0-alpha // indirect
+	github.com/goccy/go-yaml v1.15.13 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
@@ -243,7 +244,7 @@ require (
 	github.com/sylabs/sif/v2 v2.20.2 // indirect
 	github.com/sylabs/squashfs v1.0.5 // indirect
 	github.com/therootcompany/xz v1.0.1 // indirect
-	github.com/tidwall/gjson v1.17.0 // indirect
+	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
