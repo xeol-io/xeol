@@ -19,7 +19,7 @@ require (
 	github.com/charmbracelet/bubbletea v0.26.6
 	github.com/charmbracelet/lipgloss v0.12.1
 	github.com/distribution/reference v0.6.0
-	github.com/docker/docker v28.0.1+incompatible
+	github.com/docker/docker v28.1.1+incompatible
 	github.com/dustin/go-humanize v1.0.1
 	github.com/gabriel-vasile/mimetype v1.4.8
 	github.com/gkampitakis/go-snaps v0.5.6
@@ -195,8 +195,9 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/moby/docker-image-spec v1.3.1 // indirect
 	github.com/moby/locker v1.0.1 // indirect
+	github.com/moby/sys/atomicwriter v0.1.0 // indirect
 	github.com/moby/sys/mountinfo v0.7.2 // indirect
-	github.com/moby/sys/sequential v0.5.0 // indirect
+	github.com/moby/sys/sequential v0.6.0 // indirect
 	github.com/moby/sys/signal v0.7.0 // indirect
 	github.com/moby/sys/user v0.3.0 // indirect
 	github.com/moby/sys/userns v0.1.0 // indirect
