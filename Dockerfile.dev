@@ -1,4 +1,4 @@
-FROM docker@sha256:0336b60f3134d98d26a069856780f9e58dbc3219cde49ca85be14c8e3c3446e2
+FROM docker@sha256:ea9d20492ca1caaaba78e68453433895d256173c79281756e88b745647fcbcfd
 
 ENV GO_VERSION=1.24.1
 ENV PATH=$PATH:/usr/local/go/bin:/usr/bin/env:/root/go/bin
