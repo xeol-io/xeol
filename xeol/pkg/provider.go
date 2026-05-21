@@ -3,10 +3,13 @@ package pkg
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/anchore/syft/syft/file"
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/bmatcuk/doublestar/v2"
+
+	tfcataloger "github.com/xeol-io/xeol/xeol/pkg/cataloger/terraform"
 )
 
 var errDoesNotProvide = fmt.Errorf("cannot provide packages from the given source")
@@ -30,8 +33,68 @@ func Provide(userInput string, config ProviderConfig) ([]Package, Context, *sbom
 		return packages, Context{}, s, err
 	}
 
-	return syftProvider(userInput, config)
+	packages, ctx, s, err = syftProvider(userInput, config)
+
+	// Inject our custom Terraform lockfile cataloger for dir: inputs.
+	// Syft v1.10.0 has no native terraform cataloger, so we do it ourselves.
+	if dirPath := extractDirPath(userInput); dirPath != "" {
+		tfPackages, tfErr := catalogTerraform(dirPath)
+		if tfErr != nil {
+			fmt.Printf("terraform cataloger warning: %v\n", tfErr)
+		} else {
+			packages = append(packages, tfPackages...)
+		}
+	}
+
+	return packages, ctx, s, err
 }
+
+// extractDirPath returns the filesystem path for a dir: prefixed input, else "".
+func extractDirPath(userInput string) string {
+	if strings.HasPrefix(userInput, "dir:") {
+		return strings.TrimPrefix(userInput, "dir:")
+	}
+	return ""
+}
+
+// catalogTerraform calls the terraform cataloger and converts its output into xeol Packages.
+func catalogTerraform(dirPath string) ([]Package, error) {
+	providers, err := tfcataloger.CatalogDirectory(dirPath)
+	if err != nil {
+		return nil, err
+	}
+
+	var pkgs []Package
+	for _, p := range providers {
+		pkgs = append(pkgs, terraformProviderToPackage(p))
+	}
+	return pkgs, nil
+}
+
+// terraformProviderToPackage converts a raw cataloger Provider into an xeol Package.
+// PURL format: pkg:terraform/<namespace>/<name>@<version>
+func terraformProviderToPackage(p tfcataloger.Provider) Package {
+	parts := strings.Split(p.Address, "/")
+	name := p.Address
+	purlName := p.Address
+	if len(parts) >= 2 {
+		purlName = strings.Join(parts[len(parts)-2:], "/")
+		name = parts[len(parts)-1]
+	}
+
+	purl := fmt.Sprintf("pkg:terraform/%s@%s", purlName, p.Version)
+	loc := file.NewLocation(p.LockfilePath)
+
+	return Package{
+		ID:        ID(fmt.Sprintf("terraform-%s-%s", purlName, p.Version)),
+		Name:      name,
+		Version:   p.Version,
+		Locations: file.NewLocationSet(loc),
+		Type:      "terraform",
+		PURL:      purl,
+	}
+}
+
 
 // This will filter the provided packages list based on a set of exclusion expressions. Globs
 // are allowed for the exclusions. A package will be *excluded* only if *all locations* match
