@@ -5,6 +5,7 @@ import (
 
 	"github.com/xeol-io/xeol/xeol/presenter/json"
 	"github.com/xeol-io/xeol/xeol/presenter/models"
+	"github.com/xeol-io/xeol/xeol/presenter/sarif"
 	"github.com/xeol-io/xeol/xeol/presenter/table"
 )
 
@@ -15,6 +16,8 @@ func GetPresenter(format Format, pb models.PresenterConfig) presenter.Presenter 
 		return json.NewPresenter(pb)
 	case TableFormat:
 		return table.NewPresenter(pb)
+	case SarifFormat:
+		return sarif.NewPresenter(pb)
 	default:
 		return nil
 	}
