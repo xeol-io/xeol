@@ -15,6 +15,7 @@ import (
 	"github.com/xeol-io/xeol/xeol/match"
 	distroMatcher "github.com/xeol-io/xeol/xeol/matcher/distro"
 	pkgMatcher "github.com/xeol-io/xeol/xeol/matcher/packages"
+	terraformMatcher "github.com/xeol-io/xeol/xeol/matcher/terraform"
 	"github.com/xeol-io/xeol/xeol/pkg"
 )
 
@@ -24,14 +25,16 @@ type Monitor struct {
 
 // Config contains values used by individual matcher structs for advanced configuration
 type Config struct {
-	Packages pkgMatcher.MatcherConfig
-	Distro   distroMatcher.MatcherConfig
+	Packages  pkgMatcher.MatcherConfig
+	Distro    distroMatcher.MatcherConfig
+	Terraform terraformMatcher.MatcherConfig
 }
 
 func NewDefaultMatchers(_ Config) []Matcher {
 	return []Matcher{
 		&pkgMatcher.Matcher{},
 		&distroMatcher.Matcher{},
+		&terraformMatcher.Matcher{},
 	}
 }
 
@@ -77,6 +80,7 @@ func FindMatches(store interface {
 	distroMatcher := &distroMatcher.Matcher{
 		UseCPEs: true,
 	}
+	terraformMatcher := &terraformMatcher.Matcher{}
 
 	progressMonitor := trackMatcher(len(packages))
 	defer progressMonitor.SetCompleted()
@@ -95,7 +99,15 @@ func FindMatches(store interface {
 		progressMonitor.PackagesProcessed.Increment()
 		log.Debugf("searching for eol matches for pkg=%s", p)
 
-		pkgMatch, err := defaultMatcher.Match(store, p, eolMatchDate)
+		var pkgMatch match.Match
+		var err error
+
+		if p.Type == "terraform" {
+			pkgMatch, err = terraformMatcher.Match(store, p, eolMatchDate)
+		} else {
+			pkgMatch, err = defaultMatcher.Match(store, p, eolMatchDate)
+		}
+
 		if err != nil {
 			log.Debugf("matcher failed for pkg=%s: %+v", p, err)
 		}

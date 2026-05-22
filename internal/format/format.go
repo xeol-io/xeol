@@ -8,6 +8,7 @@ const (
 	UnknownFormat Format = "unknown"
 	JSONFormat    Format = "json"
 	TableFormat   Format = "table"
+	SarifFormat   Format = "sarif"
 )
 
 // Format is a dedicated type to represent a specific kind of presenter output format.
@@ -26,6 +27,8 @@ func Parse(userInput string) Format {
 		return JSONFormat
 	case strings.ToLower(TableFormat.String()):
 		return TableFormat
+	case strings.ToLower(SarifFormat.String()):
+		return SarifFormat
 	default:
 		return UnknownFormat
 	}
@@ -35,4 +38,5 @@ func Parse(userInput string) Format {
 var AvailableFormats = []Format{
 	JSONFormat,
 	TableFormat,
+	SarifFormat,
 }

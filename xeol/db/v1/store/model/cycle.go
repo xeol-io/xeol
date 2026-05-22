@@ -14,6 +14,7 @@ type CycleModel struct {
 	ProductName       string    `gorm:"column:product_name"`
 	ProductPermalink  string    `gorm:"column:product_permalink"`
 	ID                int       `gorm:"primary_key;column:id;"`
+	ProductID         int       `gorm:"column:product_id"`
 	ReleaseCycle      string    `gorm:"column:release_cycle"`
 	Eol               time.Time `gorm:"column:eol"`
 	EolBool           bool      `gorm:"column:eol_bool"`
