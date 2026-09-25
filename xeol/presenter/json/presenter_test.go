@@ -17,6 +17,13 @@ import (
 
 var timestampRegexp = regexp.MustCompile(`"timestamp":\s*"[^"]+"`)
 
+// packageIDRegexp matches the random UUID that internal.GenerateAnalysis assigns to each
+// pkg.Package.ID (see xeol/presenter/internal/test_helpers.go). Now that the deprecated
+// Match.Package field is populated (see match.go newMatch, issue #62), that random ID is
+// serialized into the JSON output and must be redacted so the golden snapshot is stable
+// across test runs, the same way the timestamp already is.
+var packageIDRegexp = regexp.MustCompile(`[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}`)
+
 func TestJsonImgsPresenter(t *testing.T) {
 	var buffer bytes.Buffer
 	matches, packages, context, _, _ := internal.GenerateAnalysis(t, internal.ImageSource)
@@ -101,5 +108,6 @@ func TestEmptyJsonPresenter(t *testing.T) {
 }
 
 func redact(content []byte) []byte {
-	return timestampRegexp.ReplaceAll(content, []byte(`"timestamp":""`))
+	content = timestampRegexp.ReplaceAll(content, []byte(`"timestamp":""`))
+	return packageIDRegexp.ReplaceAll(content, []byte("redacted-id"))
 }

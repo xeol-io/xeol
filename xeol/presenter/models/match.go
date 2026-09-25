@@ -25,6 +25,7 @@ type MatchDetails struct {
 func newMatch(m match.Match, p pkg.Package) *Match {
 	return &Match{
 		Cycle:    NewCycle(m.Cycle),
+		Package:  p,
 		Artifact: newPackage(p),
 	}
 }
