@@ -38,18 +38,18 @@ func create(id clio.Identification) (clio.Application, *cobra.Command) {
 			clio.LoggingConfig{Level: logger.ErrorLevel}).
 		WithUIConstructor(
 			// select a UI based on the logging configuration and state of stdin (if stdin is a tty)
-			func(cfg clio.Config) ([]clio.UI, error) {
+			func(cfg clio.Config) (*clio.UICollection, error) {
 				noUI := ui.None(cfg.Log.Quiet)
 				if !cfg.Log.AllowUI(os.Stdin) || cfg.Log.Quiet {
-					return []clio.UI{noUI}, nil
+					return clio.NewUICollection(noUI), nil
 				}
 
 				h := handler.New(handler.DefaultHandlerConfig())
 
-				return []clio.UI{
+				return clio.NewUICollection(
 					ui.New(cfg.Log.Quiet, h),
 					noUI,
-				}, nil
+				), nil
 			},
 		).
 		WithInitializers(

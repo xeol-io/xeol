@@ -6,6 +6,7 @@ import (
 	"github.com/anchore/stereoscope/pkg/imagetest"
 	"github.com/anchore/syft/syft"
 	"github.com/anchore/syft/syft/file"
+	_ "github.com/glebarez/sqlite" // register the sqlite driver required by syft's rpm cataloger
 	"github.com/stretchr/testify/assert"
 )
 

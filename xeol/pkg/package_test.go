@@ -660,6 +660,168 @@ func TestNew(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "AppleAppBundleEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.AppleAppBundleEntry{},
+			},
+		},
+		{
+			name: "BitnamiSBOMEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.BitnamiSBOMEntry{},
+			},
+		},
+		{
+			name: "BunLockEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.BunLockEntry{},
+			},
+		},
+		{
+			name: "CondaMetaPackage",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.CondaMetaPackage{},
+			},
+		},
+		{
+			name: "CpanDistribution",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.CpanDistribution{},
+			},
+		},
+		{
+			name: "CpanUnpackedRelease",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.CpanUnpackedRelease{},
+			},
+		},
+		{
+			name: "DartPubspec",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.DartPubspec{},
+			},
+		},
+		{
+			name: "DenoLockEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.DenoLockEntry{},
+			},
+		},
+		{
+			name: "DenoRemoteLockEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.DenoRemoteLockEntry{},
+			},
+		},
+		{
+			name: "DotnetPackagesLockEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.DotnetPackagesLockEntry{},
+			},
+		},
+		{
+			name: "DpkgArchiveEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.DpkgArchiveEntry{},
+			},
+		},
+		{
+			name: "GGUFFileHeader",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.GGUFFileHeader{},
+			},
+		},
+		{
+			name: "GitHubActionsUseStatement",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.GitHubActionsUseStatement{},
+			},
+		},
+		{
+			name: "GolangSourceEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.GolangSourceEntry{},
+			},
+		},
+		{
+			name: "HomebrewFormula",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.HomebrewFormula{},
+			},
+		},
+		{
+			name: "JavaVMInstallation",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.JavaVMInstallation{},
+			},
+		},
+		{
+			name: "OpamPackage",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.OpamPackage{},
+			},
+		},
+		{
+			name: "PEBinary",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.PEBinary{},
+			},
+		},
+		{
+			name: "PhpPearEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.PhpPearEntry{},
+			},
+		},
+		{
+			name: "PnpmLockEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.PnpmLockEntry{},
+			},
+		},
+		{
+			name: "PythonPdmLockEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.PythonPdmLockEntry{},
+			},
+		},
+		{
+			name: "PythonUvLockEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.PythonUvLockEntry{},
+			},
+		},
+		{
+			name: "SafeTensorsModelInfo",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.SafeTensorsModelInfo{},
+			},
+		},
+		{
+			name: "SnapEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.SnapEntry{},
+			},
+		},
+		{
+			name: "SwiplPackEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.SwiplPackEntry{},
+			},
+		},
+		{
+			name: "TerraformLockProviderEntry",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.TerraformLockProviderEntry{},
+			},
+		},
+		{
+			name: "VcpkgManifest",
+			syftPkg: syftPkg.Package{
+				Metadata: syftPkg.VcpkgManifest{},
+			},
+		},
 	}
 
 	// capture each observed metadata type, we should see all of them relate to what syft provides by the end of testing

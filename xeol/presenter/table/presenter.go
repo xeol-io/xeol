@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/renderer"
+	"github.com/olekukonko/tablewriter/tw"
 
 	"github.com/xeol-io/xeol/xeol/match"
 	"github.com/xeol-io/xeol/xeol/pkg"
@@ -69,26 +71,36 @@ func (pres *Presenter) Present(output io.Writer) error {
 		return false
 	})
 
-	table := tablewriter.NewWriter(output)
+	padding := tw.CellPadding{Global: tw.Padding{Left: "", Right: "  ", Overwrite: true}}
+	table := tablewriter.NewTable(output,
+		tablewriter.WithRenderer(renderer.NewBlueprint(tw.Rendition{
+			Borders: tw.BorderNone,
+			Symbols: tw.NewSymbols(tw.StyleNone),
+			Settings: tw.Settings{
+				Lines:      tw.LinesNone,
+				Separators: tw.SeparatorsNone,
+			},
+		})),
+		tablewriter.WithConfig(tablewriter.Config{
+			Header: tw.CellConfig{
+				Formatting: tw.CellFormatting{AutoFormat: tw.On, AutoWrap: tw.WrapNone},
+				Alignment:  tw.CellAlignment{Global: tw.AlignLeft},
+				Padding:    padding,
+			},
+			Row: tw.CellConfig{
+				Formatting: tw.CellFormatting{AutoWrap: tw.WrapNone},
+				Alignment:  tw.CellAlignment{Global: tw.AlignLeft},
+				Padding:    padding,
+			},
+		}),
+	)
+	table.Header(columns)
 
-	table.SetHeader(columns)
-	table.SetAutoWrapText(false)
-	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	if err := table.Bulk(rows); err != nil {
+		return err
+	}
 
-	table.SetHeaderLine(false)
-	table.SetBorder(false)
-	table.SetAutoFormatHeaders(true)
-	table.SetCenterSeparator("")
-	table.SetColumnSeparator("")
-	table.SetRowSeparator("")
-	table.SetTablePadding("  ")
-	table.SetNoWhiteSpace(true)
-
-	table.AppendBulk(rows)
-	table.Render()
-
-	return nil
+	return table.Render()
 }
 
 func createRow(m match.Match, showVulnCount bool) ([]string, error) {
